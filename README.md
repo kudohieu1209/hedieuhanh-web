@@ -3,7 +3,7 @@
 Hệ thống quản lý tiến độ, kiến thức, phân công nhiệm vụ và ngân hàng câu hỏi bảo vệ đồ án môn Hệ điều hành tại **Đại học Bách khoa Hà Nội (HUST)**.
 
 - **Đề tài:** Đề #27: TTY Layer & Job Control trên `xv6-riscv`.
-- **Nhóm sinh viên:** 3 người (Mai Duy Hiếu - 20223967, Nguyễn Tuấn Anh - 20223988, Trần Đức Dũng - 20223912).
+- **Nhóm sinh viên:** 3 người (Mai Duy Hiếu - 20223967, Nguyễn Tuấn Anh - 20223988, Nguyễn Huy Hoàng - 20223912).
 - **Giảng viên hướng dẫn:** TS. Phạm Văn Tiến (`tien.phamvan1@hust.edu.vn`).
 - **Mã nguồn đồ án:** [github.com/kudohieu1209/hedieuhanh-hust](https://github.com/kudohieu1209/hedieuhanh-hust) (Nhánh: `tty-jobctl`).
 

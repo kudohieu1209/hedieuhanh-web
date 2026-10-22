@@ -6,7 +6,7 @@ export const INITIAL_MEETINGS: MeetingNote[] = [
     weekNumber: 1,
     date: '2026-09-22',
     presenter: 'Mai Duy Hiếu',
-    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Trần Đức Dũng', 'TS. Phạm Văn Tiến (GVHD)'],
+    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Nguyễn Huy Hoàng', 'TS. Phạm Văn Tiến (GVHD)'],
     reportedContent: 'Trình bày kết quả khảo sát cây mã nguồn xv6-riscv commit 06aad25; đề xuất phân chia 3 tầng: Process/Signal - TTY Layer - Shell.',
     lecturerQuestions: [
       'Tại sao xv6 gốc chưa thể hỗ trợ lệnh `fg` và `bg`?',
@@ -24,7 +24,7 @@ export const INITIAL_MEETINGS: MeetingNote[] = [
     weekNumber: 2,
     date: '2026-09-29',
     presenter: 'Nguyễn Tuấn Anh',
-    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Trần Đức Dũng', 'TS. Phạm Văn Tiến (GVHD)'],
+    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Nguyễn Huy Hoàng', 'TS. Phạm Văn Tiến (GVHD)'],
     reportedContent: 'Trình bày bản thiết kế struct proc mở rộng, struct tty và cơ chế ioctl qua devsw. Chạy demo bước đầu ttydemo noecho.',
     lecturerQuestions: [
       'ioctl đi qua bảng devsw như thế nào so với read/write?',
@@ -42,7 +42,7 @@ export const INITIAL_MEETINGS: MeetingNote[] = [
     weekNumber: 3,
     date: '2026-10-06',
     presenter: 'Mai Duy Hiếu',
-    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Trần Đức Dũng', 'TS. Phạm Văn Tiến (GVHD)'],
+    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Nguyễn Huy Hoàng', 'TS. Phạm Văn Tiến (GVHD)'],
     reportedContent: 'Báo cáo cơ chế tín hiệu thu nhỏ: sigdeliver() đánh dấu cờ và stopcheck() tại các điểm an toàn. Demo dừng spin.c bằng ngắt timer.',
     lecturerQuestions: [
       'Vì sao không cho tiến trình dừng ngay trong sleep()?',
@@ -59,8 +59,8 @@ export const INITIAL_MEETINGS: MeetingNote[] = [
     id: 'meet-4',
     weekNumber: 4,
     date: '2026-10-13',
-    presenter: 'Trần Đức Dũng',
-    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Trần Đức Dũng', 'TS. Phạm Văn Tiến (GVHD)'],
+    presenter: 'Nguyễn Huy Hoàng',
+    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Nguyễn Huy Hoàng', 'TS. Phạm Văn Tiến (GVHD)'],
     reportedContent: 'Demo trực tiếp chuỗi thao tác hoàn chỉnh: counter -> Ctrl-Z -> jobs -> bg -> fg -> Ctrl-C. Trình bày cơ chế SIGTTIN bảo vệ tiến trình nền.',
     lecturerQuestions: [
       'Tại sao sau fork() cả cha lẫn con cùng phải gọi setpgid và tcsetpgrp?',
@@ -79,7 +79,7 @@ export const INITIAL_MEETINGS: MeetingNote[] = [
     weekNumber: 5,
     date: '2026-10-20',
     presenter: 'Mai Duy Hiếu',
-    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Trần Đức Dũng', 'TS. Phạm Văn Tiến (GVHD)'],
+    attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Nguyễn Huy Hoàng', 'TS. Phạm Văn Tiến (GVHD)'],
     reportedContent: 'Báo cáo giải quyết Pipeline thành 1 job duy nhất, xử lý tiến trình mồ côi bằng SIGHUP + SIGCONT trong reparent(), và tiến độ triển khai Line Editor.',
     lecturerQuestions: [
       'Tại sao phải gửi cả SIGHUP lẫn SIGCONT khi dọn dẹp tiến trình con mồ côi bị dừng?',

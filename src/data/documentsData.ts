@@ -36,7 +36,7 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
     isExternalUrl: true,
     fileSize: '28 KB',
     version: 'v1.5',
-    uploaderName: 'Trần Đức Dũng',
+    uploaderName: 'Nguyễn Huy Hoàng',
     uploadedAt: '2026-10-13T09:40:00Z',
     notes: '25 câu hỏi tự ôn và 5 bài tập tự sửa trực tiếp thường gặp trong buổi vấn đáp đồ án.'
   },
@@ -49,7 +49,7 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
     isExternalUrl: true,
     fileSize: '12 KB',
     version: 'v1.0',
-    uploaderName: 'Trần Đức Dũng',
+    uploaderName: 'Nguyễn Huy Hoàng',
     uploadedAt: '2026-10-13T09:42:00Z',
     notes: '7 bước chạy lệnh mẫu trong QEMU từ counter, pipeline, spin đến terminal ảo.'
   },

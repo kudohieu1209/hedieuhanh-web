@@ -9,7 +9,7 @@ export const INITIAL_TESTS: TestCase[] = [
     description: 'Chạy counter, nhấn Ctrl-C (\\x03), kiểm tra counter bị giết ngay lập tức và Shell vẫn sống để nhận lệnh tiếp.',
     status: 'pass',
     lastRunAt: '2026-10-21T14:30:00Z',
-    executedBy: 'Trần Đức Dũng',
+    executedBy: 'Nguyễn Huy Hoàng',
     outputLog: `test_ctrl_c_kills_foreground        OK
 - Spawned xv6 in QEMU (PID 2841)
 - Sent command: counter
@@ -29,7 +29,7 @@ export const INITIAL_TESTS: TestCase[] = [
     description: 'Chạy chuỗi kinh điển: Chạy counter -> Ctrl-Z (\\x1a) dừng -> bg chạy ngầm -> jobs kiểm tra -> fg kéo về tiền cảnh -> Ctrl-C ngắt.',
     status: 'pass',
     lastRunAt: '2026-10-21T14:32:00Z',
-    executedBy: 'Trần Đức Dũng',
+    executedBy: 'Nguyễn Huy Hoàng',
     outputLog: `test_ctrl_z_bg_fg                   OK
 - Sent: counter
 - Sent: \\x1a (Ctrl-Z)
@@ -93,7 +93,7 @@ export const INITIAL_TESTS: TestCase[] = [
     description: 'Chạy counter | cat. Nhấn Ctrl-Z đảm bảo cả counter và cat cùng thuộc 1 PGID và đều chuyển trạng thái STOPPED. Sau fg, Ctrl-C giết cả hai.',
     status: 'pass',
     lastRunAt: '2026-10-21T14:40:00Z',
-    executedBy: 'Trần Đức Dũng',
+    executedBy: 'Nguyễn Huy Hoàng',
     outputLog: `test_pipeline_is_one_job            OK
 - Sent: counter | cat
 - Sent: \\x1a (Ctrl-Z)
@@ -168,7 +168,7 @@ export const INITIAL_TESTS: TestCase[] = [
     description: 'Kiểm tra phím mũi tên lên gọi lại lệnh cũ trong history, mũi tên trái di chuyển con trỏ và chèn ký tự.',
     status: 'pass',
     lastRunAt: '2026-10-21T14:50:00Z',
-    executedBy: 'Trần Đức Dũng',
+    executedBy: 'Nguyễn Huy Hoàng',
     outputLog: `test_history_and_line_editing       OK
 - Executed: echo first
 - Executed: echo second

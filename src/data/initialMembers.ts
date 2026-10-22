@@ -58,9 +58,9 @@ export const INITIAL_MEMBERS: Member[] = [
   },
   {
     id: 'member-3',
-    name: 'Trần Đức Dũng',
+    name: 'Nguyễn Huy Hoàng',
     studentId: '20223912',
-    email: 'dung.td223912@sis.hust.edu.vn',
+    email: 'hoang.nh223912@sis.hust.edu.vn',
     role: 'Shell, Job Control & Testing',
     avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     bio: 'Chịu trách nhiệm xây dựng Shell có Job Control hoàn chỉnh theo chuẩn POSIX/GNU, Line Editor với phím mũi tên & lịch sử lệnh, và toàn bộ hệ thống kiểm thử tự động.',
@@ -85,6 +85,6 @@ export const INITIAL_MEMBERS: Member[] = [
       'test-jobctl.py',
       'test-xv6.py'
     ],
-    githubUsername: 'dungtran-hust'
+    githubUsername: 'hoangnguyen-hust'
   }
 ];

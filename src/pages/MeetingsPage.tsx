@@ -48,7 +48,7 @@ export const MeetingsPage: React.FC = () => {
       weekNumber: Number(newWeek),
       date: newDate,
       presenter: newPresenter,
-      attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Trần Đức Dũng', 'TS. Phạm Văn Tiến (GVHD)'],
+      attendeeNames: ['Mai Duy Hiếu', 'Nguyễn Tuấn Anh', 'Nguyễn Huy Hoàng', 'TS. Phạm Văn Tiến (GVHD)'],
       reportedContent: newReported.trim(),
       lecturerQuestions: qList,
       lecturerFeedback: newFeedback.trim(),

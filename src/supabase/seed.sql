@@ -28,14 +28,14 @@ VALUES
 ),
 (
   'member-3', 
-  'Trần Đức Dũng', 
+  'Nguyễn Huy Hoàng', 
   '20223912', 
-  'dung.td223912@sis.hust.edu.vn', 
+  'hoang.nh223912@sis.hust.edu.vn', 
   'Shell, Job Control & Testing', 
   'Chịu trách nhiệm xây dựng Shell có Job Control hoàn chỉnh theo chuẩn POSIX/GNU, Line Editor với phím mũi tên & lịch sử lệnh, và toàn bộ hệ thống kiểm thử tự động.',
   ARRAY['Cấu trúc Job Control trong Shell (user/sh.c)', 'Các lệnh nội tuyến jobs, fg, bg, kill', 'Khắc phục race condition sau fork', 'Quản lý Pipeline thành 1 job', 'Line Editor và Command History', 'Bộ test tự động Python pexpect', 'Kiểm thử hồi quy usertests'],
   ARRAY['user/sh.c', 'user/ulib.c', 'user/printf.c', 'user/kill.c', 'user/counter.c', 'user/spin.c', 'user/ttydemo.c', 'test-jobctl.py', 'test-xv6.py'],
-  'dungtran-hust'
+  'hoangnguyen-hust'
 )
 ON CONFLICT (id) DO NOTHING;
 

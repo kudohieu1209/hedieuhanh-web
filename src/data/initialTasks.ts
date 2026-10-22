@@ -150,7 +150,7 @@ export const INITIAL_TASKS: Task[] = [
       {
         id: 'c3',
         memberId: 'member-3',
-        authorName: 'Trần Đức Dũng',
+        authorName: 'Nguyễn Huy Hoàng',
         content: 'Đã hoàn thành mốc tuần 4! Cả nhóm đã thử nghiệm trực tiếp trên QEMU.',
         createdAt: '2026-10-13T21:00:00Z'
       }
@@ -183,7 +183,7 @@ export const INITIAL_TASKS: Task[] = [
         id: 'c4',
         memberId: 'member-2',
         authorName: 'Nguyễn Tuấn Anh',
-        content: 'Nhờ Dũng chạy thử script test-jobctl.py trên máy Ubuntu xem có bị timeout không nhé.',
+        content: 'Nhờ Hoàng chạy thử script test-jobctl.py trên máy Ubuntu xem có bị timeout không nhé.',
         createdAt: '2026-10-18T14:00:00Z'
       }
     ],
@@ -256,7 +256,7 @@ export const INITIAL_TASKS: Task[] = [
       {
         id: 'c5',
         memberId: 'member-3',
-        authorName: 'Trần Đức Dũng',
+        authorName: 'Nguyễn Huy Hoàng',
         content: 'Đang ghép logic buffer lịch sử 16 lệnh. Cần căn chuẩn ký tự escape để không làm lệch terminal.',
         createdAt: '2026-10-22T15:30:00Z'
       }

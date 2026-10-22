@@ -196,7 +196,7 @@ Bước 4: Shell thức dậy trong kwaitpid, đọc được status (20<<8)|0x7
     suggestedAnswer: 'Hàm wait() cũ KHÔNG làm được vì nó chỉ đánh thức khi con trở thành ZOMBIE (chết). Nhóm bổ sung syscall waitpid() với cờ WUNTRACED để báo cả khi con bị STOPPED, và dùng trường stopsig để mỗi lần dừng chỉ báo đúng 1 lần duy nhất.',
     detailedExplanation: `wait() cũ trong xv6 chỉ duyệt con có state == ZOMBIE để giải phóng bộ nhớ và trả về mã exit. Khi tiến trình dừng bởi Ctrl-Z, state của nó là STOPPED. Syscall kwaitpid() mới duyệt thêm điều kiện: if ((options & WUNTRACED) && p->state == STOPPED && p->stopsig > 0), thì đóng gói status mã hóa dạng POSIX ((p->stopsig << 8) | 0x7f), đặt p->stopsig = 0 và trả về pid của con cho Shell.`,
     codeReference: 'kernel/proc.c: hàm kwaitpid()',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['waitpid', 'WUNTRACED', 'stopsig', 'ZOMBIE'],
     memberRatings: {
       'member-1': 'confident',
@@ -213,7 +213,7 @@ Bước 4: Shell thức dậy trong kwaitpid, đọc được status (20<<8)|0x7
     suggestedAnswer: 'Hàm kwaitpid() trong Kernel cũng được thiết kế như một ĐIỂM DỪNG: Trước khi ngủ, nó kiểm tra stoppending. Nếu thiếu điều này, Ctrl-Z sẽ dừng counter và cat nhưng Shell không được báo thức và màn hình sẽ bị đơ hoàn toàn.',
     detailedExplanation: `Khi chạy pipeline, Shell fork ra tiến trình đầu nhóm (sh con), tiến trình này fork tiếp counter và cat rồi gọi wait() chờ 2 con này kết thúc. Khi người dùng bấm Ctrl-Z, cả nhóm nhận SIGTSTP. Nhờ kwaitpid() có kiểm tra p->pendstop trước khi sleep, tiến trình sh con tự gọi stopcheck() và dừng lại, từ đó báo tiếp về cho Shell cha ở ngoài cùng.`,
     codeReference: 'kernel/proc.c: kiểm tra stoppending trong kwaitpid()',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['Pipeline', 'kwaitpid', 'Safe Point', 'stoppending'],
     memberRatings: {
       'member-1': 'confident',
@@ -230,7 +230,7 @@ Bước 4: Shell thức dậy trong kwaitpid, đọc được status (20<<8)|0x7
     suggestedAnswer: 'Theo chuẩn POSIX, với tiến trình đang dừng (STOPPED), tín hiệu SIGINT chỉ được đánh dấu vào cờ killed, còn tiến trình vẫn ĐỨNG YÊN không chạy cho tới khi có SIGCONT. Ngược lại, SIGKILL luôn lập tức đánh thức tiến trình chuyển sang RUNNABLE để nó kết thúc ngay.',
     detailedExplanation: `Xem hàm sigdeliver(): khi sig == SIGKILL, nếu p->state == STOPPED, nó ép p->state = RUNNABLE và p->killed = SIGKILL. Khi scheduler nạp nó, usertrap thấy p->killed liền gọi kexit(). Nếu chỉ gửi SIGINT, tiến trình STOPPED không được đổi sang RUNNABLE, nó vẫn đứng yên ở trạng thái đóng băng mãi mãi.`,
     codeReference: 'kernel/proc.c: hàm sigdeliver() nhánh SIGKILL vs nhánh tín hiệu thường',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['kill', 'SIGKILL', 'SIGINT', 'POSIX'],
     memberRatings: {
       'member-1': 'confident',
@@ -288,7 +288,7 @@ Trường hợp 1: Con chạy trước, nếu con không tự gán nhóm và chi
 Trường hợp 2: Cha chạy trước, nếu cha không gán nhóm cho con, cha có thể gọi ngay tcsetpgrp(0, pid) hoặc waitpid tới một nhóm chưa tồn tại.
 Cả hai cùng gọi: Lời gọi thứ hai là idempotent (không gây hại), đảm bảo PGID và Foreground Group luôn được thiết lập trước khi bất kỳ thao tác I/O nào diễn ra.`,
     codeReference: 'user/sh.c: đoạn fork() trong hàm runjob()',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['Race Condition', 'setpgid', 'tcsetpgrp', 'fork'],
     memberRatings: {
       'member-1': 'understood',
@@ -306,7 +306,7 @@ Cả hai cùng gọi: Lời gọi thứ hai là idempotent (không gây hại), 
     detailedExplanation: `Shell là người quản lý terminal. Nếu Shell bị Ctrl-C giết chết thì toàn bộ phiên làm việc của người dùng biến mất. Vì vậy khi khởi động, Shell gọi signal(SIGINT, SIG_IGN)... 
 Trong Unix/POSIX, cờ bỏ qua tín hiệu được giữ nguyên qua exec(). Do đó, trước khi gọi runcmd() để exec sang chương trình người dùng (như counter hay grep), tiến trình con bắt buộc phải gọi signal(..., SIG_DFL) để trả lại hành vi mặc định (nhận Ctrl-C thì bị giết, Ctrl-Z thì dừng).`,
     codeReference: 'user/sh.c: main() và runjob()',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['sigignore', 'SIG_DFL', 'SIG_IGN', 'Shell Lifecycle'],
     memberRatings: {
       'member-1': 'confident',
@@ -323,7 +323,7 @@ Trong Unix/POSIX, cờ bỏ qua tín hiệu được giữ nguyên qua exec(). D
     suggestedAnswer: 'Một chương trình như `ttydemo raw` đổi terminal sang Raw. Khi người dùng bấm Ctrl-Z, terminal vẫn đang ở Raw. Shell phải trả terminal về Cooked cho chính nó dùng, và khi người dùng gõ `fg`, Shell phải phục hồi lại chế độ Raw cho job đó.',
     detailedExplanation: `Mỗi tiến trình có nhu cầu giao tiếp terminal khác nhau (ví dụ vim cần Raw, Shell prompt cần Cooked). Nếu Shell không lưu struct termios của job khi job bị dừng, thì khi fg quay lại, chương trình vim sẽ bị hỏng hiển thị vì terminal đang ở Cooked. Shell lưu termios vào struct job->tmodes và khôi phục bằng tcsetattr(0, &j->tmodes) trong hàm fgjob().`,
     codeReference: 'user/sh.c: hàm fgjob() lưu và nạp j->tmodes',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['termios', 'fgjob', 'Raw Mode', 'Terminal State'],
     memberRatings: {
       'member-1': 'understood',
@@ -340,7 +340,7 @@ Trong Unix/POSIX, cờ bỏ qua tín hiệu được giữ nguyên qua exec(). D
     suggestedAnswer: 'Chạy ở SHELL (trong chế độ Raw). Kernel chỉ xử lý sửa dòng thô sơ (Backspace). Phím mũi tên gửi chuỗi ký tự ESC [ A..D, và lịch sử lệnh (history) là dữ liệu của Shell người dùng, không thuộc trách nhiệm của driver terminal. GNU Readline trong Linux cũng làm như vậy.',
     detailedExplanation: `Triết lý Unix là "Giữ kernel càng nhỏ gọn càng tốt". Driver console chỉ cung cấp cơ chế vận chuyển byte. Việc diễn giải chuỗi escape ANSI thành chuyển động con trỏ, chèn ký tự vào bộ đệm và lưu mảng lịch sử lệnh là nghiệp vụ thuần túy của ứng dụng Shell ở tầng User Space.`,
     codeReference: 'user/sh.c: hàm readline() và mảng history[]',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['Line Editor', 'ANSI Escape', 'GNU Readline', 'User vs Kernel'],
     memberRatings: {
       'member-1': 'understood',
@@ -357,7 +357,7 @@ Trong Unix/POSIX, cờ bỏ qua tín hiệu được giữ nguyên qua exec(). D
     suggestedAnswer: 'Job đó thức dậy, tiếp tục vòng lặp read(), lại thấy mình vẫn đang ở tiến trình nền, lại kích hoạt SIGTTIN và LẬP TỨC DỪNG LẠI TIẾP. Muốn nó đọc được phím thì bắt buộc phải dùng lệnh `fg`.',
     detailedExplanation: `Lệnh bg chỉ gửi SIGCONT để đánh thức tiến trình nhưng KHÔNG chuyển quyền tiền cảnh (không gọi tcsetpgrp). Vì vậy khi tiến trình quay lại consoleread(), điều kiện p->pgid != t->fgpgid vẫn đúng 100%. Kernel tiếp tục phát SIGTTIN và gọi stopcheck(), Shell lại in [1]+ Stopped (tty input). Đây là hành vi hoàn toàn chuẩn xác theo POSIX.`,
     codeReference: 'kernel/console.c: consoleread() -> user/sh.c: bgjob()',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['bg', 'SIGTTIN', 'consoleread', 'Edge Case'],
     memberRatings: {
       'member-1': 'confident',
@@ -414,7 +414,7 @@ Việc "nuốt" phím Ctrl-T tương tự như phím Alt-F1 trong Linux console 
     suggestedAnswer: 'Chạy bộ test hồi quy toàn diện `test-xv6.py usertests` cả trước và sau khi chỉnh sửa: Kết quả đều đạt `ALL TESTS PASSED`. Hàm wait() cũ của xv6 vẫn được bảo toàn nguyên vẹn ngữ nghĩa để các test case gốc không bị ảnh hưởng.',
     detailedExplanation: `Bài kiểm thử usertests trong xv6 kiểm tra hàng trăm ca góc cạnh về syscall, bộ nhớ ảo, hệ thống file, pipe và tiến trình. Việc nhóm giữ nguyên hàm wait() cũ (chỉ thêm kwaitpid() mới) và đảm bảo các cờ trạng thái mới không làm sai lệch quy trình giải phóng ZOMBIE là minh chứng rõ ràng nhất cho tính ổn định của kernel.`,
     codeReference: 'test-xv6.py: chạy lệnh `usertests` trong QEMU',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['usertests', 'Regression Testing', 'xv6 Compatibility'],
     memberRatings: {
       'member-1': 'confident',
@@ -431,7 +431,7 @@ Việc "nuốt" phím Ctrl-T tương tự như phím Alt-F1 trong Linux console 
     suggestedAnswer: 'Dùng thư viện Python `pexpect` khởi chạy `make qemu` trong một pseudo-terminal (pty), gửi các byte ký tự thô thật (`\\x03` cho Ctrl-C, `\\x1a` cho Ctrl-Z, `\\x14` cho Ctrl-T, `\\x1b[A` cho mũi tên lên) rồi chờ regex output tương ứng.',
     detailedExplanation: `Thay vì kiểm thử bằng tay dễ sai sót, script test-jobctl.py khởi tạo một tiến trình QEMU qua pexpect.spawn(). Nó gửi từng byte có giãn cách thời gian như người thật gõ, lọc bỏ các chuỗi mã màu ANSI rồi dùng biểu thức chính quy (Regex) để xác nhận chuỗi phản hồi (ví dụ pattern \`\\[1\\]\\+ Stopped\\s+counter\`).`,
     codeReference: 'test-jobctl.py: class XV6, các hàm type(), expect(), expect_none()',
-    author: 'Trần Đức Dũng',
+    author: 'Nguyễn Huy Hoàng',
     tags: ['pexpect', 'test-jobctl.py', 'Automation', 'keystroke simulation'],
     memberRatings: {
       'member-1': 'understood',

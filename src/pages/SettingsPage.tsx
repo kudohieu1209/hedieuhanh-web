@@ -113,7 +113,7 @@ INSERT INTO members (id, name, student_id, email, role)
 VALUES 
 ('member-1', 'Mai Duy Hiếu', '20223967', 'hieu.md223967@sis.hust.edu.vn', 'Process & Signal'),
 ('member-2', 'Nguyễn Tuấn Anh', '20223988', 'anh.nt223988@sis.hust.edu.vn', 'TTY Layer'),
-('member-3', 'Trần Đức Dũng', '20223912', 'dung.td223912@sis.hust.edu.vn', 'Shell & Testing')
+('member-3', 'Nguyễn Huy Hoàng', '20223912', 'hoang.nh223912@sis.hust.edu.vn', 'Shell & Testing')
 ON CONFLICT (id) DO NOTHING;`;
 
   const handleTestConnection = async () => {
