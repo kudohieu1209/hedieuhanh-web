@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
+import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
-export type ToastType = 'success' | 'error' | 'info';
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export interface ToastItem {
   id: string;
@@ -13,6 +13,7 @@ interface ToastContextType {
   success: (message: string) => void;
   error: (message: string) => void;
   info: (message: string) => void;
+  warning: (message: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -37,6 +38,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     success: (msg: string) => addToast('success', msg),
     error: (msg: string) => addToast('error', msg),
     info: (msg: string) => addToast('info', msg),
+    warning: (msg: string) => addToast('warning', msg),
   };
 
   return (
@@ -52,12 +54,15 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 ? 'bg-emerald-950/90 text-emerald-100 border-emerald-800'
                 : toast.type === 'error'
                 ? 'bg-rose-950/90 text-rose-100 border-rose-800'
+                : toast.type === 'warning'
+                ? 'bg-amber-950/90 text-amber-100 border-amber-800'
                 : 'bg-slate-900/90 text-slate-100 border-slate-700'
             }`}
           >
             <div className="shrink-0 mt-0.5">
               {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
               {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-400" />}
+              {toast.type === 'warning' && <AlertTriangle className="w-5 h-5 text-amber-400" />}
               {toast.type === 'info' && <Info className="w-5 h-5 text-sky-400" />}
             </div>
             <div className="flex-1 text-sm font-medium leading-relaxed">{toast.message}</div>

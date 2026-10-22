@@ -21,7 +21,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter }
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
-import { testSupabaseConnection, resetSupabaseClient } from '../services/supabase';
+import { testSupabaseConnection, resetSupabaseClient, normalizeSupabaseUrl } from '../services/supabase';
 import { useToast } from '../context/ToastContext';
 
 export const SettingsPage: React.FC = () => {
@@ -118,32 +118,46 @@ ON CONFLICT (id) DO NOTHING;`;
 
   const handleTestConnection = async () => {
     if (!supabaseUrl.trim() || !supabaseKey.trim()) {
-      toast.error('Vui lòng điền đủ Supabase URL và Anon Key.');
+      toast.error('Vui lòng điền đủ Supabase URL và API Key.');
       return;
     }
     setTestingConnection(true);
     setConnectionResult(null);
 
-    const res = await testSupabaseConnection(supabaseUrl.trim(), supabaseKey.trim());
+    const cleanUrl = normalizeSupabaseUrl(supabaseUrl);
+    const cleanKey = supabaseKey.trim();
+    // Update local inputs to clean values
+    setSupabaseUrl(cleanUrl);
+
+    const res = await testSupabaseConnection(cleanUrl, cleanKey);
     setTestingConnection(false);
 
     if (res.success) {
-      setConnectionResult({
-        success: true,
-        message: 'Kết nối Supabase thành công 100%! Bảng members phản hồi tốt.'
-      });
+      if (res.needsMigration) {
+        setConnectionResult({
+          success: true,
+          message: 'Kết nối Supabase xác thực thành công! Tuy nhiên database chưa có bảng. Hãy copy mã SQL ở mục bên dưới và nhấn RUN trong Supabase SQL Editor.'
+        });
+        toast.warning('Kết nối thành công! Cần chạy schema.sql trong Supabase để tạo bảng.');
+      } else {
+        setConnectionResult({
+          success: true,
+          message: 'Kết nối Supabase thành công 100%! Bảng members và hệ thống phản hồi tốt.'
+        });
+        toast.success('Đã kích hoạt Team Mode đồng bộ với Supabase!');
+      }
+
       // Save config
       localStorage.setItem('xv6_hub_supabase_config', JSON.stringify({
-        url: supabaseUrl.trim(),
-        key: supabaseKey.trim()
+        url: cleanUrl,
+        key: cleanKey
       }));
       resetSupabaseClient();
       updateSettings({
         mode: 'team',
-        supabaseUrl: supabaseUrl.trim(),
-        supabaseAnonKey: supabaseKey.trim()
+        supabaseUrl: cleanUrl,
+        supabaseAnonKey: cleanKey
       });
-      toast.success('Đã kích hoạt Team Mode đồng bộ với Supabase!');
     } else {
       setConnectionResult({
         success: false,

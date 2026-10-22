@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS weeks (
   post_report_requests TEXT[] DEFAULT '{}',
   pdf_url TEXT,
   slide_url TEXT,
+  report JSONB DEFAULT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
