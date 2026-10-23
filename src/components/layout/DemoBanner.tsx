@@ -25,33 +25,35 @@ export const DemoBanner: React.FC = () => {
         ) : (
           <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
         )}
-        <span className="truncate">
+        <span className="truncate text-[11px] sm:text-xs">
           {isDemo ? (
             <>
-              <strong className="font-semibold uppercase tracking-wide mr-1.5 px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-800 dark:text-amber-300">
-                Chế độ Demo
+              <strong className="font-semibold uppercase tracking-wide mr-1 px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-800 dark:text-amber-300">
+                Demo
               </strong>
-              Dữ liệu lưu cục bộ trên trình duyệt này. Kết nối Supabase để đồng bộ thời gian thực giữa 3 thành viên.
+              <span className="hidden sm:inline">Dữ liệu lưu cục bộ trên trình duyệt. Kết nối Supabase để đồng bộ 3 người.</span>
+              <span className="sm:hidden text-slate-700 dark:text-slate-300">Dữ liệu lưu cục bộ trình duyệt</span>
             </>
           ) : (
             <>
-              <strong className="font-semibold uppercase tracking-wide mr-1.5 px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-800 dark:text-emerald-300">
-                Team Mode
+              <strong className="font-semibold uppercase tracking-wide mr-1 px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-800 dark:text-emerald-300">
+                Team
               </strong>
-              Đã kết nối cơ sở dữ liệu Supabase PostgreSQL. Dữ liệu đang đồng bộ dùng chung cho cả nhóm.
+              <span className="hidden sm:inline">Đã kết nối Supabase PostgreSQL. Đang đồng bộ thời gian thực cho nhóm.</span>
+              <span className="sm:hidden text-slate-700 dark:text-slate-300">Đang đồng bộ qua Supabase</span>
             </>
           )}
         </span>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         {isDemo && (
           <Link
             to="/settings"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 dark:text-amber-200 transition-colors text-xs font-semibold"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 dark:text-amber-200 transition-colors text-[11px] sm:text-xs font-semibold"
           >
             <Database className="w-3.5 h-3.5" />
-            <span>Kết nối Supabase</span>
+            <span className="hidden xs:inline">Kết nối</span>
             <ChevronRight className="w-3 h-3" />
           </Link>
         )}

@@ -105,7 +105,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
                 className="fixed inset-0 z-40"
                 onClick={() => setMemberDropdownOpen(false)}
               />
-              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 mb-1">
                   <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                     Đổi người dùng làm việc

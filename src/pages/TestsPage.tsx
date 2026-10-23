@@ -117,11 +117,11 @@ export const TestsPage: React.FC = () => {
         </div>
 
         {/* Tab Switcher & Action */}
-        <div className="flex items-center gap-2">
-          <div className="flex p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+          <div className="grid grid-cols-2 sm:flex p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
             <button
               onClick={() => setActiveTab('tests')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'tests'
                   ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
@@ -132,7 +132,7 @@ export const TestsPage: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('bugs')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'bugs'
                   ? 'bg-white dark:bg-slate-800 text-rose-600 dark:text-rose-400 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
@@ -149,6 +149,7 @@ export const TestsPage: React.FC = () => {
               size="sm"
               icon={<Plus className="w-3.5 h-3.5" />}
               onClick={() => setIsAddingBugModal(true)}
+              className="w-full sm:w-auto justify-center"
             >
               Báo cáo lỗi
             </Button>

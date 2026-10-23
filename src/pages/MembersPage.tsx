@@ -88,12 +88,12 @@ export const MembersPage: React.FC = () => {
         </div>
 
         {/* Member Selector Tabs */}
-        <div className="flex items-center gap-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+        <div className="grid grid-cols-3 sm:flex items-center gap-1 sm:gap-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full sm:w-auto">
           {data.members.map((m) => (
             <button
               key={m.id}
               onClick={() => setSelectedMemberId(m.id)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 m.id === selectedMember.id
                   ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -102,9 +102,9 @@ export const MembersPage: React.FC = () => {
               <img
                 src={m.avatarUrl}
                 alt={m.name}
-                className="w-5 h-5 rounded-full object-cover"
+                className="w-5 h-5 rounded-full object-cover shrink-0"
               />
-              <span className="truncate max-w-[100px]">{m.name.split(' ').slice(-1)[0]}</span>
+              <span className="truncate">{m.name.split(' ').slice(-1)[0]}</span>
             </button>
           ))}
         </div>

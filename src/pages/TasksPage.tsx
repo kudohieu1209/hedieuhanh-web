@@ -33,6 +33,7 @@ export const TasksPage: React.FC = () => {
   const [selectedMemberFilter, setSelectedMemberFilter] = useState<string>('all');
   const [selectedWeekFilter, setSelectedWeekFilter] = useState<string>('all');
   const [selectedPriorityFilter, setSelectedPriorityFilter] = useState<string>('all');
+  const [mobileActiveColumn, setMobileActiveColumn] = useState<TaskStatus | 'all'>('all');
 
   // Modals & Active task
   const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -160,75 +161,114 @@ export const TasksPage: React.FC = () => {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex flex-wrap items-center gap-3 p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-xs">
+      <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-xs">
         {/* Search */}
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
           <input
             type="text"
             placeholder="Tìm theo tiêu đề, mô tả hoặc file..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full pl-9 pr-3 py-2 sm:py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
           />
         </div>
 
-        {/* Member Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400">Người phụ trách:</span>
-          <select
-            value={selectedMemberFilter}
-            onChange={(e) => setSelectedMemberFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-          >
-            <option value="all">Tất cả thành viên</option>
-            {data.members.map(m => (
-              <option key={m.id} value={m.id}>{m.name}</option>
-            ))}
-          </select>
-        </div>
+        {/* Filter Selects Grid on Mobile */}
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
+          {/* Member Filter */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+            <span className="text-[11px] text-slate-400 sm:hidden">Người phụ trách:</span>
+            <select
+              value={selectedMemberFilter}
+              onChange={(e) => setSelectedMemberFilter(e.target.value)}
+              className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
+            >
+              <option value="all">Tất cả thành viên</option>
+              {data.members.map(m => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ))}
+            </select>
+          </div>
 
-        {/* Week Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400">Tuần:</span>
-          <select
-            value={selectedWeekFilter}
-            onChange={(e) => setSelectedWeekFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-          >
-            <option value="all">Tất cả 7 tuần</option>
-            {data.weeks.map(w => (
-              <option key={w.weekNumber} value={w.weekNumber.toString()}>Tuần {w.weekNumber}</option>
-            ))}
-          </select>
-        </div>
+          {/* Week Filter */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+            <span className="text-[11px] text-slate-400 sm:hidden">Tuần:</span>
+            <select
+              value={selectedWeekFilter}
+              onChange={(e) => setSelectedWeekFilter(e.target.value)}
+              className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
+            >
+              <option value="all">Tất cả 7 tuần</option>
+              {data.weeks.map(w => (
+                <option key={w.weekNumber} value={w.weekNumber.toString()}>Tuần {w.weekNumber}</option>
+              ))}
+            </select>
+          </div>
 
-        {/* Priority Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400">Độ ưu tiên:</span>
-          <select
-            value={selectedPriorityFilter}
-            onChange={(e) => setSelectedPriorityFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-          >
-            <option value="all">Tất cả độ ưu tiên</option>
-            <option value="urgent">Khẩn cấp</option>
-            <option value="high">Cao</option>
-            <option value="medium">Trung bình</option>
-            <option value="low">Thấp</option>
-          </select>
+          {/* Priority Filter */}
+          <div className="col-span-2 sm:col-span-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+            <span className="text-[11px] text-slate-400 sm:hidden">Độ ưu tiên:</span>
+            <select
+              value={selectedPriorityFilter}
+              onChange={(e) => setSelectedPriorityFilter(e.target.value)}
+              className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
+            >
+              <option value="all">Tất cả độ ưu tiên</option>
+              <option value="urgent">Khẩn cấp</option>
+              <option value="high">Cao</option>
+              <option value="medium">Trung bình</option>
+              <option value="low">Thấp</option>
+            </select>
+          </div>
         </div>
+      </div>
+
+      {/* Mobile Column Tab Switcher */}
+      <div className="md:hidden flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/80 dark:bg-slate-800/80 overflow-x-auto text-xs no-scrollbar">
+        <button
+          onClick={() => setMobileActiveColumn('all')}
+          className={`px-3 py-1.5 rounded-lg font-semibold shrink-0 transition-all ${
+            mobileActiveColumn === 'all'
+              ? 'bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400'
+          }`}
+        >
+          Tất cả ({filteredTasks.length})
+        </button>
+        {columns.map((c) => {
+          const count = filteredTasks.filter(t => t.status === c.id).length;
+          return (
+            <button
+              key={c.id}
+              onClick={() => setMobileActiveColumn(c.id)}
+              className={`px-2.5 py-1.5 rounded-lg font-semibold shrink-0 transition-all flex items-center gap-1.5 ${
+                mobileActiveColumn === c.id
+                  ? 'bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400'
+              }`}
+            >
+              <span>{c.label}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-300/80 dark:bg-slate-700">
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* 4-Column Kanban Board */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
         {columns.map((col) => {
+          const isHiddenOnMobile = mobileActiveColumn !== 'all' && mobileActiveColumn !== col.id;
           const colTasks = filteredTasks.filter(t => t.status === col.id);
 
           return (
             <div
               key={col.id}
-              className={`rounded-2xl border ${col.color} p-3.5 flex flex-col min-h-[500px] transition-colors`}
+              className={`rounded-2xl border ${col.color} p-3.5 flex flex-col min-h-[400px] md:min-h-[500px] transition-colors ${
+                isHiddenOnMobile ? 'hidden md:flex' : 'flex'
+              }`}
             >
               {/* Column Header */}
               <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-200/60 dark:border-slate-800/60">

@@ -39,7 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
   ];
 
   return (
-    <aside className="w-64 bg-white dark:bg-[#0d131f] border-r border-slate-200 dark:border-slate-800/80 flex flex-col h-full select-none shrink-0 transition-colors">
+    <aside className="w-full md:w-64 bg-white dark:bg-[#0d131f] border-r border-slate-200 dark:border-slate-800/80 flex flex-col h-full select-none shrink-0 transition-colors">
       {/* Brand & Logo */}
       <div className="p-4 border-b border-slate-100 dark:border-slate-800/60">
         <div className="flex items-center gap-2.5">

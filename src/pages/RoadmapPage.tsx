@@ -93,7 +93,7 @@ export const RoadmapPage: React.FC = () => {
       </div>
 
       {/* 7-Week Timeline Overview Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+      <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-7 gap-1.5 sm:gap-2">
         {data.weeks.map((w) => {
           const isCurrent = w.weekNumber === data.settings.currentWeek;
           const isExpanded = w.weekNumber === expandedWeek;
@@ -104,26 +104,26 @@ export const RoadmapPage: React.FC = () => {
             <button
               key={w.weekNumber}
               onClick={() => setExpandedWeek(w.weekNumber)}
-              className={`p-3 rounded-xl border text-left transition-all ${
+              className={`p-2 sm:p-3 rounded-xl border text-left transition-all ${
                 isExpanded
                   ? 'border-sky-500 ring-2 ring-sky-500/20 bg-sky-50/30 dark:bg-sky-950/20'
                   : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-[#111827]'
               }`}
             >
-              <div className="flex items-center justify-between text-xs mb-1.5">
+              <div className="flex items-center justify-between text-xs mb-1">
                 <span className="font-bold font-mono text-slate-900 dark:text-white">
                   T{w.weekNumber}
                 </span>
                 {isCurrent && (
-                  <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-sky-500 animate-pulse" />
                 )}
               </div>
-              <div className="text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate">
+              <div className="text-[10px] sm:text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate">
                 {w.title.split(':')[0]}
               </div>
-              <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400">
+              <div className="mt-1 sm:mt-2 flex items-center justify-between text-[9px] sm:text-[10px] text-slate-400">
                 <span>{pct}%</span>
-                <span className="font-mono">{w.customReportDate.slice(5)}</span>
+                <span className="font-mono hidden xs:inline">{w.customReportDate.slice(5)}</span>
               </div>
               <Progress value={pct} size="sm" className="mt-1" />
             </button>
@@ -210,43 +210,43 @@ export const RoadmapPage: React.FC = () => {
               {isExpanded && (
                 <div className="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-800/80 space-y-6">
                   {/* Sub-tab Navigation: Kế hoạch vs Báo cáo tiến độ (Mẫu HUST) */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
                       <button
                         type="button"
                         onClick={() => setWeekTab(week.weekNumber, 'plan')}
-                        className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           getActiveTab(week.weekNumber) === 'plan'
                             ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                         }`}
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Kế hoạch & Nghiệm thu</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">Kế hoạch</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setWeekTab(week.weekNumber, 'report')}
-                        className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-all ${
                           getActiveTab(week.weekNumber) === 'report'
                             ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                         }`}
                       >
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>Báo cáo tiến độ (Mẫu HUST)</span>
+                        <FileText className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">Báo cáo (HUST)</span>
                         <Badge
                           variant={
                             week.report?.status === 'submitted' ? 'success' :
                             week.report?.status === 'approved' ? 'primary' :
                             week.report?.status === 'review' ? 'warning' : 'default'
                           }
-                          className="text-[10px] py-0 px-1.5 font-normal"
+                          className="text-[10px] py-0 px-1.5 font-normal hidden xs:inline-flex"
                         >
                           {week.report?.status === 'submitted' ? 'Đã nộp' :
                            week.report?.status === 'approved' ? 'Đã duyệt' :
-                           week.report?.status === 'review' ? 'Chờ kiểm tra' : 'Bản nháp'}
+                           week.report?.status === 'review' ? 'Chờ KT' : 'Nháp'}
                         </Badge>
                       </button>
                     </div>

@@ -58,7 +58,7 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Top Banner: Project Title & Quick Stats */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-6 rounded-2xl bg-gradient-to-r from-sky-900/40 via-slate-900 to-indigo-950/40 border border-sky-500/20 shadow-xl relative overflow-hidden">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-900/40 via-slate-900 to-indigo-950/40 border border-sky-500/20 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-2">
@@ -67,17 +67,17 @@ export const DashboardPage: React.FC = () => {
             </span>
             <span className="text-xs text-slate-400">Kỳ 2026.1</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight">
             TTY Layer & Job Control trên xv6-riscv
           </h1>
-          <p className="text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
             Hệ thống quản lý nghiên cứu, phân công 3 thành viên, thư viện kiến thức chuyên sâu và ngân hàng câu hỏi bảo vệ đồ án trước hội đồng.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 relative z-10 shrink-0">
-          <Link to="/roadmap">
-            <Button variant="primary" icon={<Calendar className="w-4 h-4" />}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 relative z-10 shrink-0">
+          <Link to="/roadmap" className="w-full sm:w-auto">
+            <Button variant="primary" icon={<Calendar className="w-4 h-4" />} className="w-full justify-center">
               Xem Lộ Trình 7 Tuần
             </Button>
           </Link>
@@ -85,8 +85,9 @@ export const DashboardPage: React.FC = () => {
             href={data.settings.githubRepoUrl}
             target="_blank"
             rel="noopener noreferrer"
+            className="w-full sm:w-auto"
           >
-            <Button variant="outline" icon={<ExternalLink className="w-4 h-4" />}>
+            <Button variant="outline" icon={<ExternalLink className="w-4 h-4" />} className="w-full justify-center">
               GitHub Repo
             </Button>
           </a>

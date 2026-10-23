@@ -164,12 +164,12 @@ export const QuestionsPage: React.FC = () => {
         </div>
 
         {/* Action Buttons: Mock Quiz & Add Question */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
           <Button
             variant="primary"
             icon={<Play className="w-4 h-4" />}
             onClick={() => startMockQuiz(5)}
-            className="bg-purple-600 hover:bg-purple-500 border-purple-500/30"
+            className="bg-purple-600 hover:bg-purple-500 border-purple-500/30 justify-center"
           >
             Thi thử 5 câu
           </Button>
@@ -177,6 +177,7 @@ export const QuestionsPage: React.FC = () => {
             variant="outline"
             icon={<Play className="w-4 h-4" />}
             onClick={() => startMockQuiz(10)}
+            className="justify-center"
           >
             Thi thử 10 câu
           </Button>
@@ -184,6 +185,7 @@ export const QuestionsPage: React.FC = () => {
             variant="outline"
             icon={<Plus className="w-4 h-4" />}
             onClick={() => setIsAddingModal(true)}
+            className="col-span-2 sm:col-span-1 justify-center"
           >
             Thêm câu hỏi
           </Button>
@@ -191,70 +193,73 @@ export const QuestionsPage: React.FC = () => {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex flex-wrap items-center gap-3 p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-xs">
+      <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-xs">
         {/* Search */}
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
           <input
             type="text"
-            placeholder="Tìm theo nội dung câu hỏi, đáp án, file code..."
+            placeholder="Tìm câu hỏi, đáp án, code..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full pl-9 pr-3 py-2 sm:py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
           />
         </div>
 
-        {/* Category Filter */}
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-        >
-          <option value="all">Tất cả chuyên môn</option>
-          <option value="process_signal">Process & Signal</option>
-          <option value="tty_layer">TTY Layer</option>
-          <option value="shell_jobctl">Shell & Job Control</option>
-          <option value="architecture">Kiến trúc tổng thể</option>
-          <option value="testing">Kiểm thử & Thiết kế</option>
-        </select>
+        {/* Filter Selects Grid on Mobile */}
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
+          {/* Category Filter */}
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
+          >
+            <option value="all">Tất cả chuyên môn</option>
+            <option value="process_signal">Process & Signal</option>
+            <option value="tty_layer">TTY Layer</option>
+            <option value="shell_jobctl">Shell & Job Control</option>
+            <option value="architecture">Kiến trúc tổng thể</option>
+            <option value="testing">Kiểm thử & Thiết kế</option>
+          </select>
 
-        {/* Difficulty Filter */}
-        <select
-          value={selectedDifficulty}
-          onChange={(e) => setSelectedDifficulty(e.target.value)}
-          className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-        >
-          <option value="all">Mọi độ khó</option>
-          <option value="easy">Dễ</option>
-          <option value="medium">Trung bình</option>
-          <option value="hard">Hóc búa (Khó)</option>
-        </select>
+          {/* Difficulty Filter */}
+          <select
+            value={selectedDifficulty}
+            onChange={(e) => setSelectedDifficulty(e.target.value)}
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
+          >
+            <option value="all">Mọi độ khó</option>
+            <option value="easy">Dễ</option>
+            <option value="medium">Trung bình</option>
+            <option value="hard">Hóc búa (Khó)</option>
+          </select>
 
-        {/* Rating Filter for current member */}
-        <select
-          value={selectedRatingFilter}
-          onChange={(e) => setSelectedRatingFilter(e.target.value)}
-          className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-        >
-          <option value="all">Tất cả mức tự đánh giá</option>
-          <option value="untested">Chưa ôn</option>
-          <option value="not_understood">Chưa hiểu rõ</option>
-          <option value="understood">Đã hiểu đáp án</option>
-          <option value="confident">Trả lời xuất sắc ★</option>
-        </select>
+          {/* Rating Filter for current member */}
+          <select
+            value={selectedRatingFilter}
+            onChange={(e) => setSelectedRatingFilter(e.target.value)}
+            className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
+          >
+            <option value="all">Tất cả mức tự đánh giá</option>
+            <option value="untested">Chưa ôn</option>
+            <option value="not_understood">Chưa hiểu rõ</option>
+            <option value="understood">Đã hiểu đáp án</option>
+            <option value="confident">Trả lời xuất sắc ★</option>
+          </select>
 
-        {/* Weak questions toggle */}
-        <button
-          onClick={() => setOnlyWeak(!onlyWeak)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-semibold transition-colors ${
-            onlyWeak
-              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
-              : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          <AlertTriangle className="w-3.5 h-3.5" />
-          <span>Chỉ câu chưa tốt ({data.defenseQuestions.filter(q => q.memberRatings[currentMember.id] === 'not_understood').length})</span>
-        </button>
+          {/* Weak questions toggle */}
+          <button
+            onClick={() => setOnlyWeak(!onlyWeak)}
+            className={`w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border font-semibold transition-colors ${
+              onlyWeak
+                ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+            }`}
+          >
+            <AlertTriangle className="w-3.5 h-3.5" />
+            <span>Chỉ câu chưa tốt ({data.defenseQuestions.filter(q => q.memberRatings[currentMember.id] === 'not_understood').length})</span>
+          </button>
+        </div>
       </div>
 
       {/* Questions Count Summary */}
