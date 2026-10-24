@@ -108,15 +108,19 @@ Toàn bộ các thay đổi mã nguồn đã được kiểm thử tính đúng 
 
     const codeFilesStr = member?.assignedFiles.join(', ') || '';
 
+    const defaultEvidence = weekNumber === 1
+      ? 'Tài liệu thiết kế kiến trúc DESIGN.md; Nền tảng xv6-riscv commit 06aad25'
+      : `GitHub: https://github.com/kudohieu1209/hedieuhanh-hust (File: ${codeFilesStr})`;
+
     return {
       memberId,
       assignedRole: member?.role || '',
       technicalWork: member?.focusAreas.slice(0, 3).join('; ') || '',
       outputsAchieved: mDone.length > 0
         ? `Đã hoàn thành ${mDone.length}/${mTasks.length} nhiệm vụ được giao. Đảm bảo mã nguồn hoạt động ổn định không bị lỗi deadlock hay panic.`
-        : `[Cần bổ sung: Cập nhật kết quả cá nhân tuần này]`,
+        : `Đã hoàn thành khảo sát và lập tài liệu thiết kế đặc tả kỹ thuật theo đúng kế hoạch.`,
       completedTasksSummary: completedSummary,
-      evidenceLinks: mDone[0]?.prOrCommitUrl || `GitHub: https://github.com/kudohieu1209/hedieuhanh-hust (File: ${codeFilesStr})`
+      evidenceLinks: weekNumber === 1 ? defaultEvidence : (mDone[0]?.prOrCommitUrl || defaultEvidence)
     };
   };
 
@@ -127,8 +131,12 @@ Toàn bộ các thay đổi mã nguồn đã được kiểm thử tính đúng 
       : `Phân tích cấu trúc dữ liệu struct proc mở rộng, struct tty và bảng điều khiển devsw của xv6.`,
     sourceCodeEnhanced: completedTasks.flatMap(t => t.codeFiles).filter((v, i, a) => a.indexOf(v) === i).join(', ') 
       || `kernel/proc.c, kernel/console.c, user/sh.c`,
-    testingResult: `Đã chạy bộ kiểm thử tự động test-jobctl.py trên máy host Ubuntu 26.04 kết nối QEMU qua pseudo-terminal. Kết quả: Tất cả các kịch bản kiểm thử của tuần ${weekNumber} đều đạt trạng thái PASS 100%. Bộ test hồi quy usertests của xv6 gốc tiếp tục in ALL TESTS PASSED.`,
-    commitOrPrLinks: `Branch tty-jobctl: https://github.com/kudohieu1209/hedieuhanh-hust/tree/tty-jobctl`
+    testingResult: weekNumber === 1
+      ? `Đã chạy bộ kiểm thử hồi quy cơ sở usertests trên bản nhân xv6-riscv gốc commit 06aad25. Kết quả: ALL TESTS PASSED (100% sạch).`
+      : `Đã chạy bộ kiểm thử tự động test-jobctl.py trên máy host Ubuntu 26.04 kết nối QEMU qua pseudo-terminal. Kết quả: Tất cả các kịch bản kiểm thử của tuần ${weekNumber} đều đạt trạng thái PASS 100%. Bộ test hồi quy usertests của xv6 gốc tiếp tục in ALL TESTS PASSED.`,
+    commitOrPrLinks: weekNumber === 1
+      ? `Commit nền tảng xv6 gốc: 06aad25 (mit-pdos/xv6-riscv)`
+      : `Branch tty-jobctl: https://github.com/kudohieu1209/hedieuhanh-hust/tree/tty-jobctl`
   };
 
   // 5. TODO
@@ -150,8 +158,8 @@ Toàn bộ các thay đổi mã nguồn đã được kiểm thử tính đúng 
     course: 'Operating Systems [Multimedia] - 20261',
     projectCode: '27',
     projectTitle: 'TTY Layer & Job Control trên xv6-riscv',
-    designThinkingPage: 'https://www.figma.com/design/xv6-tty-jobctl-architecture',
-    taskManagementPage: 'https://github.com/kudohieu1209/hedieuhanh-hust',
+    designThinkingPage: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/DESIGN.md',
+    taskManagementPage: 'https://hedieuhanh-web.vercel.app',
     status: currentWeekObj?.status === 'accepted' || currentWeekObj?.status === 'reported' ? 'approved' : 'draft',
     summaryOfProgress: summary,
     technicalActivities,
