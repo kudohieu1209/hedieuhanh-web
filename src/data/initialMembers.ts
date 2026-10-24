@@ -6,9 +6,37 @@ export const INITIAL_MEMBERS: Member[] = [
     name: 'Mai Duy Hiếu',
     studentId: '20223967',
     email: 'hieu.md223967@sis.hust.edu.vn',
-    role: 'Process & Signal (Trưởng nhóm)',
+    role: 'TTY Layer & Device Driver (Trưởng nhóm)',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    bio: 'Chịu trách nhiệm kiến trúc lõi Kernel: Vòng đời tiến trình, bảng trạng thái STOPPED, cơ chế tín hiệu thu nhỏ, đồng bộ khóa tránh deadlock và điều phối waitpid.',
+    bio: 'Chịu trách nhiệm toàn bộ lớp thiết bị đầu cuối TTY: Driver bàn phím/UART, 3 chế độ terminal qua ioctl, quản lý Foreground Process Group, bảo vệ đọc nền SIGTTIN và Terminal ảo thứ hai qua Ctrl-T.',
+    focusAreas: [
+      'Kiến trúc Terminal, UART và TTY abstraction layer',
+      'Ngữ cảnh ngắt bàn phím trong consoleintr() (không được ngủ)',
+      '3 Chế độ: Cooked (ICANON), No-Echo, Raw (chương trình nhận phím thô)',
+      'Syscall ioctl() với các request TCGETS, TCSETS, TIOCGPGRP, TIOCSPGRP',
+      'Điều khiển Foreground Process Group (fgpgid)',
+      'Cơ chế phát tín hiệu Ctrl-C (^C) và Ctrl-Z (^Z) cho cả nhóm tiền cảnh',
+      'Bảo vệ đọc terminal ngầm: SIGTTIN trong consoleread()',
+      'Terminal ảo thứ hai (NTTY=2) dùng chung 1 UART, đổi phím bằng Ctrl-T'
+    ],
+    assignedFiles: [
+      'kernel/console.c',
+      'kernel/termios.h',
+      'kernel/file.c',
+      'kernel/file.h',
+      'kernel/sysfile.c',
+      'user/init.c'
+    ],
+    githubUsername: 'kudohieu1209'
+  },
+  {
+    id: 'member-2',
+    name: 'Nguyễn Huy Hoàng',
+    studentId: '20223912',
+    email: 'hoang.nh223912@sis.hust.edu.vn',
+    role: 'Kernel & Signal (Process Management)',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    bio: 'Chịu trách nhiệm kiến trúc lõi Kernel: Vòng đời tiến trình, bảng trạng thái STOPPED, cơ chế tín hiệu thu nhỏ, đồng bộ khóa tránh deadlock, điều phối waitpid và xử lý tiến trình mồ côi.',
     focusAreas: [
       'Cấu trúc struct proc & bảng tiến trình',
       'Cơ chế tín hiệu thu nhỏ (SIGINT, SIGTSTP, SIGCONT, SIGKILL, SIGTTIN)',
@@ -26,44 +54,16 @@ export const INITIAL_MEMBERS: Member[] = [
       'kernel/signal.h',
       'kernel/wait.h'
     ],
-    githubUsername: 'kudohieu1209'
-  },
-  {
-    id: 'member-2',
-    name: 'Nguyễn Tuấn Anh',
-    studentId: '20223988',
-    email: 'anh.nt223988@sis.hust.edu.vn',
-    role: 'TTY Layer & Device Driver',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    bio: 'Chịu trách nhiệm toàn bộ lớp thiết bị đầu cuối TTY: Driver bàn phím/UART, 3 chế độ terminal qua ioctl, quản lý Foreground Process Group và Terminal ảo thứ hai.',
-    focusAreas: [
-      'Kiến trúc Terminal, UART và TTY abstraction',
-      'Ngữ cảnh ngắt bàn phím trong consoleintr() (không được ngủ)',
-      '3 Chế độ: Cooked (ICANON), No-Echo, Raw (chương trình nhận phím thô)',
-      'Syscall ioctl() với các request TCGETS, TCSETS, TIOCGPGRP, TIOCSPGRP',
-      'Điều khiển Foreground Process Group (fgpgid)',
-      'Cơ chế phát tín hiệu Ctrl-C (^C) và Ctrl-Z (^Z) cho cả nhóm tiền cảnh',
-      'Bảo vệ đọc terminal ngầm: SIGTTIN trong consoleread()',
-      'Terminal ảo thứ hai (NTTY=2) dùng chung 1 UART, đổi phím bằng Ctrl-T'
-    ],
-    assignedFiles: [
-      'kernel/console.c',
-      'kernel/termios.h',
-      'kernel/file.c',
-      'kernel/file.h',
-      'kernel/sysfile.c',
-      'user/init.c'
-    ],
-    githubUsername: 'tuananh-hust'
+    githubUsername: 'hoangnguyen-hust'
   },
   {
     id: 'member-3',
-    name: 'Nguyễn Huy Hoàng',
-    studentId: '20223912',
-    email: 'hoang.nh223912@sis.hust.edu.vn',
-    role: 'Shell, Job Control & Testing',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    bio: 'Chịu trách nhiệm xây dựng Shell có Job Control hoàn chỉnh theo chuẩn POSIX/GNU, Line Editor với phím mũi tên & lịch sử lệnh, và toàn bộ hệ thống kiểm thử tự động.',
+    name: 'Nguyễn Tuấn Anh',
+    studentId: '20223988',
+    email: 'anh.nt223988@sis.hust.edu.vn',
+    role: 'Shell, Job Control & Automated Testing',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    bio: 'Chịu trách nhiệm xây dựng Shell có Job Control hoàn chỉnh theo chuẩn POSIX/GNU, Line Editor với phím mũi tên & lịch sử lệnh, và toàn bộ hệ thống kiểm thử tự động Python pexpect.',
     focusAreas: [
       'Vòng lặp và cấu trúc Job Control trong Shell (user/sh.c)',
       'Các lệnh nội tuyến: jobs, fg, bg, kill %n, history, cd',
@@ -85,6 +85,6 @@ export const INITIAL_MEMBERS: Member[] = [
       'test-jobctl.py',
       'test-xv6.py'
     ],
-    githubUsername: 'hoangnguyen-hust'
+    githubUsername: 'tuananh-hust'
   }
 ];

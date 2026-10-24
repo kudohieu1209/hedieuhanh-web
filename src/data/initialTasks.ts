@@ -6,7 +6,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-1',
     title: 'Mở rộng struct proc & Thêm trạng thái STOPPED',
     description: 'Thêm enum STOPPED vào enum procstate, thêm các trường pgid, pendstop, stopsig, sigignore vào struct proc trong kernel/proc.h.',
-    assigneeId: 'member-1',
+    assigneeId: 'member-2',
     weekNumber: 2,
     priority: 'urgent',
     status: 'done',
@@ -23,8 +23,8 @@ export const INITIAL_TASKS: Task[] = [
     comments: [
       {
         id: 'c1',
-        memberId: 'member-1',
-        authorName: 'Mai Duy Hiếu',
+        memberId: 'member-2',
+        authorName: 'Nguyễn Huy Hoàng',
         content: 'Đã hoàn thành commit struct proc, các trường int killed cũng đổi ý nghĩa thành số hiệu tín hiệu.',
         createdAt: '2026-09-28T14:20:00Z'
       }
@@ -36,7 +36,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-2',
     title: 'Triển khai Syscall ioctl & 3 Chế độ Terminal',
     description: 'Cài đặt hàm bọc devsw.ioctl, cấu trúc struct termios, và xử lý TCGETS, TCSETS trong consoleioctl.',
-    assigneeId: 'member-2',
+    assigneeId: 'member-1',
     weekNumber: 2,
     priority: 'high',
     status: 'done',
@@ -53,8 +53,8 @@ export const INITIAL_TASKS: Task[] = [
     comments: [
       {
         id: 'c2',
-        memberId: 'member-2',
-        authorName: 'Nguyễn Tuấn Anh',
+        memberId: 'member-1',
+        authorName: 'Mai Duy Hiếu',
         content: 'Đã test thành công copyin/copyout từ user space, không sợ bị crash khi truyền con trỏ rác.',
         createdAt: '2026-09-29T10:15:00Z'
       }
@@ -66,7 +66,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-3',
     title: 'Cơ chế Tín hiệu & Điểm dừng an toàn stopcheck()',
     description: 'Triển khai sigdeliver(), ksignal() chỉ đánh dấu cờ; stopcheck() dừng tiến trình tại các điểm an toàn không giữ khóa.',
-    assigneeId: 'member-1',
+    assigneeId: 'member-2',
     weekNumber: 3,
     priority: 'urgent',
     status: 'done',
@@ -88,7 +88,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-4',
     title: 'Bắt Ctrl-C và Ctrl-Z trong ngữ cảnh ngắt UART',
     description: 'Xử lý ký tự ngắt 0x03 và 0x1a trong consoleintr(), kiểm tra cờ ISIG và phát tín hiệu cho cả nhóm tiền cảnh.',
-    assigneeId: 'member-2',
+    assigneeId: 'member-1',
     weekNumber: 3,
     priority: 'high',
     status: 'done',
@@ -109,7 +109,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-5',
     title: 'Syscall waitpid() với WUNTRACED và WNOHANG',
     description: 'Mở rộng cơ chế thu thập trạng thái con: Báo cho cha khi con bị dừng (WUNTRACED) và kiểm tra không chặn (WNOHANG).',
-    assigneeId: 'member-1',
+    assigneeId: 'member-2',
     weekNumber: 4,
     priority: 'high',
     status: 'done',
@@ -150,7 +150,7 @@ export const INITIAL_TASKS: Task[] = [
       {
         id: 'c3',
         memberId: 'member-3',
-        authorName: 'Nguyễn Huy Hoàng',
+        authorName: 'Nguyễn Tuấn Anh',
         content: 'Đã hoàn thành mốc tuần 4! Cả nhóm đã thử nghiệm trực tiếp trên QEMU.',
         createdAt: '2026-10-13T21:00:00Z'
       }
@@ -164,7 +164,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-7',
     title: 'Bảo vệ Đọc Terminal Nền: Triển khai SIGTTIN',
     description: 'Trong consoleread(), nếu tiến trình đọc bàn phím mà không thuộc nhóm tiền cảnh (fgpgid) thì gửi SIGTTIN cho cả nhóm và tự dừng.',
-    assigneeId: 'member-2',
+    assigneeId: 'member-1',
     weekNumber: 4,
     priority: 'high',
     status: 'review',
@@ -181,9 +181,9 @@ export const INITIAL_TASKS: Task[] = [
     comments: [
       {
         id: 'c4',
-        memberId: 'member-2',
-        authorName: 'Nguyễn Tuấn Anh',
-        content: 'Nhờ Hoàng chạy thử script test-jobctl.py trên máy Ubuntu xem có bị timeout không nhé.',
+        memberId: 'member-1',
+        authorName: 'Mai Duy Hiếu',
+        content: 'Đã hoàn thành kiểm tra fgpgid trong consoleread(). Nhờ Tuấn Anh chạy thử script test-jobctl.py trên máy Ubuntu xem có bị timeout không nhé.',
         createdAt: '2026-10-18T14:00:00Z'
       }
     ],
@@ -215,7 +215,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-9',
     title: 'Xử lý Tiến trình Mồ côi Bị dừng trong reparent()',
     description: 'Khi tiến trình cha thoát mà con đang ở trạng thái STOPPED, gửi SIGHUP rồi SIGCONT để con tự thức dậy và kết thúc.',
-    assigneeId: 'member-1',
+    assigneeId: 'member-2',
     weekNumber: 5,
     priority: 'medium',
     status: 'review',
@@ -256,7 +256,7 @@ export const INITIAL_TASKS: Task[] = [
       {
         id: 'c5',
         memberId: 'member-3',
-        authorName: 'Nguyễn Huy Hoàng',
+        authorName: 'Nguyễn Tuấn Anh',
         content: 'Đang ghép logic buffer lịch sử 16 lệnh. Cần căn chuẩn ký tự escape để không làm lệch terminal.',
         createdAt: '2026-10-22T15:30:00Z'
       }
@@ -268,7 +268,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-11',
     title: 'Terminal Ảo Thứ Hai (NTTY=2) dùng chung 1 UART',
     description: 'Cài đặt 2 terminal ảo trong kernel/console.c, đổi bằng Ctrl-T, lưu buffer obuf 2KB khi terminal đang ẩn.',
-    assigneeId: 'member-2',
+    assigneeId: 'member-1',
     weekNumber: 6,
     priority: 'high',
     status: 'in_progress',
@@ -285,8 +285,8 @@ export const INITIAL_TASKS: Task[] = [
     comments: [
       {
         id: 'c6',
-        memberId: 'member-2',
-        authorName: 'Nguyễn Tuấn Anh',
+        memberId: 'member-1',
+        authorName: 'Mai Duy Hiếu',
         content: 'Đã xong phần chuyển cons.active, đang hoàn thiện ghi buffer obuf dạng circular buffer.',
         createdAt: '2026-10-22T16:00:00Z'
       }
@@ -322,7 +322,7 @@ export const INITIAL_TASKS: Task[] = [
     id: 'task-13',
     title: 'Kiểm thử Hồi quy Toàn diện usertests trên xv6-riscv',
     description: 'Chạy test-xv6.py usertests để kiểm chứng không làm hỏng bất kỳ chức năng cũ nào của xv6 gốc.',
-    assigneeId: 'member-1',
+    assigneeId: 'member-2',
     weekNumber: 7,
     priority: 'urgent',
     status: 'todo',
@@ -349,9 +349,9 @@ export const INITIAL_TASKS: Task[] = [
     status: 'todo',
     deadline: '2026-11-02',
     checklist: [
-      { id: 't14-1', text: 'Thành viên 1 hoàn thiện chương Process, Signal & Synchronization', completed: false },
-      { id: 't14-2', text: 'Thành viên 2 hoàn thiện chương TTY Layer & Terminal ảo', completed: false },
-      { id: 't14-3', text: 'Thành viên 3 hoàn thiện chương Shell Job Control & Automated Testing', completed: false },
+      { id: 't14-1', text: 'Thành viên 1 (Mai Duy Hiếu) hoàn thiện chương TTY Layer & Thiết bị ngoại vi', completed: false },
+      { id: 't14-2', text: 'Thành viên 2 (Nguyễn Huy Hoàng) hoàn thiện chương Quản lý Tiến trình, Tín hiệu & Đồng bộ', completed: false },
+      { id: 't14-3', text: 'Thành viên 3 (Nguyễn Tuấn Anh) hoàn thiện chương Shell Job Control & Kiểm thử tự động', completed: false },
       { id: 't14-4', text: 'Tổng hợp slide thuyết trình 25 trang và kịch bản demo 5 phút', completed: false }
     ],
     codeFiles: [],

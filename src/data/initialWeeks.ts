@@ -15,14 +15,14 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     status: 'accepted',
     memberAssignments: {
       'member-1': [
-        'Đọc kernel/proc.c, proc.h: cách quản lý struct proc, enum procstate',
-        'Khảo sát cơ chế scheduler() và các syscall fork, exec, wait',
-        'Phân tích thiếu sót của xv6 gốc: chưa có STOPPED, chưa có nhóm tiến trình'
-      ],
-      'member-2': [
         'Đọc kernel/console.c, uart.c: cách nhận ký tự ngắt qua UART',
         'Khảo sát consoleintr() và consoleread(): các phím Ctrl-U, Ctrl-P, Ctrl-D có sẵn',
         'Xác định nguyên tắc ngắt: consoleintr() chạy trong ngữ cảnh ngắt, KHÔNG được ngủ'
+      ],
+      'member-2': [
+        'Đọc kernel/proc.c, proc.h: cách quản lý struct proc, enum procstate',
+        'Khảo sát cơ chế scheduler() và các syscall fork, exec, wait',
+        'Phân tích thiếu sót của xv6 gốc: chưa có STOPPED, chưa có nhóm tiến trình'
       ],
       'member-3': [
         'Đọc user/sh.c: cơ chế phân tích cú pháp lệnh, thực thi lệnh đơn và pipeline',
@@ -38,8 +38,8 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     checklist: [
       { id: 'w1-1', text: 'Cài đặt thành công riscv64-linux-gnu-gcc và qemu-system-riscv64', completed: true, assignedMemberId: 'all' },
       { id: 'w1-2', text: 'Chạy thử nghiệm usertests trên xv6 gốc đảm bảo pass 100%', completed: true, assignedMemberId: 'member-3' },
-      { id: 'w1-3', text: 'Lập sơ đồ tổng quan luồng xử lý từ UART ngắt đến TTY và Shell', completed: true, assignedMemberId: 'member-2' },
-      { id: 'w1-4', text: 'Viết tài liệu khảo sát vòng đời tiến trình xv6 gốc', completed: true, assignedMemberId: 'member-1' }
+      { id: 'w1-3', text: 'Lập sơ đồ tổng quan luồng xử lý từ UART ngắt đến TTY và Shell', completed: true, assignedMemberId: 'member-1' },
+      { id: 'w1-4', text: 'Viết tài liệu khảo sát vòng đời tiến trình xv6 gốc', completed: true, assignedMemberId: 'member-2' }
     ],
     demoScript: [
       '# Kiểm tra môi trường xv6 gốc',
@@ -64,8 +64,8 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     title: 'Xây dựng Nền tảng: struct proc, struct tty và ioctl',
     subtitle: 'Định nghĩa các cấu trúc dữ liệu cốt lõi trong Kernel và thiết kế API',
     goals: [
-      'Mở rộng struct proc với trạng thái STOPPED, pgid, pendstop, stopsig, sigignore',
       'Định nghĩa struct tty với buffer r/w/e, lflag (ICANON/ECHO/ISIG) và fgpgid',
+      'Mở rộng struct proc với trạng thái STOPPED, pgid, pendstop, stopsig, sigignore',
       'Triển khai syscall ioctl() qua bảng devsw với con trỏ ioctl(minor, req, arg)',
       'Thiết kế cấu trúc bảng Job trong Shell (user/sh.c)'
     ],
@@ -73,14 +73,14 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     status: 'accepted',
     memberAssignments: {
       'member-1': [
-        'Sửa kernel/proc.h: thêm enum procstate STOPPED, các trường pgid, pendstop, stopsig, sigignore',
-        'Sửa fork() để con kế thừa pgid và sigignore; sửa exec() giữ nguyên hai trường này',
-        'Thêm syscall sys_setpgid() và sys_getpgid()'
-      ],
-      'member-2': [
         'Tạo kernel/termios.h với các macro TCGETS, TCSETS, TIOCGPGRP, TIOCSPGRP',
         'Định nghĩa struct tty trong kernel/console.c',
         'Triển khai syscall ioctl (sys_ioctl -> fileioctl -> consoleioctl)'
+      ],
+      'member-2': [
+        'Sửa kernel/proc.h: thêm enum procstate STOPPED, các trường pgid, pendstop, stopsig, sigignore',
+        'Sửa fork() để con kế thừa pgid và sigignore; sửa exec() giữ nguyên hai trường này',
+        'Thêm syscall sys_setpgid() và sys_getpgid()'
       ],
       'member-3': [
         'Thiết kế struct job trong user/sh.c (pgid, cmd line, state, termios)',
@@ -94,8 +94,8 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
       'Chương trình demo ban đầu user/ttydemo.c'
     ],
     checklist: [
-      { id: 'w2-1', text: 'Biên dịch thành công kernel với struct proc và struct tty mới', completed: true, assignedMemberId: 'member-1' },
-      { id: 'w2-2', text: 'Kiểm thử ioctl(TCSETS) đổi cờ lflag giữa Raw, Cooked và No-Echo', completed: true, assignedMemberId: 'member-2' },
+      { id: 'w2-1', text: 'Biên dịch thành công kernel với struct proc và struct tty mới', completed: true, assignedMemberId: 'member-2' },
+      { id: 'w2-2', text: 'Kiểm thử ioctl(TCSETS) đổi cờ lflag giữa Raw, Cooked và No-Echo', completed: true, assignedMemberId: 'member-1' },
       { id: 'w2-3', text: 'Chạy thử ttydemo noecho kiểm tra không in lại ký tự mật khẩu', completed: true, assignedMemberId: 'member-3' },
       { id: 'w2-4', text: 'Chạy lại usertests đảm bảo các syscall cũ không bị ảnh hưởng', completed: true, assignedMemberId: 'member-3' }
     ],
@@ -123,40 +123,40 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     title: 'Signals và Bắt Phím Ctrl-C / Ctrl-Z',
     subtitle: 'Triển khai cơ chế tín hiệu thu nhỏ, điểm dừng an toàn và xử lý phím ngắt',
     goals: [
+      'Bắt Ctrl-C và Ctrl-Z trong consoleintr(): gửi SIGINT / SIGTSTP cho cả nhóm tiền cảnh',
       'Triển khai cơ chế tín hiệu thu nhỏ: sigdeliver(), ksignal() chỉ đánh dấu cờ',
       'Triển khai stopcheck() tại các điểm an toàn: usertrap(), consoleread(), sys_pause()',
-      'Bắt Ctrl-C và Ctrl-Z trong consoleintr(): gửi SIGINT / SIGTSTP cho cả nhóm tiền cảnh',
       'Giải quyết triệt để nguy cơ Deadlock khi nhả/lấy khóa trong stopcheck()'
     ],
     customReportDate: '2026-10-06',
     status: 'accepted',
     memberAssignments: {
       'member-1': [
+        'Bổ sung xử lý phím Ctrl-C (0x03) và Ctrl-Z (0x1a) trong consoleintr()',
+        'Kiểm tra cờ ISIG: nếu bật thì in ^C / ^Z và gọi ksignal(-fgpgid, SIGINT/SIGTSTP)',
+        'Đảm bảo consoleintr() không bao giờ gọi sleep() trong ngữ cảnh ngắt'
+      ],
+      'member-2': [
         'Cài đặt sigdeliver() và ksignal() trong kernel/proc.c',
         'Cài đặt stopcheck() với cơ chế acquire(wait_lock) -> wakeup(p->parent) -> acquire(p->lock)',
         'Đặt điểm kiểm tra stopcheck() ở cuối usertrap() (xử lý tiến trình ngốn CPU như spin)'
       ],
-      'member-2': [
-        'Bổ sung xử lý phím Ctrl-C (0x03) và Ctrl-Z (0x1a) trong consoleintr()',
-        'Kiểm tra cờ ISIG: nếu bật thì in ^C / ^Z và gọi ksignal(-fgpgid, SIGINT/SIGTSTP)',
-        'Đảm bảo consoleintr() không bị block khi hàng đợi UART đầy'
-      ],
       'member-3': [
         'Tạo hai chương trình kiểm thử: counter.c (ngủ bằng sys_pause) và spin.c (vòng lặp vô tận)',
         'Kiểm thử nhấn Ctrl-C ngắt counter; kiểm thử Ctrl-Z đưa counter vào trạng thái STOPPED',
-        'Viết kịch bản test tự động bước đầu bằng Python'
+        'Viết kịch bản test tự động bước đầu bằng Python pexpect'
       ]
     },
     deliverables: [
       'Sơ đồ máy trạng thái tín hiệu: UNUSED -> RUNNABLE -> RUNNING -> STOPPED',
-      'Mã nguồn hoàn thiện kernel/proc.c (stopcheck, sigdeliver) và kernel/trap.c',
+      'Mã nguồn hoàn thiện kernel/console.c (ngắt Ctrl-C/Z) và kernel/proc.c (stopcheck, sigdeliver)',
       'Hai chương trình kiểm thử user/counter.c và user/spin.c'
     ],
     checklist: [
-      { id: 'w3-1', text: 'Nhấn Ctrl-C ngắt được counter và in ra ^C', completed: true, assignedMemberId: 'member-2' },
-      { id: 'w3-2', text: 'Nhấn Ctrl-Z tạm dừng được spin (tiến trình chiếm CPU nhờ ngắt timer)', completed: true, assignedMemberId: 'member-1' },
+      { id: 'w3-1', text: 'Nhấn Ctrl-C ngắt được counter và in ra ^C', completed: true, assignedMemberId: 'member-1' },
+      { id: 'w3-2', text: 'Nhấn Ctrl-Z tạm dừng được spin (tiến trình chiếm CPU nhờ ngắt timer)', completed: true, assignedMemberId: 'member-2' },
       { id: 'w3-3', text: 'Nhấn Ctrl-P thấy rõ trạng thái "stop" và đúng số pgid', completed: true, assignedMemberId: 'member-3' },
-      { id: 'w3-4', text: 'Chứng minh không bị deadlock giữa wait_lock và p->lock', completed: true, assignedMemberId: 'member-1' }
+      { id: 'w3-4', text: 'Chứng minh không bị deadlock giữa wait_lock và p->lock', completed: true, assignedMemberId: 'member-2' }
     ],
     demoScript: [
       '# Demo ngắt và tạm dừng tiến trình',
@@ -169,7 +169,7 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
       '^Z',
       '$ Ctrl-P # thấy dòng: 5 5 stop spin'
     ],
-    notes: 'Điểm cực kỳ then chốt trong buổi vấn đáp: Vì sao không được gọi sleep() trong consoleintr()? (Trả lời: Vì consoleintr chạy trong ngữ cảnh ngắt ngắt, không thuộc tiến trình nào!).',
+    notes: 'Điểm cực kỳ then chốt trong buổi vấn đáp: Vì sao không được gọi sleep() trong consoleintr()? (Trả lời: Vì consoleintr chạy trong ngữ cảnh ngắt, không thuộc tiến trình nào!).',
     lecturerFeedback: 'Thầy đánh giá cao cách giải thích thứ tự acquire lock trong stopcheck(). Demo Ctrl-Z dừng được spin chứng minh ngắt timer hoạt động đúng.',
     postReportRequests: [
       'Hoàn thiện syscall waitpid để Shell nhận biết được khi con rơi vào STOPPED thay vì chỉ ZOMBIE.',
@@ -184,23 +184,23 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     title: 'Job Control Hoàn Chỉnh: waitpid, fg, bg, jobs và SIGTTIN',
     subtitle: 'Liên kết TTY và Shell: Đưa tiến trình ra nền, kéo về tiền cảnh và bảo vệ I/O',
     goals: [
-      'Triển khai syscall waitpid() với các cờ WUNTRACED và WNOHANG',
       'Hỗ trợ TIOCGPGRP và TIOCSPGRP để Shell chuyển giao quyền điều khiển terminal',
-      'Xây dựng các lệnh nội tuyến trong Shell: jobs, fg, bg, kill %n và toán tử &',
-      'Xử lý SIGTTIN: Tự động dừng tiến trình nền khi cố tình đọc từ bàn phím'
+      'Triển khai syscall waitpid() với các cờ WUNTRACED và WNOHANG',
+      'Xử lý SIGTTIN: Tự động dừng tiến trình nền khi cố tình đọc từ bàn phím',
+      'Xây dựng các lệnh nội tuyến trong Shell: jobs, fg, bg, kill %n và toán tử &'
     ],
     customReportDate: '2026-10-13',
     status: 'accepted',
     memberAssignments: {
       'member-1': [
-        'Hoàn thiện kwaitpid() trong kernel/proc.c: trả về status mã POSIX khi con STOPPED',
-        'Triển khai logic stopsig để mỗi lần con dừng chỉ báo cho cha đúng 1 lần',
-        'Xử lý cờ WNOHANG để Shell thu thập trạng thái tiến trình nền mà không bị block'
-      ],
-      'member-2': [
         'Triển khai TIOCSPGRP và TIOCGPGRP trong kernel/console.c',
         'Trong consoleread(): kiểm tra p->pgid != fgpgid -> gửi SIGTTIN và dừng',
         'Nếu tiến trình bỏ qua SIGTTIN thì trả về -1 thay vì treo mãi'
+      ],
+      'member-2': [
+        'Hoàn thiện kwaitpid() trong kernel/proc.c: trả về status mã POSIX khi con STOPPED',
+        'Triển khai logic stopsig để mỗi lần con dừng chỉ báo cho cha đúng 1 lần',
+        'Xử lý cờ WNOHANG để Shell thu thập trạng thái tiến trình nền mà không bị block'
       ],
       'member-3': [
         'Viết lại vòng lặp Shell: hàm runjob(), fgjob(), listjobs() trong user/sh.c',
@@ -216,8 +216,8 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     checklist: [
       { id: 'w4-1', text: 'Chạy counter -> Ctrl-Z -> bg -> in số ngầm -> fg -> Ctrl-C kết thúc', completed: true, assignedMemberId: 'member-3' },
       { id: 'w4-2', text: 'Lệnh jobs in đúng số thứ tự, trạng thái [1]+ Running/Stopped và tên lệnh', completed: true, assignedMemberId: 'member-3' },
-      { id: 'w4-3', text: 'Chạy cat & tự động dừng với thông báo Stopped (tty input)', completed: true, assignedMemberId: 'member-2' },
-      { id: 'w4-4', text: 'Lệnh kill %1 gửi SIGKILL kết thúc được cả tiến trình đang bị dừng', completed: true, assignedMemberId: 'member-1' }
+      { id: 'w4-3', text: 'Chạy cat & tự động dừng với thông báo Stopped (tty input)', completed: true, assignedMemberId: 'member-1' },
+      { id: 'w4-4', text: 'Lệnh kill %1 gửi SIGKILL kết thúc được cả tiến trình đang bị dừng', completed: true, assignedMemberId: 'member-2' }
     ],
     demoScript: [
       '# Chuỗi demo kinh điển của Đề #27',
@@ -251,22 +251,22 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     subtitle: 'Đảm bảo cả pipeline là một job duy nhất và xử lý triệt để tiến trình mồ côi',
     goals: [
       'Đảm bảo cả pipeline (counter | cat) thuộc chung một pgid và Ctrl-C/Z tới tất cả cùng lúc',
+      'Lưu và phục hồi chế độ terminal (termios) khi chuyển đổi giữa Shell và Job',
       'Xử lý điểm dừng trong kwaitpid() khi tiến trình đầu nhóm đang chờ hai nhánh con',
-      'Xử lý tiến trình mồ côi đang STOPPED trong reparent(): gửi SIGHUP rồi SIGCONT',
-      'Lưu và phục hồi chế độ terminal (termios) khi chuyển đổi giữa Shell và Job'
+      'Xử lý tiến trình mồ côi đang STOPPED trong reparent(): gửi SIGHUP rồi SIGCONT'
     ],
     customReportDate: '2026-10-20',
     status: 'ready_to_report',
     memberAssignments: {
       'member-1': [
-        'Sửa reparent() trong kernel/proc.c: gửi SIGHUP rồi SIGCONT cho con bị dừng khi cha chết',
-        'Bổ sung kiểm tra stoppending trong kwaitpid() để tiến trình cha pipeline tự dừng',
-        'Kiểm tra tính an toàn bộ nhớ khi fork pipeline nhiều tầng'
-      ],
-      'member-2': [
         'Cơ chế khôi phục terminal mode: Shell lưu termios của job trước khi dừng, khôi phục khi fg',
         'Đảm bảo khi job thoát bất thường, terminal luôn được reset về Cooked an toàn',
         'Kiểm tra buffer obuf khi terminal bị tràn output'
+      ],
+      'member-2': [
+        'Sửa reparent() trong kernel/proc.c: gửi SIGHUP rồi SIGCONT cho con bị dừng khi cha chết',
+        'Bổ sung kiểm tra stoppending trong kwaitpid() để tiến trình cha pipeline tự dừng',
+        'Kiểm tra tính an toàn bộ nhớ khi fork pipeline nhiều tầng'
       ],
       'member-3': [
         'Cải tiến user/sh.c để fork pipeline gán chung pgid của nhánh con đầu tiên',
@@ -281,9 +281,9 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     ],
     checklist: [
       { id: 'w5-1', text: 'Chạy counter | cat -> nhấn Ctrl-Z -> cả 2 tiến trình đều chuyển STOPPED', completed: true, assignedMemberId: 'member-3' },
-      { id: 'w5-2', text: 'Dùng Ctrl-P xác nhận counter và cat có cùng số pgid', completed: true, assignedMemberId: 'member-1' },
-      { id: 'w5-3', text: 'Tạm dừng counter -> gõ exit -> tiến trình con tự kết thúc, không bị zombie treo', completed: true, assignedMemberId: 'member-1' },
-      { id: 'w5-4', text: 'Chạy ttydemo raw -> Ctrl-Z -> Shell vẫn nhận phím cooked bình thường', completed: true, assignedMemberId: 'member-2' }
+      { id: 'w5-2', text: 'Dùng Ctrl-P xác nhận counter và cat có cùng số pgid', completed: true, assignedMemberId: 'member-2' },
+      { id: 'w5-3', text: 'Tạm dừng counter -> gõ exit -> tiến trình con tự kết thúc, không bị zombie treo', completed: true, assignedMemberId: 'member-2' },
+      { id: 'w5-4', text: 'Chạy ttydemo raw -> Ctrl-Z -> Shell vẫn nhận phím cooked bình thường', completed: true, assignedMemberId: 'member-1' }
     ],
     demoScript: [
       '# Demo Pipeline là một job',
@@ -310,23 +310,25 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     title: 'Mở rộng (Stretch Goals) & Tự Động Hóa Kiểm Thử',
     subtitle: 'Hiện thực hóa Line Editor phím mũi tên, Terminal ảo thứ hai và bộ 12 test tự động',
     goals: [
+      'Triển khai Terminal ảo thứ hai (tty1) dùng chung 1 UART, đổi qua lại bằng Ctrl-T',
+      'Hỗ trợ minor terminal trong devsw: định tuyến consoleioctl và consoleread theo tty[minor]',
       'Xây dựng Line Editor trong user/sh.c: điều hướng mũi tên trái/phải, chèn giữa dòng',
       'Triển khai Command History trong Shell với lệnh history và phím mũi tên lên/xuống',
-      'Triển khai Terminal ảo thứ hai (tty1) dùng chung 1 UART, đổi qua lại bằng Ctrl-T',
       'Chạy hoàn tất 12/12 bài kiểm thử tự động trong test-jobctl.py'
     ],
     customReportDate: '2026-10-27',
     status: 'in_progress',
     memberAssignments: {
       'member-1': [
-        'Hỗ trợ minor terminal trong devsw: định tuyến consoleioctl và consoleread theo tty[minor]',
-        'Kiểm tra deadlock và độ tranh chấp lock khi 2 terminal cùng in output đồng thời',
-        'Tối ưu hóa kích thước kernel code và bộ đệm obuf (2KB)'
-      ],
-      'member-2': [
         'Cài đặt NTTY=2 trong kernel/console.c, quản lý tty[0] và tty[1]',
         'Xử lý phím Ctrl-T (0x14) trong consoleintr(): chuyển cons.active và in lại obuf',
-        'Sửa user/init.c: mở thêm 1 shell trên tty1 (minor 1)'
+        'Sửa user/init.c: mở thêm 1 shell trên tty1 (minor 1)',
+        'Hỗ trợ minor terminal trong devsw: định tuyến consoleioctl và consoleread theo tty[minor]'
+      ],
+      'member-2': [
+        'Kiểm tra deadlock và độ tranh chấp lock khi 2 terminal cùng in output đồng thời',
+        'Tối ưu hóa kích thước kernel code và bộ đệm obuf (2KB)',
+        'Đảm bảo struct proc tương thích đa terminal ảo'
       ],
       'member-3': [
         'Triển khai Line editor chạy raw mode trong user/sh.c (chuỗi ESC [ A..D)',
@@ -342,7 +344,7 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     checklist: [
       { id: 'w6-1', text: 'Gõ lệnh dài -> bấm mũi tên trái -> chèn ký tự -> phím mũi tên phải -> Enter chạy đúng', completed: true, assignedMemberId: 'member-3' },
       { id: 'w6-2', text: 'Bấm mũi tên lên lặp lại các lệnh trước đó; gõ history in danh sách lệnh', completed: true, assignedMemberId: 'member-3' },
-      { id: 'w6-3', text: 'Bấm Ctrl-T chuyển sang [tty1], chạy counter; bấm Ctrl-T về [tty0] không bị nhiễu', completed: true, assignedMemberId: 'member-2' },
+      { id: 'w6-3', text: 'Bấm Ctrl-T chuyển sang [tty1], chạy counter; bấm Ctrl-T về [tty0] không bị nhiễu', completed: true, assignedMemberId: 'member-1' },
       { id: 'w6-4', text: 'Chạy ./test-jobctl.py đạt 12/12 bài kiểm thử pass', completed: false, assignedMemberId: 'member-3' }
     ],
     demoScript: [
@@ -376,14 +378,14 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
     status: 'not_started',
     memberAssignments: {
       'member-1': [
-        'Rà soát toàn bộ code Kernel, giải thích từng biến mới và lý do khóa',
-        'Luyện trả lời câu hỏi hóc búa về Scheduler, Lock ordering và Orphaned stopped process',
-        'Chuẩn bị giải thích trực tiếp trên file kernel/proc.c và trap.c'
-      ],
-      'member-2': [
         'Rà soát driver TTY, giải thích cách UART truyền dữ liệu tới TTY buffer',
         'Luyện giải thích 3 chế độ Raw/Cooked/No-Echo và cơ chế chuyển đổi Terminal ảo',
         'Chuẩn bị demo trực tiếp trên QEMU theo yêu cầu của hội đồng'
+      ],
+      'member-2': [
+        'Rà soát toàn bộ code Kernel, giải thích từng biến mới và lý do khóa',
+        'Luyện trả lời câu hỏi hóc búa về Scheduler, Lock ordering và Orphaned stopped process',
+        'Chuẩn bị giải thích trực tiếp trên file kernel/proc.c và trap.c'
       ],
       'member-3': [
         'Rà soát kiến trúc Shell, giải thích cơ chế tránh race condition giữa fork và setpgid',
@@ -398,7 +400,7 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
       'Repository GitHub sạch sẽ với README, DESIGN, DEMO, ON_TAP'
     ],
     checklist: [
-      { id: 'w7-1', text: 'Chạy ./test-xv6.py usertests hoàn thành không có lỗi', completed: false, assignedMemberId: 'member-1' },
+      { id: 'w7-1', text: 'Chạy ./test-xv6.py usertests hoàn thành không có lỗi', completed: false, assignedMemberId: 'member-2' },
       { id: 'w7-2', text: 'Chạy ./test-jobctl.py trên máy host hoàn thành 12/12', completed: false, assignedMemberId: 'member-3' },
       { id: 'w7-3', text: 'Thực hành 5 bài tập tự sửa trực tiếp (đổi phím Ctrl-T sang Ctrl-N, v.v.)', completed: false, assignedMemberId: 'all' },
       { id: 'w7-4', text: 'Tổ chức 2 buổi vấn đáp chéo giữa 3 thành viên', completed: false, assignedMemberId: 'all' }
