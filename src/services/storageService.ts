@@ -35,7 +35,7 @@ export interface AppData {
   settings: AppSettings;
 }
 
-const STORAGE_KEY = 'xv6_hub_data_v4';
+const STORAGE_KEY = 'xv6_hub_data_v5';
 
 export const getInitialData = (): AppData => {
   const base: AppData = {

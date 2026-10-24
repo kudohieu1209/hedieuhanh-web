@@ -55,16 +55,16 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
   },
   {
     id: 'doc-5',
-    title: 'Project Catalogue Môn Hệ Điều Hành HUST (Đề #27)',
+    title: 'Đặc tả Kỹ thuật Đề tài #27: TTY Layer & Job Control',
     type: 'reference',
     weekNumber: 1,
-    fileUrl: 'https://raw.githubusercontent.com/kudohieu1209/hedieuhanh-hust/main/doc/Project_catalogue_VN.pdf',
+    fileUrl: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/DESIGN.md',
     isExternalUrl: true,
-    fileSize: '380 KB',
+    fileSize: '45 KB',
     version: 'v1.0',
-    uploaderName: 'Nguyễn Tuấn Anh',
+    uploaderName: 'Mai Duy Hiếu',
     uploadedAt: '2026-09-22T08:00:00Z',
-    notes: 'Bản dịch tiếng Việt yêu cầu kỹ thuật và tiêu chí chấm điểm của Bộ môn Khoa học Máy tính.'
+    notes: 'Tài liệu phân tích kiến trúc 3 tầng và đặc tả kỹ thuật chi tiết của Đề tài #27.'
   },
   {
     id: 'doc-6',

@@ -31,7 +31,7 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
       ]
     },
     deliverables: [
-      'Bản phân tích yêu cầu đề bài Đề #27 (Project_catalogue_VN.md)',
+      'Bản phân tích yêu cầu kỹ thuật Đề tài #27 (DESIGN.md)',
       'Sơ đồ kiến trúc 3 tầng: Process/Signal - TTY Layer - User/Shell',
       'Môi trường chạy QEMU RISC-V và bản clone sạch mit-pdos/xv6-riscv'
     ],
