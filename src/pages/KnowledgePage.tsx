@@ -67,7 +67,7 @@ export const KnowledgePage: React.FC = () => {
       {/* Editorial Header */}
       <div className="border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
         <div className="ds-hero-badge mb-2.5">
-          <BookOpen className="w-3.5 h-3.5 text-sky-500" />
+          <BookOpen className="w-3.5 h-3.5 text-red-600" />
           <span>CẨM NANG THIẾT KẾ &amp; BẢO VỆ ĐỒ ÁN</span>
         </div>
         <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
@@ -93,7 +93,7 @@ export const KnowledgePage: React.FC = () => {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all ${
                   activeCategory === cat.id
-                    ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
+                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-xs shadow-red-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
                 }`}
               >
@@ -115,7 +115,7 @@ export const KnowledgePage: React.FC = () => {
             placeholder="Tìm kiếm chủ đề, syscall, cờ..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-full border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-2xs font-medium"
+            className="w-full pl-9 pr-4 py-2 rounded-full border border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-red-500 shadow-2xs font-medium"
           />
         </div>
       </div>
@@ -138,7 +138,7 @@ export const KnowledgePage: React.FC = () => {
                   onClick={() => selectTopic(topic.id)}
                   className={`p-4 rounded-[20px] border text-left transition-all cursor-pointer ${
                     isSelected
-                      ? 'border-sky-500 bg-white dark:bg-slate-900 shadow-md ring-2 ring-sky-500/30'
+                      ? 'border-red-600 bg-white dark:bg-slate-900 shadow-md ring-2 ring-red-500/30'
                       : 'border-slate-200/90 dark:border-slate-800/90 bg-white/80 dark:bg-[#111827]/80 hover:bg-white dark:hover:bg-[#111827] shadow-apple-sm hover:shadow-apple hover:-translate-y-0.5'
                   }`}
                 >
@@ -172,7 +172,7 @@ export const KnowledgePage: React.FC = () => {
                     href={selectedTopic.githubLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-sky-600 dark:text-sky-400 hover:underline font-mono font-bold"
+                    className="inline-flex items-center gap-1 text-xs text-red-700 dark:text-red-400 hover:underline font-mono font-bold"
                   >
                     <span>Mã nguồn GitHub</span>
                     <ExternalLink className="w-3 h-3" />
@@ -224,7 +224,7 @@ export const KnowledgePage: React.FC = () => {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-500">
                       <span className="flex items-center gap-1.5">
-                        <Terminal className="w-3.5 h-3.5 text-sky-500" />
+                        <Terminal className="w-3.5 h-3.5 text-red-600" />
                         Sơ đồ kiến trúc &amp; Luồng điều khiển:
                       </span>
                     </div>
@@ -249,7 +249,7 @@ export const KnowledgePage: React.FC = () => {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-500">
                       <span className="flex items-center gap-1.5">
-                        <Code2 className="w-3.5 h-3.5 text-sky-500" />
+                        <Code2 className="w-3.5 h-3.5 text-amber-500" />
                         Đoạn mã kernel xv6 cốt lõi ({selectedTopic.codeSnippet.filename}):
                       </span>
                     </div>
@@ -262,7 +262,7 @@ export const KnowledgePage: React.FC = () => {
                         </div>
                         <span className="text-[10px] font-mono text-slate-400">{selectedTopic.codeSnippet.filename}</span>
                       </div>
-                      <pre className="p-4 text-xs font-mono overflow-x-auto text-sky-300 leading-normal">
+                      <pre className="p-4 text-xs font-mono overflow-x-auto text-amber-300 leading-normal">
                         {selectedTopic.codeSnippet.code}
                       </pre>
                     </div>

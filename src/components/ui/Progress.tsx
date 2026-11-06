@@ -13,7 +13,7 @@ export const Progress: React.FC<ProgressProps> = ({
   value,
   max = 100,
   className = '',
-  barColor = 'bg-sky-500',
+  barColor = 'bg-gradient-to-r from-red-600 to-amber-500',
   showText = false,
   size = 'md',
 }) => {
@@ -30,7 +30,7 @@ export const Progress: React.FC<ProgressProps> = ({
       {showText && (
         <div className="flex justify-between items-center mb-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">
           <span>Tiến độ hoàn thành</span>
-          <span className="text-sky-600 dark:text-sky-400">{percentage}%</span>
+          <span className="text-red-700 dark:text-red-400">{percentage}%</span>
         </div>
       )}
       <div className={`w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-700/50 ${sizes[size]} shadow-inner`}>

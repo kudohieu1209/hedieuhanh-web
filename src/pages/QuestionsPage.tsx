@@ -142,7 +142,7 @@ export const QuestionsPage: React.FC = () => {
             placeholder="Tìm kiếm câu hỏi, từ khóa, file code..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+            className="w-full pl-9 pr-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 font-medium"
           />
         </div>
 
@@ -228,7 +228,7 @@ export const QuestionsPage: React.FC = () => {
                   <Button
                     variant="secondary"
                     size="sm"
-                    icon={isRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-sky-500" />}
+                    icon={isRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-amber-600" />}
                     onClick={() => toggleReveal(q.id)}
                     className="text-xs font-bold"
                   >
@@ -238,9 +238,9 @@ export const QuestionsPage: React.FC = () => {
 
                 {/* Revealed Answer Box */}
                 {isRevealed && (
-                  <div className="p-4 rounded-2xl border border-sky-500/20 bg-sky-500/5 dark:bg-sky-950/20 text-xs space-y-3 animate-in fade-in duration-200 shadow-2xs">
+                  <div className="p-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 dark:bg-amber-950/20 text-xs space-y-3 animate-in fade-in duration-200 shadow-2xs">
                     <div>
-                      <h4 className="font-extrabold text-sky-800 dark:text-sky-300 uppercase tracking-wider text-[11px] mb-1.5 flex items-center gap-1.5">
+                      <h4 className="font-extrabold text-amber-800 dark:text-amber-300 uppercase tracking-wider text-[11px] mb-1.5 flex items-center gap-1.5">
                         <span className="ds-live-dot" />
                         Đáp án gợi ý trả lời nhanh cho hội đồng:
                       </h4>
@@ -250,7 +250,7 @@ export const QuestionsPage: React.FC = () => {
                     </div>
 
                     {q.detailedExplanation && (
-                      <div className="pt-2.5 border-t border-sky-500/10">
+                      <div className="pt-2.5 border-t border-amber-500/15">
                         <h4 className="font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-[11px] mb-1">
                           Giải thích chi tiết &amp; Cơ chế Kernel xv6:
                         </h4>
@@ -260,8 +260,8 @@ export const QuestionsPage: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="pt-2 border-t border-sky-500/10 flex items-center gap-2 text-[11px] text-slate-500 font-mono">
-                      <Code2 className="w-3.5 h-3.5 text-sky-500" />
+                    <div className="pt-2 border-t border-amber-500/15 flex items-center gap-2 text-[11px] text-slate-500 font-mono">
+                      <Code2 className="w-3.5 h-3.5 text-amber-600" />
                       <span>Vị trí code đối chiếu: <strong>{q.codeReference}</strong></span>
                     </div>
                   </div>
@@ -312,7 +312,7 @@ export const QuestionsPage: React.FC = () => {
                     <span>Tiến độ bài thi</span>
                     <span className="font-mono">{quizIndex + 1}/{quizQuestions.length} câu</span>
                   </div>
-                  <Progress value={((quizIndex + 1) / quizQuestions.length) * 100} size="sm" barColor="bg-gradient-to-r from-purple-500 to-sky-500" />
+                  <Progress value={((quizIndex + 1) / quizQuestions.length) * 100} size="sm" barColor="bg-gradient-to-r from-red-600 to-amber-500" />
                 </div>
 
                 {/* Question */}
@@ -338,7 +338,7 @@ export const QuestionsPage: React.FC = () => {
                   <Button
                     variant="secondary"
                     size="sm"
-                    icon={quizAnswersRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-sky-500" />}
+                    icon={quizAnswersRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-amber-600" />}
                     onClick={() => setQuizAnswersRevealed(!quizAnswersRevealed)}
                   >
                     {quizAnswersRevealed ? 'Ẩn đáp án' : 'Xem đáp án gợi ý'}
@@ -346,8 +346,8 @@ export const QuestionsPage: React.FC = () => {
                 </div>
 
                 {quizAnswersRevealed && (
-                  <div className="p-4 rounded-2xl border border-sky-500/20 bg-sky-500/5 dark:bg-sky-950/20 space-y-2 animate-in fade-in shadow-2xs">
-                    <span className="font-extrabold text-sky-800 dark:text-sky-300 block">Đáp án chuẩn:</span>
+                  <div className="p-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 dark:bg-amber-950/20 space-y-2 animate-in fade-in shadow-2xs">
+                    <span className="font-extrabold text-amber-800 dark:text-amber-300 block">Đáp án chuẩn:</span>
                     <p className="text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
                       {quizQuestions[quizIndex].suggestedAnswer}
                     </p>

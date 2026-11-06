@@ -63,7 +63,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
               {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-400" />}
               {toast.type === 'warning' && <AlertTriangle className="w-5 h-5 text-amber-400" />}
-              {toast.type === 'info' && <Info className="w-5 h-5 text-sky-400" />}
+              {toast.type === 'info' && <Info className="w-5 h-5 text-amber-400" />}
             </div>
             <div className="flex-1 text-sm font-medium leading-relaxed">{toast.message}</div>
             <button

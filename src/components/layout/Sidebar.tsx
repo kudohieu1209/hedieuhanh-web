@@ -44,7 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-sky-500/25 shrink-0 ring-2 ring-sky-500/20">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-700 via-red-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-red-600/25 shrink-0 ring-2 ring-red-500/20">
             <Terminal className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               <h1 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight leading-none font-sans">
                 xv6 Team Hub
               </h1>
-              <span className="px-1.5 py-0.5 text-[9.5px] font-mono bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 rounded-full font-bold border border-sky-300/40 dark:border-sky-700/40">
+              <span className="px-1.5 py-0.5 text-[9.5px] font-mono bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 rounded-full font-bold border border-red-300/40 dark:border-red-700/40">
                 #27
               </span>
             </div>
@@ -75,7 +75,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           </div>
           <div className="w-full bg-slate-200/80 dark:bg-slate-800 h-2 rounded-full overflow-hidden p-0.5">
             <div
-              className="bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-500 h-full rounded-full transition-all duration-500 shadow-xs"
+              className="bg-gradient-to-r from-red-600 via-amber-500 to-amber-400 h-full rounded-full transition-all duration-500 shadow-xs"
               style={{ width: `${overallProgress}%` }}
             />
           </div>
@@ -98,7 +98,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               className={({ isActive }) =>
                 `flex items-center justify-between px-3.5 py-2 rounded-full text-xs font-semibold transition-all group ${
                   isActive
-                    ? 'bg-sky-500 text-white shadow-sm shadow-sky-500/30'
+                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-sm shadow-red-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
                 }`
               }
@@ -106,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               {({ isActive }) => (
                 <>
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <Icon className={`w-4 h-4 shrink-0 transition-transform ${isActive ? 'scale-105' : 'group-hover:text-sky-500'}`} />
+                    <Icon className={`w-4 h-4 shrink-0 transition-transform ${isActive ? 'scale-105' : 'group-hover:text-red-600'}`} />
                     <span className="truncate">{item.label}</span>
                   </div>
                   {item.badge && (
@@ -135,10 +135,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
             href={data.settings.githubRepoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between px-3.5 py-2 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-all"
+            className="flex items-center justify-between px-3.5 py-2 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-all"
           >
             <div className="flex items-center gap-2.5 truncate">
-              <Terminal className="w-4 h-4 shrink-0 text-sky-500" />
+              <Terminal className="w-4 h-4 shrink-0 text-red-600" />
               <span className="truncate font-mono">hedieuhanh-hust</span>
             </div>
             <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-60" />

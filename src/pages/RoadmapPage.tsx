@@ -53,7 +53,7 @@ export const RoadmapPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
         <div>
           <div className="ds-hero-badge mb-2">
-            <Milestone className="w-3.5 h-3.5 text-sky-500" />
+            <Milestone className="w-3.5 h-3.5 text-red-600" />
             <span>KẾ HOẠCH BẢO VỆ ĐỒ ÁN HUST</span>
           </div>
           <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
@@ -68,7 +68,7 @@ export const RoadmapPage: React.FC = () => {
           <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             Tuần trọng tâm:
           </span>
-          <span className="px-3 py-1 rounded-full bg-sky-500 text-white font-bold font-mono text-xs shadow-xs">
+          <span className="px-3 py-1 rounded-full bg-gradient-to-r from-red-600 to-amber-600 text-white font-bold font-mono text-xs shadow-xs">
             Tuần {data.settings.currentWeek}
           </span>
         </div>
@@ -87,17 +87,8 @@ export const RoadmapPage: React.FC = () => {
             <Card
               key={week.weekNumber}
               id={`week-card-${week.weekNumber}`}
-              trafficLights={isExpanded}
-              macTitle={isExpanded ? <span className="hidden sm:inline">Chi Tiết Tuần {week.weekNumber}: {week.title}</span> : undefined}
-              macAction={
-                isExpanded ? (
-                  <Badge variant={statusLabels[week.status].variant}>
-                    {statusLabels[week.status].label}
-                  </Badge>
-                ) : undefined
-              }
               className={`transition-all duration-300 scroll-mt-24 ${
-                isExpanded ? 'ring-2 ring-sky-500/20 shadow-apple' : 'opacity-95'
+                isExpanded ? 'ring-2 ring-red-500/20 shadow-apple' : 'opacity-95'
               }`}
             >
               {/* Header Bar */}
@@ -110,7 +101,7 @@ export const RoadmapPage: React.FC = () => {
                     week.status === 'accepted'
                       ? 'bg-emerald-500 text-white'
                       : week.weekNumber === data.settings.currentWeek
-                      ? 'bg-gradient-to-tr from-sky-600 to-cyan-500 text-white'
+                      ? 'bg-gradient-to-tr from-red-600 to-amber-600 text-white'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                   }`}>
                     {week.weekNumber}
@@ -120,13 +111,11 @@ export const RoadmapPage: React.FC = () => {
                       <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white line-clamp-2 sm:truncate">
                         Tuần {week.weekNumber}: {week.title}
                       </h3>
-                      {!isExpanded && (
-                        <Badge variant={statusLabels[week.status].variant}>
-                          {statusLabels[week.status].label}
-                        </Badge>
-                      )}
+                      <Badge variant={statusLabels[week.status].variant}>
+                        {statusLabels[week.status].label}
+                      </Badge>
                       {week.weekNumber === data.settings.currentWeek && (
-                        <span className="text-[10px] font-bold text-sky-500 font-mono px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 border border-sky-300/40">
+                        <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 font-mono px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-300/50">
                           [Đang diễn ra]
                         </span>
                       )}
@@ -138,7 +127,7 @@ export const RoadmapPage: React.FC = () => {
                     <div className="mt-2 flex items-center gap-2.5 max-w-sm">
                       <div className="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                         <div
-                          className={`h-full rounded-full ${progressPct === 100 ? 'bg-emerald-500' : 'bg-sky-500'}`}
+                          className={`h-full rounded-full ${progressPct === 100 ? 'bg-emerald-500' : 'bg-gradient-to-r from-red-600 to-amber-500'}`}
                           style={{ width: `${progressPct}%` }}
                         />
                       </div>
@@ -164,48 +153,33 @@ export const RoadmapPage: React.FC = () => {
 
               {/* Expanded Detailed Content */}
               {isExpanded && (
-                <div className="p-3 sm:p-6 border-t border-slate-100 dark:border-slate-800/80 space-y-4 sm:space-y-6">
-                  {/* Hàng trên: Kế hoạch + nút xem báo cáo */}
-                  <div className="flex items-center gap-1.5 sm:gap-2 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
-                    <span className="shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-sky-500 text-white shadow-xs shadow-sky-500/30">
-                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">Kế hoạch</span>
-                    </span>
+                <div className="p-3.5 sm:p-6 border-t border-slate-100 dark:border-slate-800/80 space-y-4 sm:space-y-6">
+                  {/* Hàng trên: Hạn báo cáo + Nút báo cáo */}
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+                      <Calendar className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                      <span>Hạn báo cáo: <strong className="font-mono text-slate-900 dark:text-white">{week.customReportDate}</strong></span>
+                    </div>
                     {week.reportFileUrl && (
                       <a
                         href={week.reportFileUrl}
                         {...(/^https?:/.test(week.reportFileUrl) ? { target: '_blank', rel: 'noopener noreferrer' } : { download: true })}
-                        className="flex-1 sm:flex-none min-w-0 flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-xs shadow-red-600/30 transition-all shrink-0 active:scale-95"
                       >
                         {/^https?:/.test(week.reportFileUrl) ? (
                           <>
                             <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">Xem báo cáo</span>
+                            <span>Xem báo cáo</span>
                           </>
                         ) : (
                           <>
                             <Download className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">Tải báo cáo</span>
+                            <span>Tải báo cáo</span>
                           </>
                         )}
                       </a>
                     )}
                   </div>
-
-                      {/* Action Bar */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs shadow-2xs">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                            <Calendar className="w-3.5 h-3.5 text-sky-500" />
-                            Ngày hẹn báo cáo: <strong className="font-mono text-sky-600 dark:text-sky-400">{week.customReportDate}</strong>
-                          </span>
-                          <span className="hidden sm:inline">·</span>
-                          <span className="text-slate-500">
-                            Cập nhật: {new Date(week.updatedAt).toLocaleDateString('vi-VN')}
-                          </span>
-                        </div>
-
-                      </div>
 
                       {/* 2 Columns: Goals & Deliverables */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -218,7 +192,7 @@ export const RoadmapPage: React.FC = () => {
                           <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                             {week.goals.map((g, idx) => (
                               <li key={idx} className="flex items-start gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-1.5 shrink-0" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-600 mt-1.5 shrink-0" />
                                 <span className="leading-relaxed">{g}</span>
                               </li>
                             ))}
@@ -230,10 +204,10 @@ export const RoadmapPage: React.FC = () => {
                               <ul className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2 text-xs">
                                 {topics.map(t => (
                                   <li key={t.id} className="flex items-start gap-2">
-                                    <BookOpen className="w-3.5 h-3.5 text-sky-500 mt-0.5 shrink-0" />
+                                    <BookOpen className="w-3.5 h-3.5 text-amber-600 mt-0.5 shrink-0" />
                                     <Link
                                       to={`/knowledge?topic=${t.id}`}
-                                      className="font-semibold text-sky-700 dark:text-sky-300 hover:underline leading-relaxed"
+                                      className="font-semibold text-red-700 dark:text-red-300 hover:underline leading-relaxed"
                                     >
                                       {t.title}
                                     </Link>
@@ -275,7 +249,7 @@ export const RoadmapPage: React.FC = () => {
                                   <img
                                     src={m.avatarUrl}
                                     alt={m.name}
-                                    className="w-6 h-6 rounded-full object-cover ring-1 ring-sky-500/40"
+                                    className="w-6 h-6 rounded-full object-cover ring-1 ring-red-500/40"
                                   />
                                   <div className="min-w-0">
                                     <span className="text-xs font-bold text-slate-900 dark:text-white truncate block">
@@ -286,7 +260,7 @@ export const RoadmapPage: React.FC = () => {
                                 <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
                                   {tasks.map((taskStr, idx) => (
                                     <li key={idx} className="flex items-start gap-1.5">
-                                      <span className="text-sky-500 font-bold">›</span>
+                                      <span className="text-amber-600 font-bold">›</span>
                                       <span className="leading-relaxed">{taskStr}</span>
                                     </li>
                                   ))}
@@ -308,7 +282,7 @@ export const RoadmapPage: React.FC = () => {
                               Đã xong / chưa xong, cập nhật trong mã nguồn (initialWeeks.ts)
                             </p>
                           </div>
-                          <span className="text-xs font-mono font-bold text-sky-600 dark:text-sky-400 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/60">
+                          <span className="text-xs font-mono font-bold text-red-700 dark:text-red-300 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950/60 border border-red-200/60">
                             {completedCount}/{week.checklist.length} ({progressPct}%)
                           </span>
                         </div>
@@ -324,7 +298,7 @@ export const RoadmapPage: React.FC = () => {
                                 checked={item.completed}
                                 readOnly
                                 disabled
-                                className="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 dark:border-slate-700 mt-0.5"
+                                className="w-4 h-4 rounded text-red-600 focus:ring-red-500 border-slate-300 dark:border-slate-700 mt-0.5"
                               />
                               <span
                                 className={`text-xs leading-relaxed ${

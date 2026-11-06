@@ -55,7 +55,7 @@ export const MembersPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
         <div>
           <div className="ds-hero-badge mb-2">
-            <Users className="w-3.5 h-3.5 text-sky-500" />
+            <Users className="w-3.5 h-3.5 text-red-600" />
             <span>ĐỘI NGŨ THỰC HIỆN ĐỒ ÁN</span>
           </div>
           <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
@@ -74,7 +74,7 @@ export const MembersPage: React.FC = () => {
               onClick={() => setSelectedMemberId(m.id)}
               className={`flex items-center justify-center sm:justify-start gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
                 m.id === selectedMember.id
-                  ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
+                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-xs shadow-red-600/30'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
@@ -97,7 +97,7 @@ export const MembersPage: React.FC = () => {
               <img
                 src={selectedMember.avatarUrl}
                 alt={selectedMember.name}
-                className="w-20 h-20 rounded-2xl object-cover ring-4 ring-sky-500/40 shadow-xl shrink-0"
+                className="w-20 h-20 rounded-2xl object-cover ring-4 ring-red-500/40 shadow-xl shrink-0"
               />
               <div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -108,7 +108,7 @@ export const MembersPage: React.FC = () => {
                     MSSV: {selectedMember.studentId}
                   </Badge>
                 </div>
-                <p className="text-sm font-bold text-sky-400 mt-1">
+                <p className="text-sm font-bold text-amber-400 mt-1">
                   {selectedMember.role}
                 </p>
                 <p className="text-xs text-slate-300 mt-2 max-w-2xl leading-relaxed">
@@ -116,7 +116,7 @@ export const MembersPage: React.FC = () => {
                 </p>
                 <div className="flex flex-wrap items-center gap-4 mt-3.5 text-xs text-slate-400">
                   <span className="flex items-center gap-1.5 font-medium">
-                    <Mail className="w-3.5 h-3.5 text-sky-400" />
+                    <Mail className="w-3.5 h-3.5 text-amber-400" />
                     {selectedMember.email}
                   </span>
                   {selectedMember.githubUsername && (

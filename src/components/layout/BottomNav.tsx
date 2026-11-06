@@ -27,9 +27,9 @@ export const BottomNav: React.FC = () => {
   return (
     <nav 
       aria-label="Thanh điều hướng di động"
-      className="md:hidden fixed bottom-3 left-4 right-4 z-40 bg-white/90 dark:bg-[#0d131f]/90 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-full px-3 py-2 transition-all shadow-apple dark:shadow-apple-dark"
+      className="md:hidden fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-3.5 right-3.5 z-40 bg-white/95 dark:bg-[#0d131f]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-full px-2 py-1.5 transition-all shadow-apple dark:shadow-apple-dark max-w-lg mx-auto"
     >
-      <div className="grid grid-cols-4 items-center justify-around max-w-lg mx-auto">
+      <div className="grid grid-cols-4 items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -38,7 +38,7 @@ export const BottomNav: React.FC = () => {
               to={item.to}
               end={item.to === '/'}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center py-1 px-1 rounded-full transition-all relative ${
+                `flex flex-col items-center justify-center py-1 px-1 rounded-full transition-all relative active:scale-95 ${
                   isActive
                     ? 'text-sky-600 dark:text-sky-400 font-bold'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -59,7 +59,7 @@ export const BottomNav: React.FC = () => {
                     {item.label}
                   </span>
                   {isActive && (
-                    <span className="absolute -bottom-1 w-4 h-0.5 bg-sky-500 rounded-full" />
+                    <span className="absolute -bottom-0.5 w-4 h-0.5 bg-sky-500 rounded-full" />
                   )}
                 </>
               )}
@@ -72,7 +72,7 @@ export const BottomNav: React.FC = () => {
           href={data.settings.githubRepoUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-col items-center justify-center py-1 px-1 rounded-full text-slate-500 hover:text-slate-900 active:scale-95 transition-all"
+          className="flex flex-col items-center justify-center py-1 px-1 rounded-full text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 active:scale-95 transition-all"
         >
           <GithubIcon className="w-5 h-5" />
           <span className="text-xs font-mono font-bold mt-0.5 tracking-tight">

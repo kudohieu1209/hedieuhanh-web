@@ -176,13 +176,13 @@
 .ds-editorial-headline em {
   font-style: italic;
   font-weight: 400;
-  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  background: linear-gradient(135deg, #b91c1c 0%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dark .ds-editorial-headline em {
-  background: linear-gradient(135deg, #38bdf8 0%, #22d3ee 100%);
+  background: linear-gradient(135deg, #f87171 0%, #fbbf24 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -193,20 +193,20 @@
   align-items: center;
   gap: 8px;
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.09);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.06);
   padding: 5px 14px;
   border-radius: 9999px;
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #0284c7;
+  color: #b91c1c;
 }
 
 .dark .ds-hero-badge {
   background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #38bdf8;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  color: #f87171;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -229,15 +229,15 @@
 }
 
 .ds-pill-btn-primary {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 4px 14px rgba(185, 28, 28, 0.35);
 }
 
 .ds-pill-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
+  box-shadow: 0 8px 22px rgba(185, 28, 28, 0.45);
 }
 
 .ds-pill-btn-secondary {

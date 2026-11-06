@@ -13,29 +13,29 @@ export const Topbar: React.FC = () => {
   const currentWeekObj = data.weeks.find(w => w.weekNumber === data.settings.currentWeek);
 
   const pill =
-    'flex items-center gap-2 bg-white/90 backdrop-blur-2xl border border-slate-200/90 rounded-full px-4 py-2 shadow-apple text-xs';
+    'flex items-center gap-2 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-full px-3.5 py-1.5 shadow-apple dark:shadow-apple-dark text-xs';
 
   return (
     <>
       {/* Điện thoại: 2 pill nổi trái / phải, cùng kiểu thanh điều hướng dưới (nội dung cuộn bên dưới) */}
-      <div className="md:hidden fixed top-3 left-4 right-4 z-40 flex items-center justify-between pointer-events-none">
+      <div className="md:hidden fixed top-[calc(0.75rem+env(safe-area-inset-top,0px))] left-3.5 right-3.5 z-40 flex items-center justify-between pointer-events-none">
         <div className={`${pill} pointer-events-auto`}>
           <Terminal className="w-3.5 h-3.5 text-sky-500" />
-          <span className="font-bold font-mono text-slate-900">xv6-riscv</span>
+          <span className="font-bold font-mono text-slate-900 dark:text-slate-100">xv6-riscv</span>
         </div>
         <div className={`${pill} pointer-events-auto`}>
           <span className="ds-live-dot" />
-          <span className="font-bold font-mono text-slate-900">Tuần {data.settings.currentWeek}/7</span>
+          <span className="font-bold font-mono text-slate-900 dark:text-slate-100">Tuần {data.settings.currentWeek}/7</span>
         </div>
       </div>
 
       {/* Máy tính */}
-      <header className="hidden md:flex shrink-0 sticky top-0 z-30 h-14 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 px-4 items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/90 text-xs shadow-2xs">
+      <header className="hidden md:flex shrink-0 sticky top-0 z-30 h-14 bg-white/85 dark:bg-[#0d131f]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 px-4 items-center justify-between shadow-2xs">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-xs shadow-2xs">
           <span className="ds-live-dot" />
-          <span className="font-bold font-mono text-slate-900">Tuần {data.settings.currentWeek}/7</span>
+          <span className="font-bold font-mono text-slate-900 dark:text-slate-100">Tuần {data.settings.currentWeek}/7</span>
           <span className="text-slate-400">·</span>
-          <span className="text-slate-600 font-medium truncate max-w-[320px]">
+          <span className="text-slate-600 dark:text-slate-400 font-medium truncate max-w-[320px]">
             {currentWeekObj?.title || 'Đang thực hiện'}
           </span>
         </div>
@@ -43,7 +43,7 @@ export const Topbar: React.FC = () => {
           href={data.settings.githubRepoUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-sky-500 dark:hover:bg-sky-600 text-white text-xs font-bold shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
         >
           <GithubIcon className="w-3.5 h-3.5" />
           <span>GitHub</span>

@@ -41,7 +41,7 @@ export const TasksPage: React.FC = () => {
   // Column definitions
   const columns: { id: TaskStatus; label: string; color: string; badgeVariant: BadgeVariant }[] = [
     { id: 'todo', label: 'Cần làm', color: 'border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40', badgeVariant: 'default' },
-    { id: 'in_progress', label: 'Đang thực hiện', color: 'border-sky-300 dark:border-sky-900 bg-sky-50/30 dark:bg-sky-950/20', badgeVariant: 'primary' },
+    { id: 'in_progress', label: 'Đang thực hiện', color: 'border-amber-300 dark:border-amber-900 bg-amber-50/40 dark:bg-amber-950/20', badgeVariant: 'warning' },
     { id: 'review', label: 'Chờ kiểm tra', color: 'border-purple-300 dark:border-purple-900 bg-purple-50/30 dark:bg-purple-950/20', badgeVariant: 'purple' },
     { id: 'done', label: 'Hoàn thành', color: 'border-emerald-300 dark:border-emerald-900 bg-emerald-50/30 dark:bg-emerald-950/20', badgeVariant: 'success' },
   ];
@@ -63,7 +63,7 @@ export const TasksPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
         <div>
           <div className="ds-hero-badge mb-2">
-            <CheckSquare className="w-3.5 h-3.5 text-sky-500" />
+            <CheckSquare className="w-3.5 h-3.5 text-red-600" />
             <span>ĐIỀU PHỐI CÔNG VIỆC 3 THÀNH VIÊN</span>
           </div>
           <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
@@ -86,7 +86,7 @@ export const TasksPage: React.FC = () => {
             placeholder="Tìm theo tiêu đề, mô tả hoặc file..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+            className="w-full pl-9 pr-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 font-medium"
           />
         </div>
 
@@ -96,7 +96,7 @@ export const TasksPage: React.FC = () => {
           <select
             value={selectedMemberFilter}
             onChange={(e) => setSelectedMemberFilter(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold focus:outline-none"
+            className="col-span-2 sm:col-span-1 w-full sm:w-auto px-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold focus:outline-none"
           >
             <option value="all">Tất cả thành viên</option>
             {data.members.map(m => (
@@ -137,7 +137,7 @@ export const TasksPage: React.FC = () => {
           onClick={() => setMobileActiveColumn('all')}
           className={`px-3.5 py-1.5 rounded-full font-bold shrink-0 transition-all ${
             mobileActiveColumn === 'all'
-              ? 'bg-sky-500 text-white shadow-xs'
+              ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-xs'
               : 'text-slate-600 dark:text-slate-400'
           }`}
         >
@@ -151,7 +151,7 @@ export const TasksPage: React.FC = () => {
               onClick={() => setMobileActiveColumn(c.id)}
               className={`px-3 py-1.5 rounded-full font-bold shrink-0 transition-all flex items-center gap-1.5 ${
                 mobileActiveColumn === c.id
-                  ? 'bg-sky-500 text-white shadow-xs'
+                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
               }`}
             >
@@ -209,7 +209,7 @@ export const TasksPage: React.FC = () => {
                       <div
                         key={task.id}
                         onClick={() => setActiveTask(task)}
-                        className="p-4 rounded-[20px] border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-sky-400 dark:hover:border-sky-700 shadow-2xs hover:shadow-apple transition-all cursor-pointer group hover:-translate-y-0.5"
+                        className="p-4 rounded-[20px] border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-red-400 dark:hover:border-red-700 shadow-2xs hover:shadow-apple transition-all cursor-pointer group hover:-translate-y-0.5"
                       >
                         {/* Top Badges */}
                         <div className="flex items-center justify-between gap-1.5 mb-2">
@@ -236,7 +236,7 @@ export const TasksPage: React.FC = () => {
                         </div>
 
                         {/* Title */}
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors line-clamp-2 leading-relaxed">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-red-600 transition-colors line-clamp-2 leading-relaxed">
                           {task.title}
                         </h4>
 
@@ -249,7 +249,7 @@ export const TasksPage: React.FC = () => {
                         {task.checklist.length > 0 && (
                           <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
                             <span className="flex items-center gap-1">
-                              <CheckSquare className="w-3 h-3 text-sky-500" />
+                              <CheckSquare className="w-3 h-3 text-red-600" />
                               {completedSubtasks}/{task.checklist.length} checklist
                             </span>
                             <span className="font-mono font-bold">
@@ -266,7 +266,7 @@ export const TasksPage: React.FC = () => {
                                 src={assignee.avatarUrl}
                                 alt={assignee.name}
                                 title={assignee.name}
-                                className="w-5 h-5 rounded-full object-cover ring-1 ring-sky-500/40"
+                                className="w-5 h-5 rounded-full object-cover ring-1 ring-red-500/40"
                               />
                             ) : (
                               <span className="text-[10px] text-slate-400 font-bold">Cả nhóm</span>
@@ -351,7 +351,7 @@ export const TasksPage: React.FC = () => {
                       checked={item.completed}
                       readOnly
                       disabled
-                      className="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 dark:border-slate-700 mt-0.5"
+                      className="w-4 h-4 rounded text-red-600 focus:ring-red-500 border-slate-300 dark:border-slate-700 mt-0.5"
                     />
                     <span className={item.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200 font-semibold'}>
                       {item.text}
@@ -372,7 +372,7 @@ export const TasksPage: React.FC = () => {
                       href={`https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/${file}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 font-mono text-[11px] font-bold hover:underline"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-red-700 dark:text-red-400 font-mono text-[11px] font-bold hover:underline"
                     >
                       <Code2 className="w-3 h-3" />
                       {file}

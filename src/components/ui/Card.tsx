@@ -32,9 +32,9 @@ export const Card: React.FC<CardProps> = ({
       {/* macOS Window Header Bar */}
       {isMac && (
         <div className="ds-mac-titlebar px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/50 backdrop-blur-sm">
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             {/* ba chấm macOS chỉ hiện trên màn hình rộng, điện thoại cần chỗ cho tiêu đề */}
-            <span className="hidden sm:inline-flex" aria-hidden="true">
+            <span className="hidden sm:inline-flex shrink-0" aria-hidden="true">
               <span className="ds-mac-dots">
                 <span className="ds-mac-dot ds-mac-dot-red" />
                 <span className="ds-mac-dot ds-mac-dot-yellow" />
@@ -42,7 +42,7 @@ export const Card: React.FC<CardProps> = ({
               </span>
             </span>
             {macTitle && (
-              <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 sm:ml-2 tracking-tight flex items-center gap-1.5 min-w-0">
+              <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 sm:ml-2 tracking-tight flex items-center gap-1.5 min-w-0 truncate">
                 {macTitle}
               </div>
             )}
