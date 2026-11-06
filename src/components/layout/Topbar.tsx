@@ -13,7 +13,7 @@ export const Topbar: React.FC = () => {
   const currentWeekObj = data.weeks.find(w => w.weekNumber === data.settings.currentWeek);
 
   const pill =
-    'flex items-center gap-2 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-full px-3.5 py-1.5 shadow-apple dark:shadow-apple-dark text-xs';
+    'flex items-center gap-2 bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800/90 rounded-full px-3.5 py-1.5 shadow-apple dark:shadow-apple-dark text-xs';
 
   return (
     <>
