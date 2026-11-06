@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { 
   Milestone, 
   CheckSquare, 
-  GraduationCap
+  Users
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -21,7 +21,7 @@ export const BottomNav: React.FC = () => {
   const navItems = [
     { to: '/', label: 'Lộ trình', icon: Milestone, badge: `T${data.settings.currentWeek}` },
     { to: '/tasks', label: 'Nhiệm vụ', icon: CheckSquare, badge: uncompletedTasksCount > 0 ? uncompletedTasksCount.toString() : undefined },
-    { to: '/questions', label: 'Ôn tập', icon: GraduationCap },
+    { to: '/members', label: 'Thành viên', icon: Users },
   ];
 
   return (
