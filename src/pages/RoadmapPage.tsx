@@ -180,12 +180,12 @@ export const RoadmapPage: React.FC = () => {
                         {/^https?:/.test(week.reportFileUrl) ? (
                           <>
                             <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">Xem báo cáo (OneDrive)</span>
+                            <span className="truncate">Xem báo cáo</span>
                           </>
                         ) : (
                           <>
                             <Download className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">Tải báo cáo (.docx)</span>
+                            <span className="truncate">Tải báo cáo</span>
                           </>
                         )}
                       </a>
