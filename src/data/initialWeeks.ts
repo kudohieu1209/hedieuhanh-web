@@ -13,11 +13,11 @@ import { WEEKLY_REPORTS } from './weeklyReports';
 export const REPORT_LINKS: Record<number, string> = {
   1: '',
   2: '',
-  3: '',
-  4: '',
-  5: '',
-  6: '',
-  7: ''
+  3: 'https://husteduvn-my.sharepoint.com/:w:/r/personal/hieu_md223967_sis_hust_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BE0C25115-10D7-4324-B224-05A47A9FF2B9%7D&file=PROGRESS%20REPORT%20tu%E1%BA%A7n%203.docx&action=default&mobileredirect=true',
+  4: 'https://husteduvn-my.sharepoint.com/:w:/r/personal/hieu_md223967_sis_hust_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B005E0195-0DF4-4073-8B2D-839E579F7AF3%7D&file=PROGRESS%20REPORT%20tu%E1%BA%A7n%204.docx&action=default&mobileredirect=true',
+  5: 'https://husteduvn-my.sharepoint.com/:w:/r/personal/hieu_md223967_sis_hust_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B861878C8-EB98-47EC-A6C6-A913F9423F01%7D&file=PROGRESS%20REPORT%20tu%E1%BA%A7n%205.docx&action=default&mobileredirect=true',
+  6: 'https://husteduvn-my.sharepoint.com/:w:/r/personal/hieu_md223967_sis_hust_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BFCA2BFC6-C8D3-47B8-BF58-28B1D41B79A3%7D&file=PROGRESS%20REPORT%20tu%E1%BA%A7n%206.docx&action=default&mobileredirect=true',
+  7: 'https://husteduvn-my.sharepoint.com/:w:/r/personal/hieu_md223967_sis_hust_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B226E8721-7E1F-4F7D-B237-B8C10BFC2974%7D&file=PROGRESS%20REPORT%20tu%E1%BA%A7n%207.docx&action=default&mobileredirect=true'
 };
 
 const reportFile = (w: number) =>
