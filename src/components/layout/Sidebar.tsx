@@ -8,13 +8,8 @@ import {
   BookOpen, 
   GraduationCap, 
   FileText, 
-  TestTube2, 
-  MessageSquare, 
-  Settings,
   Terminal,
   ExternalLink,
-  ChevronRight,
-  ShieldCheck
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -23,9 +18,9 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
-  const { data, currentMember, overallProgress } = useApp();
+  const { data, overallProgress } = useApp();
 
-  const navItems = [
+  const navItems: { to: string; label: string; icon: typeof LayoutDashboard; badge?: string; badgeColor?: string }[] = [
     { to: '/', label: 'Tổng quan', icon: LayoutDashboard },
     { to: '/roadmap', label: 'Lộ trình 7 tuần', icon: Milestone, badge: `T${data.settings.currentWeek}` },
     { to: '/members', label: 'Thành viên', icon: Users, badge: '3' },
@@ -33,9 +28,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     { to: '/knowledge', label: 'Kiến thức cần nắm', icon: BookOpen, badge: data.knowledgeTopics.length.toString() },
     { to: '/questions', label: 'Ôn tập bảo vệ', icon: GraduationCap, badge: data.defenseQuestions.length.toString() },
     { to: '/documents', label: 'Tài liệu & Báo cáo', icon: FileText, badge: data.documents.length.toString() },
-    { to: '/tests', label: 'Kiểm thử & Lỗi', icon: TestTube2, badge: data.bugs.filter(b => b.status === 'open').length > 0 ? `${data.bugs.filter(b => b.status === 'open').length} lỗi` : undefined, badgeColor: 'bg-rose-500/20 text-rose-600 dark:text-rose-300' },
-    { to: '/meetings', label: 'Nhận xét giảng viên', icon: MessageSquare, badge: data.meetings.length.toString() },
-    { to: '/settings', label: 'Cài đặt', icon: Settings },
   ];
 
   return (
@@ -156,29 +148,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
         </div>
       </nav>
 
-      {/* Current Active Member Footer Card */}
-      <div className="p-3 border-t border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/40">
-        <NavLink
-          to="/members"
-          onClick={onCloseMobile}
-          className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white dark:hover:bg-slate-800/70 shadow-2xs hover:shadow-xs transition-all group border border-transparent hover:border-slate-200/80 dark:hover:border-slate-700/80"
-        >
-          <img
-            src={currentMember.avatarUrl}
-            alt={currentMember.name}
-            className="w-8 h-8 rounded-full object-cover ring-2 ring-sky-500/40 shrink-0"
-          />
-          <div className="min-w-0 flex-1">
-            <div className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-sky-500 transition-colors">
-              {currentMember.name}
-            </div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
-              {currentMember.role}
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
-        </NavLink>
-      </div>
     </aside>
   );
 };

@@ -30,7 +30,7 @@ import { Modal } from '../components/ui/Modal';
 import { Member, MemberId, LearningState } from '../types';
 
 export const MembersPage: React.FC = () => {
-  const { data, currentMember, setCurrentMemberId, updateMember, updateKnowledgeProgress } = useApp();
+  const { data, currentMember, updateMember, updateKnowledgeProgress } = useApp();
   const [selectedMemberId, setSelectedMemberId] = useState<MemberId>(currentMember.id);
   const [editingModal, setEditingModal] = useState(false);
   const [editFormData, setEditFormData] = useState<Member>(currentMember);
@@ -172,15 +172,6 @@ export const MembersPage: React.FC = () => {
               >
                 Sửa hồ sơ
               </Button>
-              {selectedMember.id !== currentMember.id && (
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => setCurrentMemberId(selectedMember.id)}
-                >
-                  Đổi người dùng làm việc
-                </Button>
-              )}
             </div>
           </div>
         </div>

@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Menu, 
   Sun, 
   Moon, 
-  ChevronDown, 
-  Check, 
   Clock, 
-  Calendar,
-  Sparkles,
   ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
-import { MemberId } from '../../types';
 
 const GithubIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3.5" }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -25,8 +20,7 @@ interface TopbarProps {
 }
 
 export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
-  const { data, currentMember, setCurrentMemberId, theme, toggleTheme } = useApp();
-  const [memberDropdownOpen, setMemberDropdownOpen] = useState(false);
+  const { data, theme, toggleTheme } = useApp();
 
   // Compute days until next report
   const calculateDaysLeft = (targetDateStr: string) => {
@@ -110,78 +104,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
           </div>
         </div>
 
-        {/* Right: Quick User Switcher, Theme Toggle & GitHub */}
+        {/* Right: Theme Toggle & GitHub */}
         <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Member Switcher Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setMemberDropdownOpen(!memberDropdownOpen)}
-              className="flex items-center gap-2 p-1.5 pr-3 rounded-full border border-slate-200/90 dark:border-slate-800 bg-white/60 dark:bg-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all text-xs font-semibold shadow-2xs hover:-translate-y-0.5"
-            >
-              <img
-                src={currentMember.avatarUrl}
-                alt={currentMember.name}
-                className="w-6 h-6 rounded-full object-cover ring-2 ring-sky-500/50"
-              />
-              <span className="font-bold text-slate-800 dark:text-slate-200 hidden sm:inline">
-                {currentMember.name}
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-            </button>
-
-            {memberDropdownOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setMemberDropdownOpen(false)}
-                />
-                <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 rounded-[22px] shadow-apple dark:shadow-apple-dark p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800/80 mb-1 flex items-center justify-between">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Góc nhìn thành viên
-                    </div>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold">
-                      Nhóm 3
-                    </span>
-                  </div>
-
-                  <div className="space-y-1">
-                    {data.members.map((member) => (
-                      <button
-                        key={member.id}
-                        onClick={() => {
-                          setCurrentMemberId(member.id as MemberId);
-                          setMemberDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left text-xs transition-all ${
-                          member.id === currentMember.id
-                            ? 'bg-sky-500 text-white font-bold shadow-xs shadow-sky-500/30'
-                            : 'hover:bg-slate-100/80 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <img
-                            src={member.avatarUrl}
-                            alt={member.name}
-                            className={`w-8 h-8 rounded-full object-cover shrink-0 ring-1 ${member.id === currentMember.id ? 'ring-white' : 'ring-slate-300'}`}
-                          />
-                          <div className="min-w-0">
-                            <div className="truncate font-bold">{member.name}</div>
-                            <div className={`text-[10px] truncate ${member.id === currentMember.id ? 'text-sky-100' : 'text-slate-400'}`}>
-                              {member.role}
-                            </div>
-                          </div>
-                        </div>
-                        {member.id === currentMember.id && (
-                          <Check className="w-4 h-4 text-white shrink-0" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
 
           {/* Theme Toggle */}
           <button
