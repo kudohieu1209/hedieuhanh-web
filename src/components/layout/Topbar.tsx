@@ -1,9 +1,5 @@
 import React from 'react';
-import { 
-  Sun, 
-  Moon, 
-  Clock
-} from 'lucide-react';
+import { Terminal } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 const GithubIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3.5" }) => (
@@ -13,122 +9,46 @@ const GithubIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3.5
 );
 
 export const Topbar: React.FC = () => {
-  const { data, theme, toggleTheme } = useApp();
-
-  // Compute days until next report
-  const calculateDaysLeft = (targetDateStr: string) => {
-    try {
-      const target = new Date(targetDateStr);
-      const now = new Date();
-      const diffTime = target.getTime() - now.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays;
-    } catch {
-      return 0;
-    }
-  };
-
-  const daysLeft = calculateDaysLeft(data.settings.nextReportDate);
+  const { data } = useApp();
   const currentWeekObj = data.weeks.find(w => w.weekNumber === data.settings.currentWeek);
 
-  const [, m, d] = data.settings.nextReportDate.split('-');
-  const shortDate = d && m ? `${d}/${m}` : data.settings.nextReportDate;
-
-  const themeButton = (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800 transition-colors shadow-2xs shrink-0"
-      title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng' : 'Chuyển sang Giao diện Tối'}
-      aria-label="Đổi giao diện"
-    >
-      {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
-    </button>
-  );
+  const pill =
+    'flex items-center gap-2 bg-white/90 backdrop-blur-2xl border border-slate-200/90 rounded-full px-4 py-2 shadow-apple text-xs';
 
   return (
     <>
-      {/* Điện thoại: một thanh nổi bo tròn, cùng kiểu với thanh điều hướng dưới */}
-      <div className="md:hidden shrink-0 px-4 pt-3 pb-1">
-        <div className="flex items-center justify-between gap-2 bg-white/90 dark:bg-[#0d131f]/90 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-full pl-4 pr-1.5 py-1.5 shadow-apple dark:shadow-apple-dark">
-          <div className="flex items-center gap-2 min-w-0 text-xs">
-            <span className="ds-live-dot shrink-0" />
-            <span className="font-bold text-slate-900 dark:text-white whitespace-nowrap">Tuần {data.settings.currentWeek}/7</span>
-            <span className="text-slate-400">·</span>
-            <span className="text-slate-600 dark:text-slate-300 whitespace-nowrap">Hạn {shortDate}</span>
-            <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500 text-white font-bold whitespace-nowrap">
-              {daysLeft > 0 ? `Còn ${daysLeft} ngày` : daysLeft === 0 ? 'Hôm nay' : 'Đã qua'}
-            </span>
-          </div>
-          {themeButton}
+      {/* Điện thoại: 2 pill nổi trái / phải, cùng kiểu thanh điều hướng dưới (nội dung cuộn bên dưới) */}
+      <div className="md:hidden fixed top-3 left-4 right-4 z-40 flex items-center justify-between pointer-events-none">
+        <div className={`${pill} pointer-events-auto`}>
+          <Terminal className="w-3.5 h-3.5 text-sky-500" />
+          <span className="font-bold font-mono text-slate-900">xv6-riscv</span>
+        </div>
+        <div className={`${pill} pointer-events-auto`}>
+          <span className="ds-live-dot" />
+          <span className="font-bold text-slate-900">Tuần {data.settings.currentWeek}/7</span>
         </div>
       </div>
 
-    <div className="hidden md:flex flex-col shrink-0 sticky top-0 z-30">
-      {/* Incident.io Style Top Banner */}
-      <div className="ds-top-bar px-3 sm:px-6 py-2 text-xs flex items-center justify-between border-b transition-colors">
-        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar max-w-full">
-          <span className="px-2 py-0.5 rounded-full text-[10.5px] font-bold font-mono tracking-wide bg-sky-500 text-white shadow-xs shrink-0">
-            HUST · ĐỒ ÁN #27
-          </span>
-          <span className="text-slate-700 dark:text-slate-300 font-medium truncate text-xs">
-            Báo cáo Tuần {data.settings.currentWeek}
-            {currentWeekObj?.report && (
-              <>: <strong>{currentWeekObj.report.reportPeriodFrom} – {currentWeekObj.report.reportPeriodTo}</strong></>
-            )}
-            {' '}· Hạn báo cáo: <strong>{data.settings.nextReportDate}</strong>
+      {/* Máy tính */}
+      <header className="hidden md:flex shrink-0 sticky top-0 z-30 h-14 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 px-4 items-center justify-between shadow-2xs">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/90 text-xs shadow-2xs">
+          <span className="ds-live-dot" />
+          <span className="font-bold text-slate-900">Tuần {data.settings.currentWeek} / 7</span>
+          <span className="text-slate-400">·</span>
+          <span className="text-slate-600 font-medium truncate max-w-[320px]">
+            {currentWeekObj?.title || 'Đang thực hiện'}
           </span>
         </div>
-      </div>
-
-      {/* Apple Frosted Glass Top Bar */}
-      <header className="h-14 bg-white/85 dark:bg-[#0d131f]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 px-4 flex items-center justify-between transition-colors shadow-2xs">
-        {/* Left: Mobile Toggle & Week Indicator */}
-        <div className="flex items-center gap-3">
-          {/* Current Week Pill with macOS Pulse Dot */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 text-xs shadow-2xs">
-              <span className="ds-live-dot" />
-              <span className="font-bold text-slate-900 dark:text-white">
-                Tuần {data.settings.currentWeek} / 7
-              </span>
-              <span className="hidden sm:inline text-slate-400">·</span>
-              <span className="hidden sm:inline text-slate-600 dark:text-slate-300 font-medium truncate max-w-[200px]">
-                {currentWeekObj?.title || 'Đang thực hiện'}
-              </span>
-            </div>
-
-            {/* Next Report Countdown */}
-            <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-medium px-3 py-1.5 rounded-full bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/50">
-              <Clock className="w-3.5 h-3.5 text-amber-500" />
-              <span>Hạn báo cáo:</span>
-              <span className="font-bold text-slate-900 dark:text-slate-200">
-                {data.settings.nextReportDate}
-              </span>
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500 text-white font-bold shadow-2xs">
-                {daysLeft > 0 ? `Còn ${daysLeft} ngày` : 'Hôm nay!'}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Theme Toggle & GitHub */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
-
-          {themeButton}
-
-          {/* GitHub Pill Button */}
-          <a
-            href={data.settings.githubRepoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
-          >
-            <GithubIcon className="w-3.5 h-3.5" />
-            <span>GitHub</span>
-          </a>
-        </div>
+        <a
+          href={data.settings.githubRepoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
+        >
+          <GithubIcon className="w-3.5 h-3.5" />
+          <span>GitHub</span>
+        </a>
       </header>
-    </div>
     </>
   );
 };

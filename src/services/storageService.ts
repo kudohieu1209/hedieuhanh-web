@@ -248,13 +248,11 @@ export const loadLocalData = (): AppData => {
       saveLocalData(initial);
       return initial;
     }
-    const parsed = JSON.parse(raw);
     // Web chỉ để xem: mọi dữ liệu luôn lấy từ mã nguồn (cập nhật bằng commit + push).
-    // Trình duyệt chỉ nhớ lựa chọn giao diện sáng / tối.
     const initial = getInitialData();
     return {
       ...initial,
-      settings: { ...initial.settings, theme: parsed.settings?.theme === 'light' ? 'light' : initial.settings.theme },
+      settings: initial.settings,
     };
   } catch (e) {
     console.error('Error loading data from localStorage, resetting to initial data:', e);

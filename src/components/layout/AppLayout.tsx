@@ -41,7 +41,7 @@ export const AppLayout: React.FC = () => {
         <Topbar />
         
         {/* Dynamic Page Content with Smooth Drafting Canvas Backdrop */}
-        <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto px-3.5 pb-3.5 pt-16 sm:px-6 sm:pb-6 md:pt-6 lg:p-8">
           <div className="max-w-7xl mx-auto w-full pb-24 md:pb-12">
             <Outlet />
           </div>

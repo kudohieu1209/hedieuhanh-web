@@ -81,7 +81,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setData(res.data);
           setIsRemote(res.isRemote);
           // Apply theme
-          applyTheme(res.data.settings.theme === 'light' ? 'light' : 'dark');
+          applyTheme('light'); // web chỉ dùng giao diện sáng
         }
       } catch (err) {
         console.error('Failed to load initial app data:', err);

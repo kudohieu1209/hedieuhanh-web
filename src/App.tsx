@@ -9,7 +9,6 @@ import { MembersPage } from './pages/MembersPage';
 import { TasksPage } from './pages/TasksPage';
 import { KnowledgePage } from './pages/KnowledgePage';
 import { QuestionsPage } from './pages/QuestionsPage';
-import { DocumentsPage } from './pages/DocumentsPage';
 
 export function App() {
   return (
@@ -24,7 +23,6 @@ export function App() {
               <Route path="tasks" element={<TasksPage />} />
               <Route path="knowledge" element={<KnowledgePage />} />
               <Route path="questions" element={<QuestionsPage />} />
-              <Route path="documents" element={<DocumentsPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>

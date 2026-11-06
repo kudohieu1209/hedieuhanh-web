@@ -7,7 +7,6 @@ import {
   CheckSquare, 
   BookOpen, 
   GraduationCap, 
-  FileText, 
   Terminal,
   ExternalLink,
 } from 'lucide-react';
@@ -26,7 +25,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     { to: '/tasks', label: 'Quản lý nhiệm vụ', icon: CheckSquare, badge: data.tasks.filter(t => t.status !== 'done').length.toString() },
     { to: '/knowledge', label: 'Kiến thức cần nắm', icon: BookOpen, badge: data.knowledgeTopics.length.toString() },
     { to: '/questions', label: 'Ôn tập bảo vệ', icon: GraduationCap, badge: data.defenseQuestions.length.toString() },
-    { to: '/documents', label: 'Tài liệu & Báo cáo', icon: FileText, badge: data.documents.length.toString() },
   ];
 
   return (
