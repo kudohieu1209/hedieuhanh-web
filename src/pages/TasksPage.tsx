@@ -42,7 +42,7 @@ export const TasksPage: React.FC = () => {
   const columns: { id: TaskStatus; label: string; color: string; badgeVariant: BadgeVariant }[] = [
     { id: 'todo', label: 'Cần làm', color: 'border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40', badgeVariant: 'default' },
     { id: 'in_progress', label: 'Đang thực hiện', color: 'border-amber-300 dark:border-amber-900 bg-amber-50/40 dark:bg-amber-950/20', badgeVariant: 'warning' },
-    { id: 'review', label: 'Chờ kiểm tra', color: 'border-purple-300 dark:border-purple-900 bg-purple-50/30 dark:bg-purple-950/20', badgeVariant: 'purple' },
+    { id: 'review', label: 'Chờ kiểm tra', color: 'border-amber-300 dark:border-amber-900 bg-amber-50/30 dark:bg-amber-950/20', badgeVariant: 'warning' },
     { id: 'done', label: 'Hoàn thành', color: 'border-emerald-300 dark:border-emerald-900 bg-emerald-50/30 dark:bg-emerald-950/20', badgeVariant: 'success' },
   ];
 

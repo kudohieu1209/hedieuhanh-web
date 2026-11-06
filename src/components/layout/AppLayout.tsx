@@ -16,11 +16,6 @@ export const AppLayout: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
         <Topbar />
         
-        {/* Lớp mờ chuyển tiếp đỉnh trên di động giúp nội dung cuộn mượt dưới 2 pill nổi */}
-        <div 
-          aria-hidden="true" 
-          className="md:hidden fixed top-0 inset-x-0 h-16 z-30 pointer-events-none bg-gradient-to-b from-[#eae2d5]/95 via-[#eae2d5]/70 to-transparent dark:from-[#0b0f19]/95 dark:via-[#0b0f19]/70 backdrop-blur-[2px]" 
-        />
 
         {/* Dynamic Page Content with Smooth Drafting Canvas Backdrop */}
         <main className="flex-1 overflow-y-auto px-3.5 pb-3.5 pt-[calc(3.75rem+env(safe-area-inset-top,0px))] sm:px-6 sm:pb-6 md:pt-6 lg:p-8 overscroll-contain">

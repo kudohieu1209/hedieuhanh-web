@@ -33,14 +33,6 @@ export const RoadmapPage: React.FC = () => {
 
   const [copiedDemo, setCopiedDemo] = useState<number | null>(null);
 
-  const statusLabels: Record<WeekStatus, { label: string; variant: BadgeVariant }> = {
-    not_started: { label: 'Chưa bắt đầu', variant: 'default' },
-    in_progress: { label: 'Đang thực hiện', variant: 'primary' },
-    ready_to_report: { label: 'Chờ báo cáo', variant: 'warning' },
-    reported: { label: 'Đã báo cáo', variant: 'purple' },
-    accepted: { label: 'Đã nghiệm thu', variant: 'success' },
-  };
-
   const handleCopyDemo = (weekNum: number, script: string[]) => {
     navigator.clipboard.writeText(script.join('\n'));
     setCopiedDemo(weekNum);
@@ -97,19 +89,9 @@ export const RoadmapPage: React.FC = () => {
                 className="p-3.5 sm:p-5 flex items-center justify-between gap-2 sm:gap-4 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-900/30 transition-colors select-none"
               >
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white line-clamp-2 sm:truncate">
-                      Tuần {week.weekNumber}: {week.title}
-                    </h3>
-                    <Badge variant={statusLabels[week.status].variant}>
-                      {statusLabels[week.status].label}
-                    </Badge>
-                    {week.weekNumber === data.settings.currentWeek && (
-                      <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 font-mono px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-300/50">
-                        [Đang diễn ra]
-                      </span>
-                    )}
-                  </div>
+                  <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white line-clamp-2 sm:truncate">
+                    Tuần {week.weekNumber}: {week.title}
+                  </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 sm:truncate font-medium">
                     {week.subtitle}
                   </p>
@@ -117,7 +99,7 @@ export const RoadmapPage: React.FC = () => {
                   <div className="mt-2 flex items-center gap-2.5 max-w-sm">
                     <div className="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${progressPct === 100 ? 'bg-emerald-500' : 'bg-gradient-to-r from-red-600 to-amber-500'}`}
+                        className="h-full rounded-full bg-red-600 transition-all duration-300"
                         style={{ width: `${progressPct}%` }}
                       />
                     </div>

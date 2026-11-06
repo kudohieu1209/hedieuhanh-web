@@ -100,7 +100,7 @@ export const QuestionsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
         <div>
           <div className="ds-hero-badge mb-2">
-            <GraduationCap className="w-3.5 h-3.5 text-purple-500" />
+            <GraduationCap className="w-3.5 h-3.5 text-red-600" />
             <span>NGÂN HÀNG CÂU HỎI VẤN ĐÁP HỘI ĐỒNG</span>
           </div>
           <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
@@ -117,13 +117,13 @@ export const QuestionsPage: React.FC = () => {
             variant="primary"
             icon={<Play className="w-4 h-4" />}
             onClick={() => startMockQuiz(5)}
-            className="bg-purple-600 hover:bg-purple-500 border-purple-500/30 justify-center shadow-purple-500/25"
+            className="justify-center"
           >
             Thi thử 5 câu
           </Button>
           <Button
             variant="secondary"
-            icon={<Play className="w-4 h-4 text-purple-500" />}
+            icon={<Play className="w-4 h-4 text-red-600" />}
             onClick={() => startMockQuiz(10)}
             className="justify-center"
           >
@@ -208,7 +208,7 @@ export const QuestionsPage: React.FC = () => {
                 {/* Question Header */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <span className="w-8 h-8 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                    <span className="w-8 h-8 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 font-mono font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                       #{idx + 1}
                     </span>
                     <div>
@@ -283,7 +283,7 @@ export const QuestionsPage: React.FC = () => {
           {quizFinished ? (
             /* Quiz Finish Screen */
             <div className="text-center py-6 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center mx-auto ring-4 ring-purple-500/10">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 text-red-600 flex items-center justify-center mx-auto ring-4 ring-red-500/10">
                 <Award className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -318,7 +318,7 @@ export const QuestionsPage: React.FC = () => {
                 {/* Question */}
                 <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 shadow-2xs">
                   <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="purple">
+                    <Badge variant="warning">
                       {categoryLabels[quizQuestions[quizIndex].category]}
                     </Badge>
                     <Badge variant={difficultyLabels[quizQuestions[quizIndex].difficulty].variant}>

@@ -143,7 +143,7 @@ export const KnowledgePage: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-1.5 mb-2">
-                    <Badge variant={topic.category === 'process_signal' ? 'primary' : topic.category === 'tty_layer' ? 'warning' : 'purple'}>
+                    <Badge variant={topic.category === 'process_signal' ? 'primary' : topic.category === 'tty_layer' ? 'warning' : 'default'}>
                       {topic.category === 'process_signal' ? 'Process & Signal' : topic.category === 'tty_layer' ? 'TTY Layer' : 'Shell & Job Control'}
                     </Badge>
                   </div>
