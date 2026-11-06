@@ -7,7 +7,21 @@ import { WEEKLY_REPORTS } from './weeklyReports';
 //
 // Chỉ ghi nhận xét của thầy (lecturerFeedback, postReportRequests) khi thầy đã thật sự nhận xét.
 
-const reportFile = (w: number) => `${import.meta.env.BASE_URL}reports/progress-report-tuan-${w}.docx`;
+// ===== LINK BÁO CÁO (OneDrive) =====
+// Dán link chia sẻ OneDrive của từng tuần vào đây (để "Anyone with the link can view").
+// Tuần nào còn để trống thì web dùng file .docx trong public/reports.
+export const REPORT_LINKS: Record<number, string> = {
+  1: '',
+  2: '',
+  3: '',
+  4: '',
+  5: '',
+  6: '',
+  7: ''
+};
+
+const reportFile = (w: number) =>
+  REPORT_LINKS[w] || `${import.meta.env.BASE_URL}reports/progress-report-tuan-${w}.docx`;
 const report = (w: number) => WEEKLY_REPORTS.find(r => r.weekNumber === w);
 
 export const INITIAL_WEEKS: WeekRoadmap[] = [

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { 
@@ -30,6 +30,20 @@ export const KnowledgePage: React.FC = () => {
   const [selectedTopicId, setSelectedTopicId] = useState<string>(
     searchParams.get('topic') || data.knowledgeTopics[0]?.id || ''
   );
+
+  // Trên điện thoại danh sách nằm trên, nội dung nằm dưới: chọn chủ đề thì cuộn xuống nội dung.
+  const scrollToDetail = () => {
+    if (window.innerWidth < 1024)
+      setTimeout(() => document.getElementById('topic-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  };
+  const selectTopic = (id: string) => {
+    setSelectedTopicId(id);
+    scrollToDetail();
+  };
+  useEffect(() => {
+    if (searchParams.get('topic')) scrollToDetail(); // mở từ link ở trang Lộ trình
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const categories: { id: KnowledgeCategory | 'all'; label: string; icon: any }[] = [
     { id: 'all', label: 'Tất cả bài học', icon: Layers },
@@ -129,7 +143,7 @@ export const KnowledgePage: React.FC = () => {
               return (
                 <div
                   key={topic.id}
-                  onClick={() => setSelectedTopicId(topic.id)}
+                  onClick={() => selectTopic(topic.id)}
                   className={`p-4 rounded-[20px] border text-left transition-all cursor-pointer ${
                     isSelected
                       ? 'border-sky-500 bg-white dark:bg-slate-900 shadow-md ring-2 ring-sky-500/30'
@@ -159,7 +173,7 @@ export const KnowledgePage: React.FC = () => {
 
         {/* Right Column: Detailed Reader View (8 Cols) as Apple macOS Window */}
         {selectedTopic && (
-          <div className="lg:col-span-8">
+          <div id="topic-detail" className="lg:col-span-8 scroll-mt-24">
             <Card 
               trafficLights 
               macTitle={selectedTopic.title}

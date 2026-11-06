@@ -31,6 +31,12 @@ import { WeeklyProgressReportTab } from '../components/report/WeeklyProgressRepo
 export const RoadmapPage: React.FC = () => {
   const { data, updateWeek } = useApp();
   const [expandedWeek, setExpandedWeek] = useState<number>(data.settings.currentWeek);
+
+  // mở một tuần từ dải T1–T7 và cuộn tới thẻ của tuần đó (hữu ích trên điện thoại)
+  const openWeek = (n: number) => {
+    setExpandedWeek(n);
+    setTimeout(() => document.getElementById(`week-card-${n}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  };
   const [editingWeek, setEditingWeek] = useState<WeekRoadmap | null>(null);
   const [copiedDemo, setCopiedDemo] = useState<number | null>(null);
   const [weekSubTabs, setWeekSubTabs] = useState<Record<number, 'plan' | 'report'>>({});
@@ -99,7 +105,7 @@ export const RoadmapPage: React.FC = () => {
       </div>
 
       {/* 7-Week Timeline Overview Bar */}
-      <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+      <div className="flex overflow-x-auto no-scrollbar snap-x gap-2 -mx-3.5 px-3.5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-4 lg:grid-cols-7 sm:overflow-visible">
         {data.weeks.map((w) => {
           const isCurrent = w.weekNumber === data.settings.currentWeek;
           const isExpanded = w.weekNumber === expandedWeek;
@@ -109,8 +115,8 @@ export const RoadmapPage: React.FC = () => {
           return (
             <button
               key={w.weekNumber}
-              onClick={() => setExpandedWeek(w.weekNumber)}
-              className={`p-3 rounded-[18px] border text-left transition-all ${
+              onClick={() => openWeek(w.weekNumber)}
+              className={`p-3 rounded-[18px] border text-left transition-all shrink-0 w-[118px] sm:w-auto snap-start ${
                 isExpanded
                   ? 'border-sky-500 ring-2 ring-sky-500/20 bg-white dark:bg-slate-900 shadow-md -translate-y-0.5'
                   : 'border-slate-200/90 dark:border-slate-800/90 hover:border-slate-300 dark:hover:border-slate-700 bg-white/80 dark:bg-[#111827]/80 shadow-2xs hover:shadow-xs'
@@ -149,8 +155,9 @@ export const RoadmapPage: React.FC = () => {
           return (
             <Card
               key={week.weekNumber}
+              id={`week-card-${week.weekNumber}`}
               trafficLights={isExpanded}
-              macTitle={isExpanded ? `Chi Tiết Tuần ${week.weekNumber}: ${week.title}` : undefined}
+              macTitle={isExpanded ? <span className="hidden sm:inline">Chi Tiết Tuần {week.weekNumber}: {week.title}</span> : undefined}
               macAction={
                 isExpanded ? (
                   <Badge variant={statusLabels[week.status].variant}>
@@ -158,17 +165,17 @@ export const RoadmapPage: React.FC = () => {
                   </Badge>
                 ) : undefined
               }
-              className={`transition-all duration-300 ${
+              className={`transition-all duration-300 scroll-mt-24 ${
                 isExpanded ? 'ring-2 ring-sky-500/20 shadow-apple' : 'opacity-95'
               }`}
             >
               {/* Header Bar */}
               <div
                 onClick={() => setExpandedWeek(isExpanded ? 0 : week.weekNumber)}
-                className="p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-900/30 transition-colors select-none"
+                className="p-3.5 sm:p-5 flex items-center justify-between gap-2 sm:gap-4 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-900/30 transition-colors select-none"
               >
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-mono font-bold text-sm shrink-0 shadow-xs ${
+                <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center font-mono font-bold text-sm shrink-0 shadow-xs ${
                     week.status === 'accepted'
                       ? 'bg-emerald-500 text-white'
                       : week.weekNumber === data.settings.currentWeek
@@ -179,7 +186,7 @@ export const RoadmapPage: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate">
+                      <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white line-clamp-2 sm:truncate">
                         Tuần {week.weekNumber}: {week.title}
                       </h3>
                       {!isExpanded && (
@@ -193,7 +200,7 @@ export const RoadmapPage: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate font-medium">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 sm:truncate font-medium">
                       {week.subtitle}
                     </p>
                   </div>
@@ -225,34 +232,36 @@ export const RoadmapPage: React.FC = () => {
 
               {/* Expanded Detailed Content */}
               {isExpanded && (
-                <div className="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-800/80 space-y-6">
+                <div className="p-3 sm:p-6 border-t border-slate-100 dark:border-slate-800/80 space-y-4 sm:space-y-6">
                   {/* Sub-tab Navigation: Kế hoạch vs Báo cáo tiến độ (Mẫu HUST) */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
                     <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
                       <button
                         type="button"
                         onClick={() => setWeekTab(week.weekNumber, 'plan')}
-                        className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                        className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-all ${
                           getActiveTab(week.weekNumber) === 'plan'
                             ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                         }`}
                       >
                         <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">Kế hoạch &amp; Nhiệm vụ</span>
+                        <span className="truncate sm:hidden">Kế hoạch</span>
+                        <span className="truncate hidden sm:inline">Kế hoạch &amp; Nhiệm vụ</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setWeekTab(week.weekNumber, 'report')}
-                        className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                        className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-all ${
                           getActiveTab(week.weekNumber) === 'report'
                             ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                         }`}
                       >
                         <FileText className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">Báo cáo (Mẫu Word HUST)</span>
+                        <span className="truncate sm:hidden">Báo cáo</span>
+                        <span className="truncate hidden sm:inline">Báo cáo (Mẫu Word HUST)</span>
                         <Badge
                           variant={
                             week.report?.status === 'submitted' ? 'success' :
@@ -268,7 +277,7 @@ export const RoadmapPage: React.FC = () => {
                       </button>
                     </div>
 
-                    <div className="text-[11px] text-slate-500 font-medium">
+                    <div className="hidden sm:block text-[11px] text-slate-500 font-medium">
                       {getActiveTab(week.weekNumber) === 'plan' 
                         ? 'Tiêu chí nghiệm thu & phân công 3 thành viên' 
                         : 'Mẫu chuẩn 5 phần theo Progress-Report-template.docx (TS. Phạm Văn Tiến)'}
@@ -286,7 +295,7 @@ export const RoadmapPage: React.FC = () => {
                             <Calendar className="w-3.5 h-3.5 text-sky-500" />
                             Ngày hẹn báo cáo: <strong className="font-mono text-sky-600 dark:text-sky-400">{week.customReportDate}</strong>
                           </span>
-                          <span>·</span>
+                          <span className="hidden sm:inline">·</span>
                           <span className="text-slate-500">
                             Cập nhật: {new Date(week.updatedAt).toLocaleDateString('vi-VN')}
                           </span>
@@ -306,11 +315,11 @@ export const RoadmapPage: React.FC = () => {
 
                       {/* 2 Columns: Goals & Deliverables */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Goals */}
-                        <div className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] shadow-2xs">
+                        {/* Mục tiêu tuần + kiến thức cần nắm (gộp một khối) */}
+                        <div className="p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] shadow-2xs">
                           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 flex items-center gap-1.5">
                             <span className="ds-live-dot" />
-                            Mục tiêu tuần
+                            Mục tiêu &amp; kiến thức cần nắm
                           </h4>
                           <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                             {week.goals.map((g, idx) => (
@@ -320,10 +329,29 @@ export const RoadmapPage: React.FC = () => {
                               </li>
                             ))}
                           </ul>
+                          {(() => {
+                            const topics = data.knowledgeTopics.filter(t => t.weeks?.includes(week.weekNumber));
+                            if (topics.length === 0) return null;
+                            return (
+                              <ul className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2 text-xs">
+                                {topics.map(t => (
+                                  <li key={t.id} className="flex items-start gap-2">
+                                    <BookOpen className="w-3.5 h-3.5 text-sky-500 mt-0.5 shrink-0" />
+                                    <Link
+                                      to={`/knowledge?topic=${t.id}`}
+                                      className="font-semibold text-sky-700 dark:text-sky-300 hover:underline leading-relaxed"
+                                    >
+                                      {t.title}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            );
+                          })()}
                         </div>
 
                         {/* Deliverables */}
-                        <div className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] shadow-2xs">
+                        <div className="p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] shadow-2xs">
                           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 flex items-center gap-1.5">
                             <span className="ds-live-dot" />
                             Sản phẩm bàn giao
@@ -339,33 +367,6 @@ export const RoadmapPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Knowledge topics to master this week */}
-                      {(() => {
-                        const topics = data.knowledgeTopics.filter(t => t.weeks?.includes(week.weekNumber));
-                        if (topics.length === 0) return null;
-                        return (
-                          <div className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] shadow-2xs">
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 flex items-center gap-1.5">
-                              <BookOpen className="w-3.5 h-3.5" />
-                              Kiến thức cần nắm tuần này
-                            </h4>
-                            <ul className="space-y-2 text-xs">
-                              {topics.map(t => (
-                                <li key={t.id}>
-                                  <Link
-                                    to={`/knowledge?topic=${t.id}`}
-                                    className="font-bold text-sky-700 dark:text-sky-300 hover:underline"
-                                  >
-                                    {t.title}
-                                  </Link>
-                                  <span className="block text-slate-600 dark:text-slate-400 leading-relaxed">{t.shortSummary}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })()}
-
                       {/* 3 Members Specific Assignments */}
                       <div className="space-y-2.5">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -375,7 +376,7 @@ export const RoadmapPage: React.FC = () => {
                           {data.members.map((m) => {
                             const tasks = week.memberAssignments[m.id] || [];
                             return (
-                              <div key={m.id} className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs">
+                              <div key={m.id} className="p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs">
                                 <div className="flex items-center gap-2 mb-2.5 pb-2 border-b border-slate-100 dark:border-slate-800/80">
                                   <img
                                     src={m.avatarUrl}
@@ -486,7 +487,7 @@ export const RoadmapPage: React.FC = () => {
                         {week.reportFileUrl && (
                           <a
                             href={week.reportFileUrl}
-                            download
+                            {...(/^https?:/.test(week.reportFileUrl) ? { target: '_blank', rel: 'noopener noreferrer' } : { download: true })}
                             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-all shadow-2xs hover:-translate-y-0.5"
                           >
                             <Download className="w-3.5 h-3.5" />

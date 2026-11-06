@@ -43,7 +43,7 @@ export const DocumentsPage: React.FC = () => {
   const [newNotes, setNewNotes] = useState('');
 
   const typeLabels: Record<DocumentType, { label: string; variant: BadgeVariant; icon: any }> = {
-    report_pdf: { label: 'Báo cáo PDF', variant: 'primary', icon: FileText },
+    report_pdf: { label: 'Báo cáo tuần (.docx)', variant: 'primary', icon: FileText },
     slide: { label: 'Slide Thuyết trình', variant: 'warning', icon: Presentation },
     research: { label: 'Tài liệu Nghiên cứu', variant: 'purple', icon: Compass },
     diagram: { label: 'Sơ đồ Kiến trúc', variant: 'default', icon: Layers },
@@ -91,20 +91,13 @@ export const DocumentsPage: React.FC = () => {
             <span>KHO LƯU TRỮ VĂN BẢN &amp; TÀI LIỆU</span>
           </div>
           <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
-            Quản Lý Tài Liệu &amp; <em>Báo Cáo PDF HUST</em>
+            Tài Liệu &amp; <em>Báo Cáo Tuần</em>
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
-            Lưu trữ tập trung các báo cáo PDF từng tuần, slide thuyết trình, sơ đồ kiến trúc và nhận xét của TS. Phạm Văn Tiến.
+            Các file báo cáo tiến độ (.docx) đã nộp hoặc đang soạn của từng tuần.
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          icon={<Plus className="w-4 h-4" />}
-          onClick={() => setIsAddingModal(true)}
-        >
-          Thêm tài liệu mới
-        </Button>
       </div>
 
       {/* Filter Toolbar with Apple Pill Controls */}
@@ -174,7 +167,7 @@ export const DocumentsPage: React.FC = () => {
               }
               className="flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-all hover:shadow-apple-hover hover:-translate-y-0.5"
             >
-              <div className="p-5 flex-1 flex flex-col justify-between">
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                 <div>
                   {/* Title */}
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-2 leading-relaxed">
@@ -196,35 +189,65 @@ export const DocumentsPage: React.FC = () => {
                       <User className="w-3 h-3 text-sky-500" />
                       {doc.uploaderName}
                     </span>
-                    <span className="font-mono">{doc.fileSize} · {doc.version}</span>
+                    <span className="font-mono">{doc.fileSize ? `${doc.fileSize} · ` : ''}{doc.version}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      className="flex-1 text-xs"
-                      icon={<Eye className="w-3.5 h-3.5" />}
-                      onClick={() => setViewingDoc(doc)}
-                    >
-                      Xem tài liệu
-                    </Button>
-                    <a
-                      href={doc.fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
-                      title="Mở tab mới"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                    <button
-                      onClick={() => deleteDocument(doc.id)}
-                      className="p-2 rounded-full border border-slate-200 dark:border-slate-800 hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors"
-                      title="Xóa tài liệu"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    {/^https?:/.test(doc.fileUrl) ? (
+                      // link OneDrive: mở trang OneDrive, người xem tải file từ đó
+                      <a
+                        href={doc.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-xs transition-colors"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        Mở link tải (OneDrive)
+                      </a>
+                    ) : doc.fileUrl.endsWith('.docx') ? (
+                      <>
+                        {/* .docx không xem được trong iframe: tải về, hoặc mở bằng trình xem Office (đọc được trên điện thoại) */}
+                        <a
+                          href={doc.fileUrl}
+                          download
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-xs transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          Tải file .docx
+                        </a>
+                        <a
+                          href={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(new URL(doc.fileUrl, window.location.origin).href)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-3 py-2 rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold transition-colors"
+                          title="Xem online bằng Office (không cần Word)"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          Xem online
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          className="flex-1 text-xs"
+                          icon={<Eye className="w-3.5 h-3.5" />}
+                          onClick={() => setViewingDoc(doc)}
+                        >
+                          Xem tài liệu
+                        </Button>
+                        <a
+                          href={doc.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                          title="Mở tab mới"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

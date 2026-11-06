@@ -35,7 +35,7 @@ export interface AppData {
   settings: AppSettings;
 }
 
-const STORAGE_KEY = 'xv6_hub_data_v7';
+const STORAGE_KEY = 'xv6_hub_data_v8';
 
 export const getInitialData = (): AppData => {
   const base: AppData = {
@@ -252,6 +252,13 @@ export const loadLocalData = (): AppData => {
     // Ensure backwards compatibility and default fields
     const initial = getInitialData();
     const loadedWeeks = (parsed.weeks || INITIAL_WEEKS).map((w: WeekRoadmap) => {
+      // Link báo cáo (OneDrive / .docx) và nội dung báo cáo luôn lấy từ mã nguồn,
+      // để link mới dán vào initialWeeks.ts hiện ra cả với người đã mở web trước đó.
+      const fresh = INITIAL_WEEKS.find(x => x.weekNumber === w.weekNumber);
+      if (fresh) {
+        w.reportFileUrl = fresh.reportFileUrl;
+        if (fresh.report) w.report = fresh.report;
+      }
       if (!w.report) {
         w.report = generateDraftReport(w.weekNumber, initial);
       }
@@ -264,7 +271,8 @@ export const loadLocalData = (): AppData => {
       tasks: parsed.tasks || INITIAL_TASKS,
       knowledgeTopics: parsed.knowledgeTopics || KNOWLEDGE_TOPICS,
       defenseQuestions: parsed.defenseQuestions || DEFENSE_QUESTIONS,
-      documents: parsed.documents || INITIAL_DOCUMENTS,
+      // báo cáo tuần luôn theo mã nguồn; tài liệu người dùng tự thêm vẫn giữ
+      documents: [...INITIAL_DOCUMENTS, ...(parsed.documents || []).filter((d: { id: string }) => !d.id.startsWith('doc-report-'))],
       testCases: parsed.testCases || INITIAL_TESTS,
       bugs: parsed.bugs || INITIAL_BUGS,
       meetings: parsed.meetings || INITIAL_MEETINGS,

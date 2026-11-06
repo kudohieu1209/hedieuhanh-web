@@ -30,26 +30,21 @@ import { Progress } from '../components/ui/Progress';
 import { Modal } from '../components/ui/Modal';
 
 export const DashboardPage: React.FC = () => {
-  const { data, currentMember, overallProgress, taskStats, updateSettings } = useApp();
+  const { data, overallProgress, taskStats, updateSettings } = useApp();
   const [editingDateModal, setEditingDateModal] = useState(false);
   const [newDateInput, setNewDateInput] = useState(data.settings.nextReportDate);
-  const [selectedPdfUrl, setSelectedPdfUrl] = useState<string | null>(null);
 
-  // My Tasks
-  const myTasks = data.tasks.filter(
-    t => (t.assigneeId === currentMember.id || t.assigneeId === 'all') && t.status !== 'done'
+  // Nhiệm vụ tuần hiện tại của cả nhóm (web không có đăng nhập nên không có "của tôi")
+  const weekTasks = data.tasks.filter(
+    t => t.weekNumber === data.settings.currentWeek && t.status !== 'done'
   );
+  const memberOf = (id: string) => data.members.find(m => m.id === id);
 
-  // Recent PDF Report
-  const recentReport = data.documents.find(d => d.type === 'report_pdf') || data.documents[0];
-
-  // Weak spots (Questions where current member marked not_understood or untested)
+  // Câu hỏi có ít nhất một thành viên tự đánh giá là chưa hiểu
   const weakQuestions = data.defenseQuestions.filter(
-    q => q.memberRatings[currentMember.id] === 'not_understood'
+    q => Object.values(q.memberRatings).includes('not_understood')
   );
 
-  // Open Bugs
-  const openBugs = data.bugs.filter(b => b.status !== 'resolved');
 
   // Next week milestone
   const currentWeek = data.weeks.find(w => w.weekNumber === data.settings.currentWeek);
@@ -70,14 +65,13 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Editorial Headline */}
-        <h1 className="ds-editorial-headline text-3xl sm:text-5xl lg:text-6xl text-slate-900 dark:text-white mb-4">
-          Kiến trúc TTY Layer &amp; Job Control,<br />
-          <em>bảo vệ đồ án hoàn hảo trước hội đồng.</em>
+        <h1 className="ds-editorial-headline text-[28px] leading-tight sm:text-5xl lg:text-6xl text-slate-900 dark:text-white mb-4">
+          TTY Layer &amp; Job Control
         </h1>
 
         {/* Editorial Subtitle */}
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed mb-6 font-normal">
-          Nền tảng quản lý tiến độ 7 tuần, điều phối 3 thành viên, thư viện kiến thức chuyên sâu và ngân hàng câu hỏi vấn đáp cho sinh viên ĐHBK Hà Nội.
+          Quản lý tiến độ 7 tuần
         </p>
 
         {/* Pill Action Buttons */}
@@ -141,7 +135,7 @@ export const DashboardPage: React.FC = () => {
       </section>
 
       {/* Grid: 4 Metric Cards as Apple macOS Windows */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {/* Metric 1: Current Week & Progress */}
         <Card 
           hover 
@@ -151,9 +145,9 @@ export const DashboardPage: React.FC = () => {
             <Badge variant="primary">Tuần {data.settings.currentWeek}/7</Badge>
           }
         >
-          <CardContent className="p-5">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
+              <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
                 {overallProgress}%
               </span>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
@@ -178,9 +172,9 @@ export const DashboardPage: React.FC = () => {
             </span>
           }
         >
-          <CardContent className="p-5">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
+              <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
                 {taskStats.completed}
               </span>
               <span className="text-xs text-slate-400 font-medium">
@@ -218,9 +212,9 @@ export const DashboardPage: React.FC = () => {
             </button>
           }
         >
-          <CardContent className="p-5">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">
+              <span className="text-lg sm:text-2xl font-extrabold font-mono text-slate-900 dark:text-white">
                 {data.settings.nextReportDate}
               </span>
             </div>
@@ -240,12 +234,12 @@ export const DashboardPage: React.FC = () => {
             <Badge variant="purple">25+ câu</Badge>
           }
         >
-          <CardContent className="p-5">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
-                {data.defenseQuestions.filter(q => q.memberRatings[currentMember.id] === 'confident').length}
+              <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
+                {data.defenseQuestions.filter(q => Object.values(q.memberRatings).every(r => r === 'confident')).length}
               </span>
-              <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold">câu vững vàng</span>
+              <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold text-right">câu cả nhóm vững</span>
             </div>
             <div className="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
               <span>Cần ôn lại:</span>
@@ -258,13 +252,13 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Main Content Grid: 2 Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (2 Cols): My Tasks & 3-Member Progress */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Card: Nhiệm vụ của người đang đăng nhập */}
+      <div>
+        {/* Nhiệm vụ tuần + tiến độ 3 thành viên: cạnh nhau trên màn hình rộng */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+          {/* Card: nhiệm vụ tuần hiện tại của cả nhóm */}
           <Card 
             trafficLights 
-            macTitle={`Nhiệm Vụ Của Tôi — ${currentMember.name}`}
+            macTitle={`Nhiệm Vụ Tuần ${data.settings.currentWeek}`}
             macAction={
               <Link to="/tasks">
                 <Button variant="ghost" size="sm" icon={<ArrowRight className="w-3.5 h-3.5" />}>
@@ -275,35 +269,35 @@ export const DashboardPage: React.FC = () => {
           >
             <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Các đầu việc ưu tiên cần hoàn thiện và bàn giao trước buổi báo cáo tuần
+                Các việc của cả nhóm chưa xong, cần bàn giao trước buổi báo cáo tuần
               </p>
             </div>
 
             <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
-              {myTasks.length === 0 ? (
+              {weekTasks.length === 0 ? (
                 <div className="p-8 text-center text-sm text-slate-400">
                   <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2 opacity-80" />
-                  Bạn đã hoàn thành tất cả nhiệm vụ được giao!
+                  Cả nhóm đã xong các nhiệm vụ của tuần này!
                 </div>
               ) : (
-                myTasks.slice(0, 4).map((task) => (
+                weekTasks.slice(0, 6).map((task) => (
                   <div key={task.id} className="p-4 flex items-start justify-between gap-3 hover:bg-slate-50/60 dark:hover:bg-slate-900/30 transition-colors">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                        <Badge
-                          variant={
-                            task.priority === 'urgent' ? 'danger' :
-                            task.priority === 'high' ? 'warning' : 'default'
-                          }
-                        >
-                          {task.priority === 'urgent' ? 'Khẩn cấp' : task.priority === 'high' ? 'Ưu tiên cao' : 'Thường'}
-                        </Badge>
-                        <span className="text-xs text-slate-400 font-mono font-medium">Tuần {task.weekNumber}</span>
+                        {(() => {
+                          const m = memberOf(task.assigneeId);
+                          return (
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                              {m && <img src={m.avatarUrl} alt="" className="w-4 h-4 rounded-full" />}
+                              {m ? m.name : 'Cả nhóm'}
+                            </span>
+                          );
+                        })()}
                         {task.deadline && (
                           <span className="text-xs text-slate-400">· Hạn: {task.deadline}</span>
                         )}
                       </div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-2 sm:truncate">
                         {task.title}
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
@@ -416,151 +410,6 @@ export const DashboardPage: React.FC = () => {
           </Card>
         </div>
 
-        {/* Right Column (1 Col): Latest PDF, Weak Spots & Active Bugs */}
-        <div className="space-y-6">
-          {/* Latest PDF Report */}
-          <Card 
-            trafficLights 
-            macTitle="Báo Cáo Tiến Độ Gần Nhất"
-          >
-            <CardContent className="p-5">
-              {recentReport ? (
-                <div className="p-4 rounded-2xl border border-sky-500/20 bg-sky-500/5 dark:bg-sky-950/20 shadow-2xs">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 shadow-xs">
-                      <FileText className="w-5 h-5" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
-                        {recentReport.title}
-                      </div>
-                      <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-1">
-                        <span className="font-semibold text-sky-600 dark:text-sky-400">Tuần {recentReport.weekNumber}</span>
-                        <span>·</span>
-                        <span>{recentReport.fileSize}</span>
-                        <span>·</span>
-                        <span>{recentReport.version}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-3.5 flex items-center gap-2">
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => setSelectedPdfUrl(recentReport.fileUrl)}
-                    >
-                      Xem Báo Cáo
-                    </Button>
-                    <Link to="/documents">
-                      <Button variant="secondary" size="sm">
-                        Tất cả
-                      </Button>
-                    </Link>
-                  </div>
-                  <div className="mt-3 pt-2.5 border-t border-sky-500/10">
-                    <Link
-                      to="/roadmap"
-                      className="text-xs text-sky-600 dark:text-sky-400 hover:underline flex items-center justify-between font-semibold"
-                    >
-                      <span>Soạn báo cáo Tuần {data.settings.currentWeek} (Mẫu Word HUST)</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-xs text-slate-400">Chưa có file báo cáo nào.</p>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Weak Knowledge Spots */}
-          <Card 
-            trafficLights 
-            macTitle="Nội Dung Cần Ôn Lại"
-            macAction={
-              <Badge variant="warning">{weakQuestions.length} câu</Badge>
-            }
-          >
-            <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Các câu hỏi vấn đáp {currentMember.name} chưa tự tin
-              </p>
-            </div>
-            <CardContent className="space-y-2.5 p-5">
-              {weakQuestions.length === 0 ? (
-                <div className="p-4 text-center text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl">
-                  <CheckCircle2 className="w-5 h-5 mx-auto mb-1 opacity-80" />
-                  Bạn không có câu hỏi nào bị đánh giá yếu!
-                </div>
-              ) : (
-                weakQuestions.slice(0, 3).map((q) => (
-                  <div key={q.id} className="p-3 rounded-xl border border-slate-200/90 dark:border-slate-800 text-xs bg-slate-50/50 dark:bg-slate-900/30">
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
-                      {q.question}
-                    </div>
-                    <div className="flex items-center justify-between mt-2 text-[11px]">
-                      <span className="text-slate-400 font-mono">{q.codeReference.split(':')[0]}</span>
-                      <Link to="/questions" className="text-sky-600 dark:text-sky-400 font-bold hover:underline">
-                        Ôn ngay →
-                      </Link>
-                    </div>
-                  </div>
-                ))
-              )}
-            </CardContent>
-            <CardFooter>
-              <Link to="/questions" className="w-full">
-                <Button variant="secondary" size="sm" className="w-full">
-                  Mở Ngân Hàng Câu Hỏi ({data.defenseQuestions.length})
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-
-          {/* Active Bugs Pending */}
-          <Card 
-            trafficLights 
-            macTitle="Lỗi Đang Chờ Xử Lý"
-            macAction={
-              <Badge variant={openBugs.length > 0 ? "danger" : "success"}>
-                {openBugs.length > 0 ? `${openBugs.length} lỗi` : "0 lỗi"}
-              </Badge>
-            }
-          >
-            <CardContent className="space-y-2.5 p-5">
-              {openBugs.length === 0 ? (
-                <div className="p-4 text-center text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl">
-                  <CheckCircle2 className="w-5 h-5 mx-auto mb-1 text-emerald-500" />
-                  Không có lỗi nào đang mở. xv6 usertests ALL PASSED!
-                </div>
-              ) : (
-                openBugs.map((bug) => (
-                  <div key={bug.id} className="p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/20 text-xs">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 truncate">
-                        {bug.title}
-                      </span>
-                      <Badge variant="danger" dot>
-                        {bug.severity}
-                      </Badge>
-                    </div>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                      {bug.description}
-                    </p>
-                  </div>
-                ))
-              )}
-            </CardContent>
-            <CardFooter>
-              <Link to="/tests" className="w-full">
-                <Button variant="secondary" size="sm" className="w-full">
-                  Quản lý Kiểm thử &amp; Lỗi
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-        </div>
       </div>
 
       {/* Modal: Đổi ngày báo cáo tiếp theo */}
@@ -593,38 +442,6 @@ export const DashboardPage: React.FC = () => {
         </div>
       </Modal>
 
-      {/* Modal: Xem PDF Báo Cáo */}
-      <Modal
-        isOpen={!!selectedPdfUrl}
-        onClose={() => setSelectedPdfUrl(null)}
-        title="Xem Báo Cáo Đồ Án"
-        subtitle={recentReport?.title}
-        maxWidth="4xl"
-      >
-        <div className="space-y-4">
-          <div className="w-full h-[550px] bg-slate-900 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-800 p-2 shadow-inner">
-            <iframe
-              src={selectedPdfUrl || ''}
-              className="w-full h-full rounded-xl"
-              title="PDF Viewer"
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <a
-              href={selectedPdfUrl || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-sky-500 hover:underline flex items-center gap-1 font-semibold"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Mở trong tab mới
-            </a>
-            <Button variant="secondary" onClick={() => setSelectedPdfUrl(null)}>
-              Đóng
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 };
