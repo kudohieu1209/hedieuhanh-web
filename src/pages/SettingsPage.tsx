@@ -210,9 +210,18 @@ ON CONFLICT (id) DO NOTHING;`;
         <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Settings className="w-6 h-6 text-sky-500" />
           Cài Đặt Hệ Thống & Đồng Bộ Supabase
+      <div className="border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
+        <div className="ds-hero-badge mb-2">
+          <Settings className="w-3.5 h-3.5 text-sky-500" />
+          <span>CẤU HÌNH HỆ THỐNG &amp; CƠ SỞ DỮ LIỆU</span>
+        </div>
+        <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+          Cài Đặt Hệ Thống &amp; <em>Đồng Bộ Supabase</em>
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
           Quản lý chế độ hoạt động (Demo Mode / Team Mode), cấu hình PostgreSQL Supabase, sao lưu và khôi phục dữ liệu
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+          Quản lý chế độ hoạt động (Demo Mode / Team Mode), kết nối cơ sở dữ liệu PostgreSQL Supabase, sao lưu và khôi phục dữ liệu nhóm.
         </p>
       </div>
 
@@ -232,13 +241,29 @@ ON CONFLICT (id) DO NOTHING;`;
                 </Badge>
               </div>
               <CardDescription>
+          {/* Supabase Team Mode Card as Apple macOS Window */}
+          <Card 
+            trafficLights 
+            macTitle="Kết Nối Supabase (Team Mode)"
+            macAction={
+              <Badge variant={isRemote ? 'success' : 'warning'}>
+                {isRemote ? 'Team Mode (Synced)' : 'Demo Mode (Local)'}
+              </Badge>
+            }
+          >
+            <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Điền thông tin Project URL và Public Anon Key từ bảng điều khiển Supabase của nhóm
               </CardDescription>
             </CardHeader>
+              </p>
+            </div>
 
             <CardContent className="space-y-4 text-xs">
+            <CardContent className="space-y-4 text-xs p-5">
               <div>
                 <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                <label className="block font-bold mb-1.5 text-slate-700 dark:text-slate-300">
                   Supabase Project URL:
                 </label>
                 <input
@@ -247,11 +272,13 @@ ON CONFLICT (id) DO NOTHING;`;
                   onChange={(e) => setSupabaseUrl(e.target.value)}
                   placeholder="https://your-project.supabase.co"
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
                 />
               </div>
 
               <div>
                 <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                <label className="block font-bold mb-1.5 text-slate-700 dark:text-slate-300">
                   Supabase Anon Public Key:
                 </label>
                 <input
@@ -260,11 +287,13 @@ ON CONFLICT (id) DO NOTHING;`;
                   onChange={(e) => setSupabaseKey(e.target.value)}
                   placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
                 />
               </div>
 
               {connectionResult && (
                 <div className={`p-3 rounded-lg border text-xs leading-relaxed flex items-start gap-2 ${
+                <div className={`p-3.5 rounded-2xl border text-xs leading-relaxed flex items-start gap-2.5 shadow-2xs ${
                   connectionResult.success
                     ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-300'
                     : 'bg-rose-500/10 border-rose-500/20 text-rose-800 dark:text-rose-300'
@@ -275,10 +304,12 @@ ON CONFLICT (id) DO NOTHING;`;
                     <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                   )}
                   <span>{connectionResult.message}</span>
+                  <span className="font-medium">{connectionResult.message}</span>
                 </div>
               )}
 
               <div className="pt-2 flex items-center justify-between">
+              <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
                 <Button
                   variant="primary"
                   size="sm"
@@ -286,6 +317,7 @@ ON CONFLICT (id) DO NOTHING;`;
                   onClick={handleTestConnection}
                 >
                   Kiểm tra & Kích hoạt Team Mode
+                  Kiểm tra &amp; Kích hoạt Team Mode
                 </Button>
 
                 <a
@@ -293,6 +325,7 @@ ON CONFLICT (id) DO NOTHING;`;
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-sky-500 hover:underline flex items-center gap-1 font-medium"
+                  className="text-xs text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 font-bold"
                 >
                   <span>Mở Supabase Console</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -310,41 +343,60 @@ ON CONFLICT (id) DO NOTHING;`;
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
+          <Card trafficLights macTitle="Thiết Lập Giao Diện & Người Dùng">
+            <CardContent className="space-y-4 text-xs p-5">
               {/* Theme toggle */}
               <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+              <div className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 shadow-2xs">
                 <div>
                   <div className="font-semibold text-slate-800 dark:text-slate-200">Giao diện màu sắc</div>
                   <div className="text-[11px] text-slate-400">Đang chọn: {theme === 'dark' ? 'Chế độ Tối (Dark)' : 'Chế độ Sáng (Light)'}</div>
+                  <div className="font-bold text-slate-800 dark:text-slate-200">Giao diện màu sắc</div>
+                  <div className="text-[11px] text-slate-500">
+                    Đang chọn: <strong>{theme === 'dark' ? 'Chế độ Tối (Dark Workstation)' : 'Chế độ Sáng (Apple Drafting Canvas)'}</strong>
+                  </div>
                 </div>
                 <Button
                   variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={toggleTheme}
                   icon={theme === 'dark' ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4" />}
+                  icon={theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
                 >
                   Đổi sang {theme === 'dark' ? 'Sáng' : 'Tối'}
+                  Đổi sang {theme === 'dark' ? 'Canvas Sáng' : 'Tối'}
                 </Button>
               </div>
 
               {/* Active member switch */}
               <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 space-y-2">
                 <div className="font-semibold text-slate-800 dark:text-slate-200">Người dùng làm việc chính:</div>
+              <div className="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 space-y-2.5 shadow-2xs">
+                <div className="font-bold text-slate-800 dark:text-slate-200">Người dùng làm việc chính:</div>
                 <div className="space-y-1.5">
                   {data.members.map((m) => (
                     <button
                       key={m.id}
                       onClick={() => setCurrentMemberId(m.id)}
                       className={`w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors ${
+                      className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
                         m.id === currentMember.id
                           ? 'bg-sky-50 dark:bg-sky-950 text-sky-900 dark:text-sky-200 font-bold border border-sky-300 dark:border-sky-800'
                           : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-600 dark:text-slate-400'
+                          ? 'bg-sky-500 text-white font-bold shadow-xs'
+                          : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <img src={m.avatarUrl} alt={m.name} className="w-6 h-6 rounded-full object-cover" />
                         <span>{m.name} ({m.role})</span>
+                      <div className="flex items-center gap-2.5">
+                        <img src={m.avatarUrl} alt={m.name} className={`w-6 h-6 rounded-full object-cover ring-1 ${m.id === currentMember.id ? 'ring-white' : 'ring-slate-300'}`} />
+                        <span className="text-xs">{m.name} ({m.role})</span>
                       </div>
                       {m.id === currentMember.id && <Check className="w-4 h-4 text-sky-500" />}
+                      {m.id === currentMember.id && <Check className="w-4 h-4 text-white" />}
                     </button>
                   ))}
                 </div>
@@ -363,6 +415,33 @@ ON CONFLICT (id) DO NOTHING;`;
                   <Code2 className="w-4 h-4 text-sky-500" />
                   <span>Kịch Bản SQL Supabase (Migrations)</span>
                 </CardTitle>
+          <Card 
+            trafficLights 
+            macTitle="Kịch Bản SQL Supabase (Migrations)"
+            macAction={
+              <button
+                onClick={handleCopySql}
+                className="flex items-center gap-1.5 text-xs text-sky-600 dark:text-sky-400 hover:underline font-bold"
+              >
+                {copiedSql ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Đã sao chép</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Sao chép SQL</span>
+                  </>
+                )}
+              </button>
+            }
+          >
+            <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Dán vào Supabase SQL Editor và bấm Run để tạo bảng và nạp dữ liệu ban đầu
+              </p>
+              <div className="flex gap-2 pt-2.5">
                 <button
                   onClick={handleCopySql}
                   className="flex items-center gap-1.5 text-xs text-sky-500 hover:text-sky-400 font-semibold"
@@ -388,29 +467,40 @@ ON CONFLICT (id) DO NOTHING;`;
                 <button
                   onClick={() => setActiveSqlTab('schema')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
                     activeSqlTab === 'schema'
                       ? 'bg-sky-500 text-white'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                      ? 'bg-sky-500 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700'
                   }`}
                 >
                   1. schema.sql (Bảng & RLS)
+                  1. schema.sql (Bảng &amp; RLS)
                 </button>
                 <button
                   onClick={() => setActiveSqlTab('seed')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
                     activeSqlTab === 'seed'
                       ? 'bg-sky-500 text-white'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                      ? 'bg-sky-500 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700'
                   }`}
                 >
                   2. seed.sql (Dữ liệu ban đầu)
                 </button>
               </div>
             </CardHeader>
+            </div>
 
             <CardContent>
               <div className="rounded-xl border border-slate-800 bg-slate-950 p-3 max-h-72 overflow-y-auto font-mono text-[11px] text-slate-300">
                 <pre className="leading-relaxed">
+            <CardContent className="p-4">
+              <div className="ds-mac-window bg-slate-950 p-4 max-h-72 overflow-y-auto font-mono text-[11px] text-slate-300 border-slate-800 shadow-inner">
+                <pre className="leading-relaxed text-sky-300">
                   {activeSqlTab === 'schema' ? sampleSchemaSql : sampleSeedSql}
                 </pre>
               </div>
@@ -428,13 +518,23 @@ ON CONFLICT (id) DO NOTHING;`;
                 Bảo vệ toàn vẹn dữ liệu đồ án, xuất JSON dự phòng hoặc nạp lại khi cần
               </CardDescription>
             </CardHeader>
+          <Card trafficLights macTitle="Sao Lưu & Khôi Phục Dữ Liệu">
+            <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Bảo vệ toàn vẹn dữ liệu đồ án, xuất file JSON dự phòng hoặc nạp lại khi cần
+              </p>
+            </div>
 
             <CardContent className="space-y-3">
               <div className="flex flex-wrap items-center gap-2">
+            <CardContent className="space-y-3 p-5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <Button
                   variant="outline"
+                  variant="secondary"
                   size="sm"
                   icon={<Download className="w-3.5 h-3.5" />}
+                  icon={<Download className="w-3.5 h-3.5 text-sky-500" />}
                   onClick={handleDownloadBackup}
                 >
                   Tải file sao lưu (JSON)
@@ -442,8 +542,10 @@ ON CONFLICT (id) DO NOTHING;`;
 
                 <Button
                   variant="outline"
+                  variant="secondary"
                   size="sm"
                   icon={<Upload className="w-3.5 h-3.5" />}
+                  icon={<Upload className="w-3.5 h-3.5 text-emerald-500" />}
                   onClick={() => setIsImportModal(true)}
                 >
                   Nhập file sao lưu
@@ -481,9 +583,11 @@ ON CONFLICT (id) DO NOTHING;`;
               onChange={(e) => setImportJsonText(e.target.value)}
               placeholder="Dán mã JSON tại đây..."
               className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
+              className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
             />
             <div className="flex justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
               <Button variant="outline" onClick={() => setIsImportModal(false)}>
+              <Button variant="secondary" onClick={() => setIsImportModal(false)}>
                 Hủy
               </Button>
               <Button variant="primary" onClick={handleConfirmImport}>
@@ -504,10 +608,12 @@ ON CONFLICT (id) DO NOTHING;`;
         >
           <div className="space-y-4 text-xs">
             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
               Thao tác này sẽ đặt lại toàn bộ nhiệm vụ, lộ trình 7 tuần, tiến độ học tập và ngân hàng câu hỏi về trạng thái thiết kế chuẩn ban đầu của đồ án Đề #27.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="outline" onClick={() => setIsResetConfirmModal(false)}>
+              <Button variant="secondary" onClick={() => setIsResetConfirmModal(false)}>
                 Hủy bỏ
               </Button>
               <Button variant="danger" onClick={handleConfirmReset}>

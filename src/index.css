@@ -4,26 +4,281 @@
 
 @layer base {
   :root {
-    --bg-main: #f8fafc;
-    --text-main: #0f172a;
+    --bg-main: #eae2d5;
+    --text-main: #1c1917;
     --card-bg: #ffffff;
-    --card-border: #e2e8f0;
+    --card-border: rgba(0, 0, 0, 0.08);
   }
   
   .dark {
     --bg-main: #0b0f19;
     --text-main: #f1f5f9;
     --card-bg: #111827;
-    --card-border: #1f2937;
+    --card-border: rgba(255, 255, 255, 0.08);
   }
 
   body {
     background-color: var(--bg-main);
     color: var(--text-main);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* ==========================================================================
+   Apple Drafting Grid Background Canvas (Incident.io & Nro World Design)
+   ========================================================================== */
+.apple-drafting-canvas {
+  background-color: #eae2d5;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-repeat: repeat;
+}
+
+.dark .apple-drafting-canvas {
+  background-color: #0b0f19;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-repeat: repeat;
+}
+
+/* ==========================================================================
+   Incident.io Style Top Bar
+   ========================================================================== */
+.ds-top-bar {
+  background: #f4eee2;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  padding: 8px 16px;
+  font-size: 12.5px;
+  color: #57534e;
+  position: relative;
+  z-index: 50;
+}
+
+.dark .ds-top-bar {
+  background: #0d1322;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  color: #94a3b8;
+}
+
+/* ==========================================================================
+   Apple macOS Window Container System
+   ========================================================================== */
+.ds-mac-window {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 22px;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 16px 40px -8px rgba(28, 25, 23, 0.07),
+    0 32px 70px -16px rgba(28, 25, 23, 0.05);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .ds-mac-window {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 16px 40px -8px rgba(0, 0, 0, 0.5),
+    0 32px 70px -16px rgba(0, 0, 0, 0.6);
+}
+
+/* macOS Traffic Light Dots */
+.ds-mac-dots {
+  display: flex;
+  align-items: center;
+  gap: 6.5px;
+}
+
+.ds-mac-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.ds-mac-dot-red {
+  background-color: #ff5f56;
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+}
+
+.ds-mac-dot-yellow {
+  background-color: #ffbd2e;
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+}
+
+.ds-mac-dot-green {
+  background-color: #27c93f;
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+}
+
+/* macOS Window Titlebar */
+.ds-mac-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: rgba(248, 246, 240, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(10px);
+}
+
+.dark .ds-mac-titlebar {
+  background: rgba(17, 24, 39, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Pulsing Live Green Status Dot */
+.ds-live-dot {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  display: inline-block;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: ds-pulse 2s infinite;
+}
+
+@keyframes ds-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+/* ==========================================================================
+   Editorial Serif Headlines & Incident.io Hero Typography
+   ========================================================================== */
+.ds-editorial-headline {
+  font-family: 'Newsreader', 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.ds-editorial-headline em {
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .ds-editorial-headline em {
+  background: linear-gradient(135deg, #38bdf8 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hero Badge */
+.ds-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #0284c7;
+}
+
+.dark .ds-hero-badge {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #38bdf8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   Modern Tactile Pill Buttons
+   ========================================================================== */
+.ds-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.ds-pill-btn-primary {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.ds-pill-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
+}
+
+.ds-pill-btn-secondary {
+  background: #ffffff;
+  color: #1c1917 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dark .ds-pill-btn-secondary {
+  background: #1e293b;
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.ds-pill-btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   Server Ticker Bar
+   ========================================================================== */
+.ds-server-ticker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 9999px;
+  font-size: 12.5px;
+}
+
+.dark .ds-server-ticker {
+  background: rgba(17, 24, 39, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Custom crisp scrollbars */

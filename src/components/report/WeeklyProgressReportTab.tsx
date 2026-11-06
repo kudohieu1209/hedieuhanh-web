@@ -177,14 +177,19 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
     <div className="space-y-6 pt-4">
       {/* Action Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
+    <div className="space-y-6 pt-2">
+      {/* Action Bar - Apple macOS Frosted Dock */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-[22px] bg-white/80 dark:bg-[#111827]/80 border border-slate-200/90 dark:border-slate-800 text-xs shadow-apple backdrop-blur-md">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-500">Trạng thái:</span>
             {isLeader ? (
               <select
                 value={report.status}
                 onChange={(e) => setReport({ ...report, status: e.target.value as ReportStatus })}
                 className="font-bold text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                className="font-bold text-xs px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs focus:outline-none focus:ring-2 focus:ring-sky-500"
               >
                 <option value="draft">Bản nháp</option>
                 <option value="review">Chờ kiểm tra</option>
@@ -200,10 +205,14 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
           <span className="text-slate-400">·</span>
           <span className="text-slate-400">
             v<strong className="text-slate-700 dark:text-slate-300">{report.version}</strong>
+          <span className="text-slate-400 font-mono text-[11px]">
+            Phiên bản: <strong className="text-slate-700 dark:text-slate-300">v{report.version}</strong>
           </span>
           <span className="text-slate-400 hidden xs:inline">·</span>
           <span className="text-slate-400 hidden xs:inline">
             Bởi: <strong className="text-slate-700 dark:text-slate-300">{report.updatedBy}</strong>
+          <span className="text-slate-400 hidden xs:inline text-[11px]">
+            Cập nhật: <strong className="text-slate-700 dark:text-slate-300">{report.updatedBy}</strong>
           </span>
         </div>
 
@@ -217,6 +226,7 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
             className="w-full sm:w-auto justify-center"
           >
             <span className="hidden sm:inline">Tạo bản nháp từ tiến độ</span>
+            <span className="hidden sm:inline">Tạo nháp tự động</span>
             <span className="sm:hidden">Tạo nháp</span>
           </Button>
 
@@ -250,6 +260,7 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
             icon={<Save className="w-3.5 h-3.5" />}
             onClick={handleSaveReport}
             className="w-full sm:w-auto justify-center"
+            className="w-full sm:w-auto justify-center shadow-xs"
           >
             Lưu báo cáo
           </Button>
@@ -282,26 +293,72 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
             </div>
 
             <div className="grid grid-cols-2 gap-2">
+        <Card 
+          trafficLights 
+          macTitle="PROGRESS REPORT — Thông Tin Chung (HUST 2026.1)"
+          macAction={
+            <span className="text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-200/80 dark:border-slate-700">
+              Đề #27 · xv6-riscv
+            </span>
+          }
+        >
+          <div className="p-5 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
                 <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
                   Project code:
+                  Course:
                 </label>
                 <input
                   type="text"
                   value={report.projectCode}
                   onChange={(e) => setReport({ ...report, projectCode: e.target.value })}
                   className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-bold"
+                  value={report.course}
+                  onChange={(e) => setReport({ ...report, course: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
               <div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                    Project code:
+                  </label>
+                  <input
+                    type="text"
+                    value={report.projectCode}
+                    onChange={(e) => setReport({ ...report, projectCode: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                    Tuần báo cáo:
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    value={`Tuần ${report.weekNumber}`}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 font-mono text-slate-500"
+                  />
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
                 <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
                   Tuần báo cáo:
+                  Project title:
                 </label>
                 <input
                   type="text"
                   disabled
                   value={`Tuần ${report.weekNumber}`}
                   className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 font-mono text-slate-500"
+                  value={report.projectTitle}
+                  onChange={(e) => setReport({ ...report, projectTitle: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
             </div>
@@ -361,6 +418,7 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               <div>
                 <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
                   Reported working period (from):
+                  Design thinking page (e.g. Figma):
                 </label>
                 <input
                   type="text"
@@ -368,11 +426,17 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                   onChange={(e) => setReport({ ...report, reportPeriodFrom: e.target.value })}
                   placeholder="DD/MM/2026"
                   className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
+                  value={report.designThinkingPage}
+                  onChange={(e) => setReport({ ...report, designThinkingPage: e.target.value })}
+                  placeholder="https://www.figma.com/design/..."
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
+
               <div>
                 <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
                   Reported working period (to):
+                  Task management page (e.g. JIRA / Hub):
                 </label>
                 <input
                   type="text"
@@ -380,7 +444,52 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                   onChange={(e) => setReport({ ...report, reportPeriodTo: e.target.value })}
                   placeholder="DD/MM/2026"
                   className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
+                  value={report.taskManagementPage}
+                  onChange={(e) => setReport({ ...report, taskManagementPage: e.target.value })}
+                  placeholder="https://github.com/.../projects"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
+              </div>
+
+              <div className="md:col-span-2 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
+                <span className="font-semibold block mb-2 text-slate-700 dark:text-slate-300">
+                  Thành viên nhóm thực hiện:
+                </span>
+                <div className="flex flex-wrap gap-2 text-[11px]">
+                  {data.members.map((m) => (
+                    <span key={m.id} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 shadow-2xs font-medium">
+                      <img src={m.avatarUrl} alt={m.name} className="w-3.5 h-3.5 rounded-full object-cover" />
+                      <strong>{m.name}</strong> ({m.studentId}) — <span className="text-slate-500">{m.role}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="md:col-span-2 grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                    Reported working period (from):
+                  </label>
+                  <input
+                    type="text"
+                    value={report.reportPeriodFrom}
+                    onChange={(e) => setReport({ ...report, reportPeriodFrom: e.target.value })}
+                    placeholder="DD/MM/2026"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                    Reported working period (to):
+                  </label>
+                  <input
+                    type="text"
+                    value={report.reportPeriodTo}
+                    onChange={(e) => setReport({ ...report, reportPeriodTo: e.target.value })}
+                    placeholder="DD/MM/2026"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -413,6 +522,37 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                 <span>{wordCountValidation.message}</span>
               </span>
             </div>
+        <Card 
+          trafficLights 
+          macTitle="1. Summary of Latest Progress"
+          macAction={
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+              wordCountValidation.status === 'valid'
+                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                : wordCountValidation.status === 'too_short'
+                ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-300 dark:border-rose-800'
+            }`}>
+              {wordCountValidation.status === 'valid' ? (
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              ) : (
+                <AlertTriangle className="w-3.5 h-3.5" />
+              )}
+              <span>{wordCountValidation.message}</span>
+            </span>
+          }
+        >
+          <div className="p-5 space-y-3">
+            <p className="text-[11px] text-slate-500 italic">
+              (200-300 words to summarize how the overall progress in the period looks like; also indicate cumulative progress)
+            </p>
+            <textarea
+              rows={7}
+              value={report.summaryOfProgress}
+              onChange={(e) => setReport({ ...report, summaryOfProgress: e.target.value })}
+              className="w-full p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed focus:outline-none focus:ring-2 focus:ring-sky-500"
+              placeholder="Viết đoạn tóm tắt từ 200 - 300 từ về tiến độ của nhóm..."
+            />
           </div>
 
           <textarea
@@ -437,6 +577,10 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               </p>
             </div>
 
+        <Card 
+          trafficLights 
+          macTitle="2. Review of Technical Activities"
+          macAction={
             <Button
               variant="outline"
               size="sm"
@@ -446,6 +590,12 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               Thêm hoạt động
             </Button>
           </div>
+          }
+        >
+          <div className="p-5 space-y-4">
+            <p className="text-[11px] text-slate-500 italic">
+              (Danh sách các hoạt động kỹ thuật cụ thể đã triển khai trong tuần kèm minh chứng)
+            </p>
 
           <div className="space-y-3">
             {report.technicalActivities.map((act, idx) => (
@@ -477,7 +627,24 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                       value={act.description}
                       onChange={(e) => handleUpdateActivity(act.id, 'description', e.target.value)}
                       className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed"
+            <div className="space-y-3">
+              {report.technicalActivities.map((act, idx) => (
+                <div key={act.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 text-xs space-y-3 shadow-2xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <input
+                      type="text"
+                      value={act.name}
+                      onChange={(e) => handleUpdateActivity(act.id, 'name', e.target.value)}
+                      placeholder={`Activity ${idx + 1}: [Tên hoạt động]`}
+                      className="font-bold text-xs sm:text-sm px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 flex-1 max-w-md focus:outline-none focus:ring-2 focus:ring-sky-500"
                     />
+                    <button
+                      onClick={() => handleDeleteActivity(act.id)}
+                      className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                      title="Xóa hoạt động này"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                   <div>
                     <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
@@ -489,10 +656,36 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                       onChange={(e) => handleUpdateActivity(act.id, 'outputAndEvidence', e.target.value)}
                       className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed"
                     />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                        Nội dung nghiên cứu, phân tích hoặc kiểm thử:
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={act.description}
+                        onChange={(e) => handleUpdateActivity(act.id, 'description', e.target.value)}
+                        className="w-full p-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                        Kết quả và tài liệu minh chứng (output):
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={act.outputAndEvidence}
+                        onChange={(e) => handleUpdateActivity(act.id, 'outputAndEvidence', e.target.value)}
+                        className="w-full p-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-white"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
+              ))}
+            </div>
           </div>
         </Card>
 
@@ -504,6 +697,17 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               <span>Personal contribution (omitted if only one member)</span>
             </h3>
             <p className="text-[11px] text-slate-500 italic mt-0.5">
+        <Card 
+          trafficLights 
+          macTitle="3. Personal Contribution (Đóng Góp Cá Nhân)"
+          macAction={
+            <span className="text-[11px] font-mono text-slate-400">
+              3 thành viên
+            </span>
+          }
+        >
+          <div className="p-5 space-y-4">
+            <p className="text-[11px] text-slate-500 italic">
               (Clearly report what individuals each have done and outputs; clarify how he/she has contributed to the overall progress)
             </p>
           </div>
@@ -528,18 +732,54 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               </button>
             ))}
           </div>
+            {/* Member Tabs styled as Apple Pill Switcher */}
+            <div className="flex gap-2 p-1.5 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              {data.members.map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => setActiveMemberTab(m.id)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-xs font-bold transition-all ${
+                    activeMemberTab === m.id
+                      ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <img src={m.avatarUrl} alt={m.name} className="w-4 h-4 rounded-full object-cover" />
+                  <span className="truncate">{m.name}</span>
+                  {m.id === currentMember.id && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 font-mono">Tôi</span>
+                  )}
+                </button>
+              ))}
+            </div>
 
           {/* Active Member Form */}
           {(() => {
             const m = data.members.find(x => x.id === activeMemberTab) || data.members[0];
             const c = report.contributions[activeMemberTab];
             const editable = canEditMemberSection(activeMemberTab);
+            {/* Active Member Form */}
+            {(() => {
+              const m = data.members.find(x => x.id === activeMemberTab) || data.members[0];
+              const c = report.contributions[activeMemberTab];
+              const editable = canEditMemberSection(activeMemberTab);
 
             return (
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 space-y-3 text-xs">
                 <div className="flex items-center justify-between">
                   <div className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                     <span>Đóng góp của {m.name} ({m.studentId})</span>
+              return (
+                <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 space-y-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <div className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                      <span>Đóng góp của {m.name} ({m.studentId})</span>
+                    </div>
+                    {!editable && (
+                      <Badge variant="outline">
+                        Chế độ xem (Chỉ {m.name} hoặc Trưởng nhóm được sửa)
+                      </Badge>
+                    )}
                   </div>
                   {!editable && (
                     <Badge variant="outline">
@@ -561,6 +801,19 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                       className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60"
                     />
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                        Công việc đảm nhiệm:
+                      </label>
+                      <input
+                        type="text"
+                        disabled={!editable}
+                        value={c?.assignedRole || ''}
+                        onChange={(e) => handleUpdateContribution(activeMemberTab, 'assignedRole', e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+                      />
+                    </div>
 
                   <div>
                     <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
@@ -573,6 +826,18 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                       onChange={(e) => handleUpdateContribution(activeMemberTab, 'technicalWork', e.target.value)}
                       className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60"
                     />
+                    <div>
+                      <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                        Nội dung kỹ thuật đã nghiên cứu:
+                      </label>
+                      <input
+                        type="text"
+                        disabled={!editable}
+                        value={c?.technicalWork || ''}
+                        onChange={(e) => handleUpdateContribution(activeMemberTab, 'technicalWork', e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -593,13 +858,18 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                   <div>
                     <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
                       Kết quả đạt được (Outputs):
+                      Nhiệm vụ đã hoàn thành (bullet points):
                     </label>
                     <textarea
                       rows={2}
+                      rows={3}
                       disabled={!editable}
                       value={c?.outputsAchieved || ''}
                       onChange={(e) => handleUpdateContribution(activeMemberTab, 'outputsAchieved', e.target.value)}
                       className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60 leading-relaxed"
+                      value={c?.completedTasksSummary || ''}
+                      onChange={(e) => handleUpdateContribution(activeMemberTab, 'completedTasksSummary', e.target.value)}
+                      className="w-full p-3 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60 leading-relaxed font-mono text-[11px] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                     />
                   </div>
 
@@ -614,11 +884,40 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                       onChange={(e) => handleUpdateContribution(activeMemberTab, 'evidenceLinks', e.target.value)}
                       className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60 leading-relaxed font-mono text-[11px]"
                     />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                        Kết quả đạt được (Outputs):
+                      </label>
+                      <textarea
+                        rows={2}
+                        disabled={!editable}
+                        value={c?.outputsAchieved || ''}
+                        onChange={(e) => handleUpdateContribution(activeMemberTab, 'outputsAchieved', e.target.value)}
+                        className="w-full p-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60 leading-relaxed text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                        Liên kết mã nguồn, PR hoặc kết quả kiểm thử:
+                      </label>
+                      <textarea
+                        rows={2}
+                        disabled={!editable}
+                        value={c?.evidenceLinks || ''}
+                        onChange={(e) => handleUpdateContribution(activeMemberTab, 'evidenceLinks', e.target.value)}
+                        className="w-full p-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 disabled:opacity-60 leading-relaxed font-mono text-[11px] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             );
           })()}
+              );
+            })()}
+          </div>
         </Card>
 
         {/* MỤC 4: Developed code review */}
@@ -629,6 +928,12 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               <span>Developed code review</span>
             </h3>
             <p className="text-[11px] text-slate-500 italic mt-0.5">
+        <Card 
+          trafficLights 
+          macTitle="4. Developed Code Review (Đánh Giá Mã Nguồn &amp; Thuật Toán)"
+        >
+          <div className="p-5 space-y-4">
+            <p className="text-[11px] text-slate-500 italic">
               (Chi tiết về mặt thuật toán, sửa đổi mã nguồn và kết quả kiểm nghiệm)
             </p>
           </div>
@@ -649,6 +954,22 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                 placeholder="Mô tả thuật toán xử lý ngắt, chuyển trạng thái stopcheck(), giải quyết deadlock..."
               />
             </div>
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="block font-bold mb-1.5 text-slate-800 dark:text-slate-200">
+                  a. Algorithmic development (Phát triển thuật toán):
+                </label>
+                <textarea
+                  rows={3}
+                  value={report.codeReview.algorithmicDevelopment}
+                  onChange={(e) => setReport({
+                    ...report,
+                    codeReview: { ...report.codeReview, algorithmicDevelopment: e.target.value }
+                  })}
+                  className="w-full p-3 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  placeholder="Mô tả thuật toán xử lý ngắt, chuyển trạng thái stopcheck(), giải quyết deadlock..."
+                />
+              </div>
 
             <div>
               <label className="block font-bold mb-1 text-slate-800 dark:text-slate-200">
@@ -665,6 +986,21 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                 placeholder="kernel/proc.c, kernel/console.c, user/sh.c..."
               />
             </div>
+              <div>
+                <label className="block font-bold mb-1.5 text-slate-800 dark:text-slate-200">
+                  b. Source code enhanced and/or revised (Mã nguồn nâng cấp / sửa đổi):
+                </label>
+                <input
+                  type="text"
+                  value={report.codeReview.sourceCodeEnhanced}
+                  onChange={(e) => setReport({
+                    ...report,
+                    codeReview: { ...report.codeReview, sourceCodeEnhanced: e.target.value }
+                  })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  placeholder="kernel/proc.c, kernel/console.c, user/sh.c..."
+                />
+              </div>
 
             <div>
               <label className="block font-bold mb-1 text-slate-800 dark:text-slate-200">
@@ -680,6 +1016,21 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                 className="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed"
                 placeholder="Log kết quả bài kiểm thử tự động, QEMU console và usertests..."
               />
+              <div>
+                <label className="block font-bold mb-1.5 text-slate-800 dark:text-slate-200">
+                  c. Testing result (Kết quả kiểm thử):
+                </label>
+                <textarea
+                  rows={3}
+                  value={report.codeReview.testingResult}
+                  onChange={(e) => setReport({
+                    ...report,
+                    codeReview: { ...report.codeReview, testingResult: e.target.value }
+                  })}
+                  className="w-full p-3 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  placeholder="Log kết quả bài kiểm thử tự động, QEMU console và usertests..."
+                />
+              </div>
             </div>
           </div>
         </Card>
@@ -697,6 +1048,10 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               </p>
             </div>
 
+        <Card 
+          trafficLights 
+          macTitle="5. TODO &amp; Kế Hoạch Tiếp Theo"
+          macAction={
             <Button
               variant="outline"
               size="sm"
@@ -705,8 +1060,15 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               title="Chuyển các việc chưa xong của tuần này sang tuần tiếp theo"
             >
               Chuyển việc tồn đọng sang tuần kế tiếp
+              Chuyển việc tồn đọng sang tuần sau
             </Button>
           </div>
+          }
+        >
+          <div className="p-5 space-y-4">
+            <p className="text-[11px] text-slate-500 italic">
+              (Kế hoạch hành động, vấn đề cần tháo gỡ và mục tiêu mốc tiếp theo)
+            </p>
 
           <div className="space-y-3 text-xs">
             <div>
@@ -723,6 +1085,21 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                 className="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed font-mono text-[11px]"
               />
             </div>
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="block font-bold mb-1.5 text-slate-800 dark:text-slate-200">
+                  a) List of remaining issues (Danh sách vấn đề còn tồn đọng):
+                </label>
+                <textarea
+                  rows={2}
+                  value={report.todo.remainingIssues}
+                  onChange={(e) => setReport({
+                    ...report,
+                    todo: { ...report.todo, remainingIssues: e.target.value }
+                  })}
+                  className="w-full p-3 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed font-mono text-[11px] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
 
             <div>
               <label className="block font-bold mb-1 text-slate-800 dark:text-slate-200">
@@ -738,6 +1115,20 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                 className="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed font-mono text-[11px]"
               />
             </div>
+              <div>
+                <label className="block font-bold mb-1.5 text-slate-800 dark:text-slate-200">
+                  b) List of tasks to carry out in the next period (Nhiệm vụ cho tuần kế tiếp):
+                </label>
+                <textarea
+                  rows={3}
+                  value={report.todo.nextPeriodTasks}
+                  onChange={(e) => setReport({
+                    ...report,
+                    todo: { ...report.todo, nextPeriodTasks: e.target.value }
+                  })}
+                  className="w-full p-3 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed font-mono text-[11px] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
 
             <div>
               <label className="block font-bold mb-1 text-slate-800 dark:text-slate-200">
@@ -752,6 +1143,20 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                 })}
                 className="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed"
               />
+              <div>
+                <label className="block font-bold mb-1.5 text-slate-800 dark:text-slate-200">
+                  c) Milestone (what to do more to reach the next milestone progress?):
+                </label>
+                <textarea
+                  rows={2}
+                  value={report.todo.milestone}
+                  onChange={(e) => setReport({
+                    ...report,
+                    todo: { ...report.todo, milestone: e.target.value }
+                  })}
+                  className="w-full p-3 rounded-xl border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 leading-relaxed text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
             </div>
           </div>
         </Card>
@@ -769,6 +1174,8 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
           <div className="space-y-4">
             <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-900 p-3 rounded-xl text-xs">
               <span className="text-slate-500">
+            <div className="flex items-center justify-between bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 p-3 sm:p-4 rounded-[18px] text-xs">
+              <span className="text-slate-600 dark:text-slate-400">
                 Mẹo: Bấm <strong>In / Lưu thành PDF</strong> rồi chọn <em>"Save as PDF"</em> trong hộp thoại in của trình duyệt.
               </span>
               <Button
@@ -783,30 +1190,45 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
 
             {/* Document Printable Paper */}
             <div className="p-8 sm:p-12 bg-white text-slate-900 rounded-xl shadow-lg border border-slate-200 font-serif leading-relaxed text-xs sm:text-sm space-y-4 max-h-[650px] overflow-y-auto">
+            <div className="p-8 sm:p-12 bg-white text-slate-900 rounded-[20px] shadow-apple border border-slate-200 font-serif leading-relaxed text-xs sm:text-sm space-y-5 max-h-[650px] overflow-y-auto">
               {/* Header */}
               <div className="text-center pb-4 border-b border-slate-300">
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-blue-900 mb-2">
                   PROGRESS REPORT
+              <div className="text-center pb-5 border-b-2 border-slate-800">
+                <div className="text-[11px] font-sans font-bold tracking-widest uppercase text-slate-500 mb-1">
+                  ĐẠI HỌC BÁCH KHOA HÀ NỘI · KHOA HỆ THỐNG THÔNG TIN &amp; HỆ ĐIỀU HÀNH
+                </div>
+                <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-blue-950 mb-3 font-serif">
+                  WEEKLY PROGRESS REPORT
                 </h1>
                 <div className="text-xs space-y-1 text-slate-700">
                   <p><strong>Course:</strong> {report.course}</p>
                   <p><strong>Project code:</strong> {report.projectCode} &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Project title:</strong> {report.projectTitle}</p>
                   <p><strong>Design thinking page:</strong> {report.designThinkingPage}</p>
                   <p><strong>Task management page:</strong> {report.taskManagementPage}</p>
+                <div className="text-xs space-y-1 text-slate-700 font-sans">
+                  <p><strong>Course:</strong> {report.course} &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Tuần:</strong> {report.weekNumber}</p>
+                  <p><strong>Project Code:</strong> {report.projectCode} &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Project Title:</strong> {report.projectTitle}</p>
+                  <p><strong>Design Thinking Page:</strong> {report.designThinkingPage}</p>
+                  <p><strong>Task Management Hub:</strong> {report.taskManagementPage}</p>
                   <p><strong>Members:</strong> {data.members.map(m => `${m.name} (${m.studentId})`).join(', ')}</p>
                   <p><strong>Reported working period:</strong> from: {report.reportPeriodFrom} &nbsp;&nbsp;&nbsp;&nbsp; to: {report.reportPeriodTo}</p>
+                  <p><strong>Reported Working Period:</strong> {report.reportPeriodFrom} ➔ {report.reportPeriodTo}</p>
                 </div>
               </div>
 
               {/* Section 1 */}
               <div>
                 <h2 className="text-base font-bold text-blue-900 mb-1">
+                <h2 className="text-sm sm:text-base font-bold text-blue-900 mb-1 uppercase tracking-wide font-sans">
                   1. Summary of latest progress
                 </h2>
                 <p className="text-[11px] text-slate-500 italic mb-2">
                   (200-300 words to summarize how the overall progress in the period looks like; also indicate cumulative progress)
                 </p>
                 <p className="text-justify leading-relaxed whitespace-pre-line text-xs">
+                <p className="text-justify leading-relaxed whitespace-pre-line text-xs font-serif text-slate-800">
                   {report.summaryOfProgress}
                 </p>
               </div>
@@ -814,14 +1236,18 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               {/* Section 2 */}
               <div>
                 <h2 className="text-base font-bold text-blue-900 mb-1">
+                <h2 className="text-sm sm:text-base font-bold text-blue-900 mb-1 uppercase tracking-wide font-sans">
                   2. Review of technical activities
                 </h2>
                 <div className="space-y-2 text-xs">
                   {report.technicalActivities.map((act, idx) => (
                     <div key={idx} className="pl-2">
+                    <div key={idx} className="pl-2 border-l-2 border-sky-400">
                       <p className="font-bold text-slate-900">{act.name}:</p>
                       <p className="pl-4">• Description: {act.description}</p>
                       <p className="pl-4">• Output & Evidence: {act.outputAndEvidence}</p>
+                      <p className="pl-3">• <strong>Description:</strong> {act.description}</p>
+                      <p className="pl-3">• <strong>Output &amp; Evidence:</strong> {act.outputAndEvidence}</p>
                     </div>
                   ))}
                 </div>
@@ -830,6 +1256,7 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               {/* Section 3 */}
               <div>
                 <h2 className="text-base font-bold text-blue-900 mb-1">
+                <h2 className="text-sm sm:text-base font-bold text-blue-900 mb-1 uppercase tracking-wide font-sans">
                   3. Personal contribution (omitted if only one member)
                 </h2>
                 <div className="space-y-3 text-xs">
@@ -837,12 +1264,18 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
                     const c = report.contributions[m.id];
                     return (
                       <div key={m.id} className="pl-2">
+                      <div key={m.id} className="pl-2 border-l-2 border-emerald-400">
                         <p className="font-bold text-slate-900">{m.name} ({m.studentId} - {m.role}):</p>
                         <p className="pl-4">• Công việc đảm nhiệm: {c?.assignedRole}</p>
                         <p className="pl-4">• Nghiên cứu kỹ thuật: {c?.technicalWork}</p>
                         <p className="pl-4">• Nhiệm vụ hoàn thành: {c?.completedTasksSummary}</p>
                         <p className="pl-4">• Kết quả & Đầu ra: {c?.outputsAchieved}</p>
                         <p className="pl-4">• Minh chứng: {c?.evidenceLinks}</p>
+                        <p className="pl-3">• <strong>Công việc đảm nhiệm:</strong> {c?.assignedRole}</p>
+                        <p className="pl-3">• <strong>Nghiên cứu kỹ thuật:</strong> {c?.technicalWork}</p>
+                        <p className="pl-3">• <strong>Nhiệm vụ hoàn thành:</strong> {c?.completedTasksSummary}</p>
+                        <p className="pl-3">• <strong>Kết quả &amp; Đầu ra:</strong> {c?.outputsAchieved}</p>
+                        <p className="pl-3">• <strong>Minh chứng:</strong> {c?.evidenceLinks}</p>
                       </div>
                     );
                   })}
@@ -852,20 +1285,24 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               {/* Section 4 */}
               <div>
                 <h2 className="text-base font-bold text-blue-900 mb-1">
+                <h2 className="text-sm sm:text-base font-bold text-blue-900 mb-1 uppercase tracking-wide font-sans">
                   4. Developed code review
                 </h2>
                 <div className="space-y-2 text-xs">
                   <div>
                     <p className="font-bold">a. Algorithmic development:</p>
                     <p className="pl-4">{report.codeReview.algorithmicDevelopment}</p>
+                    <p className="pl-3">{report.codeReview.algorithmicDevelopment}</p>
                   </div>
                   <div>
                     <p className="font-bold">b. Source code enhanced and/or revised:</p>
                     <p className="pl-4 font-mono text-[11px]">{report.codeReview.sourceCodeEnhanced}</p>
+                    <p className="pl-3 font-mono text-[11px] text-slate-800">{report.codeReview.sourceCodeEnhanced}</p>
                   </div>
                   <div>
                     <p className="font-bold">c. Testing result:</p>
                     <p className="pl-4">{report.codeReview.testingResult}</p>
+                    <p className="pl-3">{report.codeReview.testingResult}</p>
                   </div>
                 </div>
               </div>
@@ -873,20 +1310,24 @@ export const WeeklyProgressReportTab: React.FC<WeeklyProgressReportTabProps> = (
               {/* Section 5 */}
               <div>
                 <h2 className="text-base font-bold text-blue-900 mb-1">
+                <h2 className="text-sm sm:text-base font-bold text-blue-900 mb-1 uppercase tracking-wide font-sans">
                   5. TODO
                 </h2>
                 <div className="space-y-2 text-xs">
                   <div>
                     <p className="font-bold">a) List of remaining issues:</p>
                     <p className="pl-4 whitespace-pre-line">{report.todo.remainingIssues}</p>
+                    <p className="pl-3 whitespace-pre-line">{report.todo.remainingIssues}</p>
                   </div>
                   <div>
                     <p className="font-bold">b) List of tasks to carry out in the next period:</p>
                     <p className="pl-4 whitespace-pre-line">{report.todo.nextPeriodTasks}</p>
+                    <p className="pl-3 whitespace-pre-line">{report.todo.nextPeriodTasks}</p>
                   </div>
                   <div>
                     <p className="font-bold">c) Milestone (what to do more to reach the next milestone progress?):</p>
                     <p className="pl-4">{report.todo.milestone}</p>
+                    <p className="pl-3">{report.todo.milestone}</p>
                   </div>
                 </div>
               </div>

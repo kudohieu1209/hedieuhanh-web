@@ -52,10 +52,10 @@ export const TasksPage: React.FC = () => {
 
   // Column definitions
   const columns: { id: TaskStatus; label: string; color: string; badgeVariant: BadgeVariant }[] = [
-    { id: 'todo', label: 'Cần làm', color: 'border-slate-400/40 bg-slate-500/5', badgeVariant: 'default' },
-    { id: 'in_progress', label: 'Đang thực hiện', color: 'border-sky-500/40 bg-sky-500/5', badgeVariant: 'primary' },
-    { id: 'review', label: 'Chờ kiểm tra', color: 'border-purple-500/40 bg-purple-500/5', badgeVariant: 'purple' },
-    { id: 'done', label: 'Hoàn thành', color: 'border-emerald-500/40 bg-emerald-500/5', badgeVariant: 'success' },
+    { id: 'todo', label: 'Cần làm', color: 'border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40', badgeVariant: 'default' },
+    { id: 'in_progress', label: 'Đang thực hiện', color: 'border-sky-300 dark:border-sky-900 bg-sky-50/30 dark:bg-sky-950/20', badgeVariant: 'primary' },
+    { id: 'review', label: 'Chờ kiểm tra', color: 'border-purple-300 dark:border-purple-900 bg-purple-50/30 dark:bg-purple-950/20', badgeVariant: 'purple' },
+    { id: 'done', label: 'Hoàn thành', color: 'border-emerald-300 dark:border-emerald-900 bg-emerald-50/30 dark:bg-emerald-950/20', badgeVariant: 'success' },
   ];
 
   // Filter tasks
@@ -140,14 +140,17 @@ export const TasksPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <CheckSquare className="w-6 h-6 text-sky-500" />
-            Bảng Quản Lý Nhiệm Vụ (Kanban Board)
+          <div className="ds-hero-badge mb-2">
+            <CheckSquare className="w-3.5 h-3.5 text-sky-500" />
+            <span>ĐIỀU PHỐI CÔNG VIỆC 3 THÀNH VIÊN</span>
+          </div>
+          <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+            Bảng Quản Lý Nhiệm Vụ <em>Kanban Workstation</em>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Theo dõi tiến độ thực hiện từng nhiệm vụ theo 4 cột trạng thái, phân công thành viên và bằng chứng nghiệm thu
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            Theo dõi tiến độ thực hiện từng nhiệm vụ theo 4 cột trạng thái, phân công thành viên và bằng chứng nghiệm thu đồ án.
           </p>
         </div>
 
@@ -160,77 +163,68 @@ export const TasksPage: React.FC = () => {
         </Button>
       </div>
 
-      {/* Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-xs">
+      {/* Filter Toolbar with Apple Pill Controls */}
+      <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 p-3.5 rounded-[22px] bg-white/80 dark:bg-[#111827]/80 border border-slate-200/90 dark:border-slate-800 text-xs shadow-apple">
         {/* Search */}
         <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-2.5 text-slate-400" />
           <input
             type="text"
             placeholder="Tìm theo tiêu đề, mô tả hoặc file..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 sm:py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full pl-9 pr-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium"
           />
         </div>
 
         {/* Filter Selects Grid on Mobile */}
         <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
           {/* Member Filter */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
-            <span className="text-[11px] text-slate-400 sm:hidden">Người phụ trách:</span>
-            <select
-              value={selectedMemberFilter}
-              onChange={(e) => setSelectedMemberFilter(e.target.value)}
-              className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-            >
-              <option value="all">Tất cả thành viên</option>
-              {data.members.map(m => (
-                <option key={m.id} value={m.id}>{m.name}</option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={selectedMemberFilter}
+            onChange={(e) => setSelectedMemberFilter(e.target.value)}
+            className="w-full sm:w-auto px-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold focus:outline-none"
+          >
+            <option value="all">Tất cả thành viên</option>
+            {data.members.map(m => (
+              <option key={m.id} value={m.id}>{m.name}</option>
+            ))}
+          </select>
 
           {/* Week Filter */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
-            <span className="text-[11px] text-slate-400 sm:hidden">Tuần:</span>
-            <select
-              value={selectedWeekFilter}
-              onChange={(e) => setSelectedWeekFilter(e.target.value)}
-              className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-            >
-              <option value="all">Tất cả 7 tuần</option>
-              {data.weeks.map(w => (
-                <option key={w.weekNumber} value={w.weekNumber.toString()}>Tuần {w.weekNumber}</option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={selectedWeekFilter}
+            onChange={(e) => setSelectedWeekFilter(e.target.value)}
+            className="w-full sm:w-auto px-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold focus:outline-none"
+          >
+            <option value="all">Tất cả 7 tuần</option>
+            {data.weeks.map(w => (
+              <option key={w.weekNumber} value={w.weekNumber.toString()}>Tuần {w.weekNumber}</option>
+            ))}
+          </select>
 
           {/* Priority Filter */}
-          <div className="col-span-2 sm:col-span-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
-            <span className="text-[11px] text-slate-400 sm:hidden">Độ ưu tiên:</span>
-            <select
-              value={selectedPriorityFilter}
-              onChange={(e) => setSelectedPriorityFilter(e.target.value)}
-              className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
-            >
-              <option value="all">Tất cả độ ưu tiên</option>
-              <option value="urgent">Khẩn cấp</option>
-              <option value="high">Cao</option>
-              <option value="medium">Trung bình</option>
-              <option value="low">Thấp</option>
-            </select>
-          </div>
+          <select
+            value={selectedPriorityFilter}
+            onChange={(e) => setSelectedPriorityFilter(e.target.value)}
+            className="w-full sm:w-auto px-3.5 py-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold focus:outline-none"
+          >
+            <option value="all">Tất cả độ ưu tiên</option>
+            <option value="urgent">Khẩn cấp</option>
+            <option value="high">Cao</option>
+            <option value="medium">Trung bình</option>
+            <option value="low">Thấp</option>
+          </select>
         </div>
       </div>
 
       {/* Mobile Column Tab Switcher */}
-      <div className="md:hidden flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/80 dark:bg-slate-800/80 overflow-x-auto text-xs no-scrollbar">
+      <div className="md:hidden flex items-center gap-1.5 p-1 rounded-full bg-slate-200/80 dark:bg-slate-800/80 overflow-x-auto text-xs no-scrollbar shadow-2xs">
         <button
           onClick={() => setMobileActiveColumn('all')}
-          className={`px-3 py-1.5 rounded-lg font-semibold shrink-0 transition-all ${
+          className={`px-3.5 py-1.5 rounded-full font-bold shrink-0 transition-all ${
             mobileActiveColumn === 'all'
-              ? 'bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs'
+              ? 'bg-sky-500 text-white shadow-xs'
               : 'text-slate-600 dark:text-slate-400'
           }`}
         >
@@ -242,14 +236,14 @@ export const TasksPage: React.FC = () => {
             <button
               key={c.id}
               onClick={() => setMobileActiveColumn(c.id)}
-              className={`px-2.5 py-1.5 rounded-lg font-semibold shrink-0 transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-full font-bold shrink-0 transition-all flex items-center gap-1.5 ${
                 mobileActiveColumn === c.id
-                  ? 'bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs'
+                  ? 'bg-sky-500 text-white shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
               }`}
             >
               <span>{c.label}</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-300/80 dark:bg-slate-700">
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/20">
                 {count}
               </span>
             </button>
@@ -257,7 +251,7 @@ export const TasksPage: React.FC = () => {
         })}
       </div>
 
-      {/* 4-Column Kanban Board */}
+      {/* 4-Column Kanban Board as Apple macOS Workstation Columns */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
         {columns.map((col) => {
           const isHiddenOnMobile = mobileActiveColumn !== 'all' && mobileActiveColumn !== col.id;
@@ -266,26 +260,31 @@ export const TasksPage: React.FC = () => {
           return (
             <div
               key={col.id}
-              className={`rounded-2xl border ${col.color} p-3.5 flex flex-col min-h-[400px] md:min-h-[500px] transition-colors ${
+              className={`rounded-[22px] border ${col.color} p-4 flex flex-col min-h-[400px] md:min-h-[500px] shadow-apple-sm transition-all ${
                 isHiddenOnMobile ? 'hidden md:flex' : 'flex'
               }`}
             >
-              {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-200/60 dark:border-slate-800/60">
+              {/* Column Header with macOS Traffic Lights */}
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/80 dark:border-slate-800/80">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+                  <div className="ds-mac-dots" aria-hidden="true">
+                    <span className="ds-mac-dot ds-mac-dot-red" />
+                    <span className="ds-mac-dot ds-mac-dot-yellow" />
+                    <span className="ds-mac-dot ds-mac-dot-green" />
+                  </div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">
                     {col.label}
                   </h3>
-                  <Badge variant={col.badgeVariant}>
-                    {colTasks.length}
-                  </Badge>
                 </div>
+                <Badge variant={col.badgeVariant}>
+                  {colTasks.length}
+                </Badge>
               </div>
 
               {/* Cards Container */}
               <div className="space-y-3 flex-1 overflow-y-auto">
                 {colTasks.length === 0 ? (
-                  <div className="p-6 text-center text-xs text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl my-4">
+                  <div className="p-6 text-center text-xs text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl my-4">
                     Chưa có nhiệm vụ
                   </div>
                 ) : (
@@ -297,7 +296,7 @@ export const TasksPage: React.FC = () => {
                       <div
                         key={task.id}
                         onClick={() => setActiveTask(task)}
-                        className="p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-sky-400 dark:hover:border-sky-700 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+                        className="p-4 rounded-[20px] border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-sky-400 dark:hover:border-sky-700 shadow-2xs hover:shadow-apple transition-all cursor-pointer group hover:-translate-y-0.5"
                       >
                         {/* Top Badges */}
                         <div className="flex items-center justify-between gap-1.5 mb-2">
@@ -310,7 +309,7 @@ export const TasksPage: React.FC = () => {
                             >
                               {task.priority === 'urgent' ? 'Khẩn cấp' : task.priority === 'high' ? 'Ưu tiên' : 'Thường'}
                             </Badge>
-                            <span className="text-[10px] font-mono font-medium text-slate-400">
+                            <span className="text-[10px] font-mono font-bold text-slate-400">
                               T{task.weekNumber}
                             </span>
                           </div>
@@ -324,31 +323,31 @@ export const TasksPage: React.FC = () => {
                         </div>
 
                         {/* Title */}
-                        <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors line-clamp-2 leading-relaxed">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors line-clamp-2 leading-relaxed">
                           {task.title}
                         </h4>
 
                         {/* Description snippet */}
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
                           {task.description}
                         </p>
 
                         {/* Subtasks Progress */}
                         {task.checklist.length > 0 && (
-                          <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+                          <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-medium">
                             <span className="flex items-center gap-1">
                               <CheckSquare className="w-3 h-3 text-sky-500" />
                               {completedSubtasks}/{task.checklist.length} checklist
                             </span>
-                            <span>
+                            <span className="font-mono font-bold">
                               {Math.round((completedSubtasks / task.checklist.length) * 100)}%
                             </span>
                           </div>
                         )}
 
                         {/* Footer: Assignee & Comments */}
-                        <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
+                        <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
                             {assignee ? (
                               <img
                                 src={assignee.avatarUrl}
@@ -357,16 +356,16 @@ export const TasksPage: React.FC = () => {
                                 className="w-5 h-5 rounded-full object-cover ring-1 ring-sky-500/40"
                               />
                             ) : (
-                              <span className="text-[10px] text-slate-400 font-medium">Cả nhóm</span>
+                              <span className="text-[10px] text-slate-400 font-bold">Cả nhóm</span>
                             )}
-                            <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[80px]">
+                            <span className="text-[10px] text-slate-600 dark:text-slate-300 font-bold truncate max-w-[80px]">
                               {assignee ? assignee.name.split(' ').slice(-1)[0] : 'Chung'}
                             </span>
                           </div>
 
                           <div className="flex items-center gap-2 text-slate-400 text-[10px]">
                             {task.comments.length > 0 && (
-                              <span className="flex items-center gap-1">
+                              <span className="flex items-center gap-1 font-mono">
                                 <MessageSquare className="w-3 h-3" />
                                 {task.comments.length}
                               </span>
@@ -394,13 +393,13 @@ export const TasksPage: React.FC = () => {
         >
           <div className="space-y-5 text-xs">
             {/* Status & Priority Row */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-600 dark:text-slate-400">Trạng thái:</span>
+                <span className="font-bold text-slate-600 dark:text-slate-400">Trạng thái:</span>
                 <select
                   value={activeTask.status}
                   onChange={(e) => handleStatusChange(activeTask, e.target.value as TaskStatus)}
-                  className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-semibold"
+                  className="px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold"
                 >
                   <option value="todo">Cần làm</option>
                   <option value="in_progress">Đang thực hiện</option>
@@ -410,8 +409,8 @@ export const TasksPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-600 dark:text-slate-400">Phụ trách:</span>
-                <span className="font-bold text-slate-900 dark:text-white">
+                <span className="font-bold text-slate-600 dark:text-slate-400">Phụ trách:</span>
+                <span className="font-extrabold text-slate-900 dark:text-white">
                   {data.members.find(m => m.id === activeTask.assigneeId)?.name || 'Cả nhóm'}
                 </span>
               </div>
@@ -419,8 +418,8 @@ export const TasksPage: React.FC = () => {
 
             {/* Description */}
             <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Mô tả công việc:</h4>
-              <p className="text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/50 dark:bg-slate-900/30 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
+              <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-1">Mô tả công việc:</h4>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/40 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800">
                 {activeTask.description}
               </p>
             </div>
@@ -428,10 +427,10 @@ export const TasksPage: React.FC = () => {
             {/* Subtasks Checklist */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                <h4 className="font-bold text-slate-900 dark:text-slate-100">
                   Tiêu chí hoàn thành (Checklist):
                 </h4>
-                <span className="font-mono text-slate-400">
+                <span className="font-mono text-slate-400 font-bold">
                   {activeTask.checklist.filter(c => c.completed).length}/{activeTask.checklist.length} xong
                 </span>
               </div>
@@ -439,7 +438,7 @@ export const TasksPage: React.FC = () => {
                 {activeTask.checklist.map((item) => (
                   <label
                     key={item.id}
-                    className="flex items-start gap-2.5 p-2 rounded-lg border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer transition-colors"
+                    className="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer transition-colors"
                   >
                     <input
                       type="checkbox"
@@ -447,7 +446,7 @@ export const TasksPage: React.FC = () => {
                       onChange={() => handleToggleSubtask(activeTask, item.id)}
                       className="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 dark:border-slate-700 mt-0.5"
                     />
-                    <span className={item.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200'}>
+                    <span className={item.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200 font-semibold'}>
                       {item.text}
                     </span>
                   </label>
@@ -458,7 +457,7 @@ export const TasksPage: React.FC = () => {
             {/* Code files & Proof */}
             {activeTask.codeFiles && activeTask.codeFiles.length > 0 && (
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5">File code liên quan:</h4>
+                <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-1.5">File code liên quan:</h4>
                 <div className="flex flex-wrap gap-1.5">
                   {activeTask.codeFiles.map((file, idx) => (
                     <a
@@ -466,7 +465,7 @@ export const TasksPage: React.FC = () => {
                       href={`https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/${file}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 font-mono text-[11px] hover:underline"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 font-mono text-[11px] font-bold hover:underline"
                     >
                       <Code2 className="w-3 h-3" />
                       {file}
@@ -479,15 +478,15 @@ export const TasksPage: React.FC = () => {
 
             {/* Proof of completion */}
             {activeTask.proofOfCompletion && (
-              <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-emerald-900 dark:text-emerald-300">
-                <span className="font-semibold block mb-0.5">Bằng chứng hoàn thành:</span>
-                <p>{activeTask.proofOfCompletion}</p>
+              <div className="p-3.5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 text-emerald-900 dark:text-emerald-300">
+                <span className="font-bold block mb-0.5">Bằng chứng hoàn thành:</span>
+                <p className="font-medium">{activeTask.proofOfCompletion}</p>
               </div>
             )}
 
             {/* Comments Section */}
             <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-1.5">
+              <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-1.5">
                 <MessageSquare className="w-3.5 h-3.5 text-sky-500" />
                 <span>Trao đổi / Bình luận ({activeTask.comments.length})</span>
               </h4>
@@ -497,10 +496,10 @@ export const TasksPage: React.FC = () => {
                   <p className="text-slate-400 text-[11px] italic">Chưa có bình luận nào.</p>
                 ) : (
                   activeTask.comments.map((c) => (
-                    <div key={c.id} className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 text-xs">
+                    <div key={c.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 text-xs">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold text-sky-600 dark:text-sky-400">{c.authorName}</span>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="font-bold text-sky-600 dark:text-sky-400">{c.authorName}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">
                           {new Date(c.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
@@ -518,7 +517,7 @@ export const TasksPage: React.FC = () => {
                   value={newCommentText}
                   onChange={(e) => setNewCommentText(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(); }}
-                  className="flex-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-xs"
+                  className="flex-1 px-3.5 py-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-xs"
                 />
                 <Button variant="primary" size="sm" onClick={handleAddComment}>
                   <Send className="w-3.5 h-3.5" />
@@ -539,7 +538,7 @@ export const TasksPage: React.FC = () => {
               >
                 Xóa nhiệm vụ
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setActiveTask(null)}>
+              <Button variant="secondary" size="sm" onClick={() => setActiveTask(null)}>
                 Đóng
               </Button>
             </div>
@@ -558,34 +557,34 @@ export const TasksPage: React.FC = () => {
         >
           <div className="space-y-4 text-xs">
             <div>
-              <label className="block font-semibold mb-1">Tiêu đề nhiệm vụ:</label>
+              <label className="block font-bold mb-1">Tiêu đề nhiệm vụ:</label>
               <input
                 type="text"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
                 placeholder="VD: Kiểm thử tình huống EOF với Ctrl-D trong Cooked mode"
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
               />
             </div>
 
             <div>
-              <label className="block font-semibold mb-1">Mô tả chi tiết:</label>
+              <label className="block font-bold mb-1">Mô tả chi tiết:</label>
               <textarea
                 rows={2}
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
                 placeholder="Mô tả cụ thể mục tiêu và kết quả kỳ vọng..."
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold mb-1">Người phụ trách:</label>
+                <label className="block font-bold mb-1">Người phụ trách:</label>
                 <select
                   value={newAssignee}
                   onChange={(e) => setNewAssignee(e.target.value as MemberId | 'all')}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                  className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
                 >
                   <option value="all">Cả 3 thành viên</option>
                   {data.members.map(m => (
@@ -595,11 +594,11 @@ export const TasksPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Tuần đồ án:</label>
+                <label className="block font-bold mb-1">Tuần đồ án:</label>
                 <select
                   value={newWeek}
                   onChange={(e) => setNewWeek(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                  className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
                 >
                   {data.weeks.map(w => (
                     <option key={w.weekNumber} value={w.weekNumber}>Tuần {w.weekNumber}</option>
@@ -610,11 +609,11 @@ export const TasksPage: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold mb-1">Độ ưu tiên:</label>
+                <label className="block font-bold mb-1">Độ ưu tiên:</label>
                 <select
                   value={newPriority}
                   onChange={(e) => setNewPriority(e.target.value as TaskPriority)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                  className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
                 >
                   <option value="low">Thấp</option>
                   <option value="medium">Trung bình</option>
@@ -624,39 +623,39 @@ export const TasksPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Hạn chót (Deadline):</label>
+                <label className="block font-bold mb-1">Hạn chót (Deadline):</label>
                 <input
                   type="date"
                   value={newDeadline}
                   onChange={(e) => setNewDeadline(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block font-semibold mb-1">File code liên quan (cách nhau bởi dấu phẩy):</label>
+              <label className="block font-bold mb-1">File code liên quan (cách nhau bởi dấu phẩy):</label>
               <input
                 type="text"
                 value={newCodeFiles}
                 onChange={(e) => setNewCodeFiles(e.target.value)}
                 placeholder="kernel/console.c, user/sh.c"
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
               />
             </div>
 
             <div>
-              <label className="block font-semibold mb-1">Tiêu chí nghiệm thu (Mỗi dòng một checklist):</label>
+              <label className="block font-bold mb-1">Tiêu chí nghiệm thu (Mỗi dòng một checklist):</label>
               <textarea
                 rows={3}
                 value={newChecklistText}
                 onChange={(e) => setNewChecklistText(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
               />
             </div>
 
             <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
-              <Button variant="outline" onClick={() => setIsCreatingModal(false)}>
+              <Button variant="secondary" onClick={() => setIsCreatingModal(false)}>
                 Hủy
               </Button>
               <Button variant="primary" onClick={handleCreateTask}>

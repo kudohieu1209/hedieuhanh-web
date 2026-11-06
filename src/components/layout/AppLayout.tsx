@@ -10,7 +10,7 @@ export const AppLayout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 font-sans transition-colors">
+    <div className="flex h-screen overflow-hidden apple-drafting-canvas text-slate-900 dark:text-slate-100 font-sans transition-colors">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex shrink-0">
         <Sidebar />
@@ -27,7 +27,7 @@ export const AppLayout: React.FC = () => {
             {/* Mobile close button floating */}
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute top-3 right-3 p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 z-20"
+              className="absolute top-3 right-3 p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 z-20 shadow-xs"
               aria-label="Đóng menu"
             >
               <X className="w-4 h-4" />
@@ -42,14 +42,14 @@ export const AppLayout: React.FC = () => {
         <Topbar onToggleMobileMenu={() => setMobileMenuOpen(true)} />
         <DemoBanner />
         
-        {/* Dynamic Page Content */}
-        <main className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8">
+        {/* Dynamic Page Content with Smooth Drafting Canvas Backdrop */}
+        <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto w-full pb-24 md:pb-12">
             <Outlet />
           </div>
         </main>
 
-        {/* Mobile Bottom Navigation */}
+        {/* Mobile Bottom Navigation Styled like iOS Glass Dock */}
         <BottomNav onOpenMenu={() => setMobileMenuOpen(true)} />
       </div>
     </div>

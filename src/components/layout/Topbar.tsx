@@ -6,8 +6,11 @@ import {
   ChevronDown, 
   Check, 
   Clock, 
-  Calendar 
+  Calendar,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { MemberId } from '../../types';
 
@@ -42,136 +45,162 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
   const currentWeekObj = data.weeks.find(w => w.weekNumber === data.settings.currentWeek);
 
   return (
-    <header className="h-14 bg-white/95 dark:bg-[#0d131f]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 flex items-center justify-between shrink-0 sticky top-0 z-30 transition-colors">
-      {/* Left: Mobile Toggle & Week Indicator */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onToggleMobileMenu}
-          className="md:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800"
-          aria-label="Mở menu"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-
-        {/* Current Week Pill */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-xs">
-            <Calendar className="w-3.5 h-3.5 text-sky-500" />
-            <span className="font-semibold text-slate-900 dark:text-white">
-              Tuần {data.settings.currentWeek} / 7
-            </span>
-            <span className="hidden sm:inline text-slate-400">·</span>
-            <span className="hidden sm:inline text-slate-600 dark:text-slate-300 font-medium truncate max-w-[200px]">
-              {currentWeekObj?.title || 'Đang thực hiện'}
-            </span>
-          </div>
-
-          {/* Next Report Countdown */}
-          <div className="hidden lg:flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 font-medium">
-            <Clock className="w-3.5 h-3.5 text-amber-500" />
-            <span>Báo cáo kế tiếp:</span>
-            <span className="font-semibold text-slate-900 dark:text-slate-200">
-              {data.settings.nextReportDate}
-            </span>
-            <span className="text-[11px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 font-medium">
-              {daysLeft > 0 ? `Còn ${daysLeft} ngày` : 'Hôm nay!'}
-            </span>
-          </div>
+    <div className="flex flex-col shrink-0 sticky top-0 z-30">
+      {/* Incident.io Style Top Banner */}
+      <div className="ds-top-bar px-3 sm:px-6 py-2 text-xs flex items-center justify-between border-b transition-colors">
+        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar max-w-full">
+          <span className="px-2 py-0.5 rounded-full text-[10.5px] font-bold font-mono tracking-wide bg-sky-500 text-white shadow-xs shrink-0">
+            HUST · ĐỒ ÁN #27
+          </span>
+          <span className="text-slate-700 dark:text-slate-300 font-medium truncate text-xs">
+            Báo cáo Tuần 2: <strong>25/10 – 01/11</strong> · Hạn gửi ảnh: <strong>12h trưa Chủ nhật 01/11</strong>
+          </span>
+        </div>
+        <div className="hidden md:flex items-center gap-2 shrink-0">
+          <Link
+            to="/roadmap"
+            className="inline-flex items-center gap-1 text-[11.5px] font-bold text-sky-600 dark:text-sky-400 hover:underline"
+          >
+            <span>Chi tiết tiến độ &amp; nộp báo cáo</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </div>
 
-      {/* Right: Quick User Switcher, Theme Toggle & GitHub */}
-      <div className="flex items-center gap-2.5">
-        {/* Member Switcher Dropdown */}
-        <div className="relative">
+      {/* Apple Frosted Glass Top Bar */}
+      <header className="h-14 bg-white/85 dark:bg-[#0d131f]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 px-4 flex items-center justify-between transition-colors shadow-2xs">
+        {/* Left: Mobile Toggle & Week Indicator */}
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => setMemberDropdownOpen(!memberDropdownOpen)}
-            className="flex items-center gap-2 p-1.5 pr-2.5 rounded-lg border border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors text-xs font-medium"
+            onClick={onToggleMobileMenu}
+            className="md:hidden p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Mở menu"
           >
-            <img
-              src={currentMember.avatarUrl}
-              alt={currentMember.name}
-              className="w-6 h-6 rounded-full object-cover ring-1 ring-sky-500/40"
-            />
-            <span className="font-semibold text-slate-800 dark:text-slate-200 hidden sm:inline">
-              {currentMember.name}
-            </span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            <Menu className="w-5 h-5" />
           </button>
 
-          {memberDropdownOpen && (
-            <>
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setMemberDropdownOpen(false)}
-              />
-              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 mb-1">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                    Đổi người dùng làm việc
-                  </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Chuyển đổi góc nhìn giữa 3 thành viên
-                  </div>
-                </div>
+          {/* Current Week Pill with macOS Pulse Dot */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 text-xs shadow-2xs">
+              <span className="ds-live-dot" />
+              <span className="font-bold text-slate-900 dark:text-white">
+                Tuần {data.settings.currentWeek} / 7
+              </span>
+              <span className="hidden sm:inline text-slate-400">·</span>
+              <span className="hidden sm:inline text-slate-600 dark:text-slate-300 font-medium truncate max-w-[200px]">
+                {currentWeekObj?.title || 'Đang thực hiện'}
+              </span>
+            </div>
 
-                <div className="space-y-0.5">
-                  {data.members.map((member) => (
-                    <button
-                      key={member.id}
-                      onClick={() => {
-                        setCurrentMemberId(member.id as MemberId);
-                        setMemberDropdownOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between p-2 rounded-lg text-left text-xs transition-colors ${
-                        member.id === currentMember.id
-                          ? 'bg-sky-50 dark:bg-sky-950/70 text-sky-900 dark:text-sky-200 font-semibold'
-                          : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <img
-                          src={member.avatarUrl}
-                          alt={member.name}
-                          className="w-7 h-7 rounded-full object-cover shrink-0"
-                        />
-                        <div className="min-w-0">
-                          <div className="truncate font-medium">{member.name}</div>
-                          <div className="text-[10px] text-slate-400 truncate">{member.role}</div>
-                        </div>
-                      </div>
-                      {member.id === currentMember.id && (
-                        <Check className="w-4 h-4 text-sky-500 shrink-0" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
+            {/* Next Report Countdown */}
+            <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 font-medium px-3 py-1.5 rounded-full bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/50">
+              <Clock className="w-3.5 h-3.5 text-amber-500" />
+              <span>Hạn báo cáo:</span>
+              <span className="font-bold text-slate-900 dark:text-slate-200">
+                {data.settings.nextReportDate}
+              </span>
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500 text-white font-bold shadow-2xs">
+                {daysLeft > 0 ? `Còn ${daysLeft} ngày` : 'Hôm nay!'}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng' : 'Chuyển sang Giao diện Tối'}
-          aria-label="Đổi giao diện"
-        >
-          {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </button>
+        {/* Right: Quick User Switcher, Theme Toggle & GitHub */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Member Switcher Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setMemberDropdownOpen(!memberDropdownOpen)}
+              className="flex items-center gap-2 p-1.5 pr-3 rounded-full border border-slate-200/90 dark:border-slate-800 bg-white/60 dark:bg-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-all text-xs font-semibold shadow-2xs hover:-translate-y-0.5"
+            >
+              <img
+                src={currentMember.avatarUrl}
+                alt={currentMember.name}
+                className="w-6 h-6 rounded-full object-cover ring-2 ring-sky-500/50"
+              />
+              <span className="font-bold text-slate-800 dark:text-slate-200 hidden sm:inline">
+                {currentMember.name}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            </button>
 
-        {/* GitHub Button */}
-        <a
-          href={data.settings.githubRepoUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-semibold shadow-xs transition-colors"
-        >
-          <GithubIcon className="w-3.5 h-3.5" />
-          <span>GitHub</span>
-        </a>
-      </div>
-    </header>
+            {memberDropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setMemberDropdownOpen(false)}
+                />
+                <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800 rounded-[22px] shadow-apple dark:shadow-apple-dark p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800/80 mb-1 flex items-center justify-between">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Góc nhìn thành viên
+                    </div>
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold">
+                      Nhóm 3
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    {data.members.map((member) => (
+                      <button
+                        key={member.id}
+                        onClick={() => {
+                          setCurrentMemberId(member.id as MemberId);
+                          setMemberDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left text-xs transition-all ${
+                          member.id === currentMember.id
+                            ? 'bg-sky-500 text-white font-bold shadow-xs shadow-sky-500/30'
+                            : 'hover:bg-slate-100/80 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img
+                            src={member.avatarUrl}
+                            alt={member.name}
+                            className={`w-8 h-8 rounded-full object-cover shrink-0 ring-1 ${member.id === currentMember.id ? 'ring-white' : 'ring-slate-300'}`}
+                          />
+                          <div className="min-w-0">
+                            <div className="truncate font-bold">{member.name}</div>
+                            <div className={`text-[10px] truncate ${member.id === currentMember.id ? 'text-sky-100' : 'text-slate-400'}`}>
+                              {member.role}
+                            </div>
+                          </div>
+                        </div>
+                        {member.id === currentMember.id && (
+                          <Check className="w-4 h-4 text-white shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800 transition-colors shadow-2xs"
+            title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng (Apple Canvas)' : 'Chuyển sang Giao diện Tối'}
+            aria-label="Đổi giao diện"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
+          </button>
+
+          {/* GitHub Pill Button */}
+          <a
+            href={data.settings.githubRepoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
+          >
+            <GithubIcon className="w-3.5 h-3.5" />
+            <span>GitHub</span>
+          </a>
+        </div>
+      </header>
+    </div>
   );
 };

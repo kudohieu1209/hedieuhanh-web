@@ -70,33 +70,36 @@ export const MembersPage: React.FC = () => {
     unread: { label: 'Chưa đọc', color: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' },
     read: { label: '1. Đã đọc', color: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' },
     understood: { label: '2. Đã hiểu', color: 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300' },
-    ready_to_defend: { label: '3. Sẵn sàng bảo vệ ★', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' }
+    ready_to_defend: { label: '3. Sẵn sàng bảo vệ ★', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold' }
   };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Users className="w-6 h-6 text-sky-500" />
-            Quản Lý 3 Thành Viên Nhóm Đồ Án
+          <div className="ds-hero-badge mb-2">
+            <Users className="w-3.5 h-3.5 text-sky-500" />
+            <span>ĐỘI NGŨ THỰC HIỆN ĐỒ ÁN</span>
+          </div>
+          <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+            Quản Lý 3 Thành Viên <em>Nhóm Đồ Án HUST</em>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Phân công chuyên môn rạch ròi, theo dõi file phụ trách và mức độ sẵn sàng bảo vệ của từng cá nhân
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            Phân công chuyên môn rạch ròi, theo dõi mã nguồn phụ trách và mức độ sẵn sàng bảo vệ của từng cá nhân.
           </p>
         </div>
 
         {/* Member Selector Tabs */}
-        <div className="grid grid-cols-3 sm:flex items-center gap-1 sm:gap-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full sm:w-auto">
+        <div className="grid grid-cols-3 sm:flex items-center gap-1.5 p-1.5 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs w-full sm:w-auto">
           {data.members.map((m) => (
             <button
               key={m.id}
               onClick={() => setSelectedMemberId(m.id)}
-              className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center justify-center sm:justify-start gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
                 m.id === selectedMember.id
-                  ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               <img
@@ -110,107 +113,102 @@ export const MembersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Member Profile Banner */}
-      <Card className="p-6 relative overflow-hidden bg-gradient-to-r from-slate-900 to-slate-950 text-white border-slate-800">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <img
-              src={selectedMember.avatarUrl}
-              alt={selectedMember.name}
-              className="w-20 h-20 rounded-2xl object-cover ring-4 ring-sky-500/30 shadow-xl shrink-0"
-            />
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
-                  {selectedMember.name}
-                </h2>
-                <Badge variant="primary">
-                  MSSV: {selectedMember.studentId}
-                </Badge>
-                {selectedMember.id === currentMember.id && (
-                  <Badge variant="success">
-                    Đang đăng nhập
+      {/* Member Profile Banner as Apple macOS Window */}
+      <Card trafficLights macTitle={`Hồ Sơ Thành Viên: ${selectedMember.name}`}>
+        <div className="p-6 relative overflow-hidden bg-gradient-to-r from-slate-900 to-slate-950 text-white">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <img
+                src={selectedMember.avatarUrl}
+                alt={selectedMember.name}
+                className="w-20 h-20 rounded-2xl object-cover ring-4 ring-sky-500/40 shadow-xl shrink-0"
+              />
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
+                    {selectedMember.name}
+                  </h2>
+                  <Badge variant="primary">
+                    MSSV: {selectedMember.studentId}
                   </Badge>
-                )}
-              </div>
-              <p className="text-sm font-semibold text-sky-400 mt-1">
-                {selectedMember.role}
-              </p>
-              <p className="text-xs text-slate-300 mt-2 max-w-2xl leading-relaxed">
-                {selectedMember.bio}
-              </p>
-              <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-slate-400">
-                <span className="flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-slate-400" />
-                  {selectedMember.email}
-                </span>
-                {selectedMember.githubUsername && (
-                  <a
-                    href={`https://github.com/${selectedMember.githubUsername}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 hover:text-white transition-colors"
-                  >
-                    <GithubIcon className="w-3.5 h-3.5" />
-                    @{selectedMember.githubUsername}
-                  </a>
-                )}
+                  {selectedMember.id === currentMember.id && (
+                    <Badge variant="success">
+                      Đang đăng nhập
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-sm font-bold text-sky-400 mt-1">
+                  {selectedMember.role}
+                </p>
+                <p className="text-xs text-slate-300 mt-2 max-w-2xl leading-relaxed">
+                  {selectedMember.bio}
+                </p>
+                <div className="flex flex-wrap items-center gap-4 mt-3.5 text-xs text-slate-400">
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <Mail className="w-3.5 h-3.5 text-sky-400" />
+                    {selectedMember.email}
+                  </span>
+                  {selectedMember.githubUsername && (
+                    <a
+                      href={`https://github.com/${selectedMember.githubUsername}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 hover:text-white transition-colors font-mono font-medium"
+                    >
+                      <GithubIcon className="w-3.5 h-3.5" />
+                      @{selectedMember.githubUsername}
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex flex-wrap sm:flex-col items-end gap-2.5 shrink-0">
-            <Button
-              variant="outline"
-              size="sm"
-              icon={<Edit3 className="w-3.5 h-3.5" />}
-              onClick={handleOpenEdit}
-              className="bg-slate-800/80 hover:bg-slate-700 text-white border-slate-700"
-            >
-              Sửa hồ sơ
-            </Button>
-            {selectedMember.id !== currentMember.id && (
+            <div className="flex flex-wrap sm:flex-col items-end gap-2.5 shrink-0">
               <Button
-                variant="primary"
+                variant="secondary"
                 size="sm"
-                onClick={() => setCurrentMemberId(selectedMember.id)}
+                icon={<Edit3 className="w-3.5 h-3.5" />}
+                onClick={handleOpenEdit}
               >
-                Đổi làm người dùng chính
+                Sửa hồ sơ
               </Button>
-            )}
+              {selectedMember.id !== currentMember.id && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setCurrentMemberId(selectedMember.id)}
+                >
+                  Đổi người dùng làm việc
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </Card>
 
       {/* Grid: 3 Metric Cards for this Member */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card hover>
-          <CardContent className="p-4">
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
-              Tiến độ Nhiệm vụ được giao
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-white">
+        <Card hover trafficLights macTitle="Tiến Độ Việc Giao">
+          <CardContent className="p-5">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">
                 {completedTasks.length}/{memberTasks.length}
               </span>
-              <span className="text-xs text-emerald-500 font-semibold">{taskPct}% hoàn thành</span>
+              <span className="text-xs text-emerald-500 font-bold">{taskPct}% xong</span>
             </div>
-            <Progress value={taskPct} size="sm" className="mt-2" barColor="bg-sky-500" />
+            <Progress value={taskPct} size="sm" barColor="bg-gradient-to-r from-sky-500 to-cyan-400" />
           </CardContent>
         </Card>
 
-        <Card hover>
-          <CardContent className="p-4">
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
-              Bài học sẵn sàng bảo vệ
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+        <Card hover trafficLights macTitle="Kiến Thức Sẵn Sàng">
+          <CardContent className="p-5">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-2xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
                 {readyTopicsCount}/{memberTopics.length}
               </span>
-              <span className="text-xs text-slate-400">chủ đề kiến thức</span>
+              <span className="text-xs text-slate-400 font-medium">chủ đề vững</span>
             </div>
-            <div className="flex gap-2 mt-2 text-[11px] text-slate-500">
+            <div className="flex gap-2 text-xs text-slate-500 font-medium">
               <span>{understoodTopicsCount} đã hiểu</span>
               <span>·</span>
               <span>{readTopicsCount} đã đọc</span>
@@ -218,18 +216,15 @@ export const MembersPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card hover>
-          <CardContent className="p-4">
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
-              Điểm tự tin vấn đáp
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-mono text-purple-600 dark:text-purple-400">
+        <Card hover trafficLights macTitle="Độ Tự Tin Vấn Đáp">
+          <CardContent className="p-5">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-2xl font-extrabold font-mono text-purple-600 dark:text-purple-400">
                 {confidentQuestions.length}/{data.defenseQuestions.length}
               </span>
-              <span className="text-xs text-slate-400">câu trả lời tốt</span>
+              <span className="text-xs text-slate-400 font-medium">câu tự tin</span>
             </div>
-            <div className="mt-2 text-[11px] text-rose-500 font-medium">
+            <div className="text-xs text-rose-500 font-bold">
               {poorlyAnsweredQuestions.length} câu cần ôn lại kỹ
             </div>
           </CardContent>
@@ -241,27 +236,23 @@ export const MembersPage: React.FC = () => {
         {/* Left Column (1 Col): Code Files & Focus Areas */}
         <div className="space-y-6">
           {/* Assigned Code Files */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-sky-500" />
-                <span>Mã nguồn phụ trách chính</span>
-              </CardTitle>
-              <CardDescription>
+          <Card trafficLights macTitle="Mã Nguồn Phụ Trách Chính">
+            <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Thành viên phải đọc hiểu từng dòng trong các file này
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
+              </p>
+            </div>
+            <CardContent className="space-y-2.5 p-5">
               {selectedMember.assignedFiles.map((file, idx) => (
                 <a
                   key={idx}
                   href={`https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/${file}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-sky-50 dark:hover:bg-sky-950/40 hover:border-sky-300 dark:hover:border-sky-800 transition-all text-xs font-mono group"
+                  className="flex items-center justify-between p-3 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 hover:bg-sky-50 dark:hover:bg-sky-950/40 hover:border-sky-400 dark:hover:border-sky-800 transition-all text-xs font-mono group shadow-2xs hover:-translate-y-0.5"
                 >
-                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-sky-600 dark:group-hover:text-sky-400 truncate">
-                    <Terminal className="w-3.5 h-3.5 shrink-0 opacity-60" />
+                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-sky-600 dark:group-hover:text-sky-400 truncate font-semibold">
+                    <Terminal className="w-3.5 h-3.5 shrink-0 text-sky-500" />
                     <span className="truncate">{file}</span>
                   </div>
                   <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-500 shrink-0" />
@@ -271,19 +262,13 @@ export const MembersPage: React.FC = () => {
           </Card>
 
           {/* Focus Areas */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-sky-500" />
-                <span>Nội dung chuyên môn bắt buộc</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+          <Card trafficLights macTitle="Chuyên Môn Bắt Buộc">
+            <CardContent className="p-5">
               <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                 {selectedMember.focusAreas.map((area, idx) => (
                   <li key={idx} className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-1.5 shrink-0" />
-                    <span>{area}</span>
+                    <span className="leading-relaxed font-medium">{area}</span>
                   </li>
                 ))}
               </ul>
@@ -291,27 +276,20 @@ export const MembersPage: React.FC = () => {
           </Card>
 
           {/* Questions answered poorly */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2 text-rose-500">
-                <AlertTriangle className="w-4 h-4" />
-                <span>Câu hỏi vấn đáp chưa tốt ({poorlyAnsweredQuestions.length})</span>
-              </CardTitle>
-              <CardDescription>
-                Cần luyện tập trước buổi bảo vệ
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
+          <Card trafficLights macTitle={`Câu Vấn Đáp Cần Ôn Lại (${poorlyAnsweredQuestions.length})`}>
+            <CardContent className="space-y-2.5 p-5">
               {poorlyAnsweredQuestions.length === 0 ? (
-                <p className="text-xs text-slate-400 italic">Thành viên này trả lời tốt mọi câu hỏi đã ôn.</p>
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold italic">
+                  ✓ Thành viên này trả lời tốt mọi câu hỏi đã ôn!
+                </p>
               ) : (
                 poorlyAnsweredQuestions.map((q) => (
-                  <div key={q.id} className="p-2.5 rounded-lg border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/20 text-xs">
-                    <p className="font-medium text-slate-900 dark:text-slate-100 line-clamp-2">
+                  <div key={q.id} className="p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/20 text-xs">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
                       {q.question}
                     </p>
-                    <span className="text-[10px] text-slate-400 mt-1 block">
-                      Tham khảo: {q.codeReference}
+                    <span className="text-[10px] text-slate-400 mt-1.5 block font-mono">
+                      Ref: {q.codeReference}
                     </span>
                   </div>
                 ))
@@ -323,28 +301,20 @@ export const MembersPage: React.FC = () => {
         {/* Right Column (2 Cols): Learning Topics Progress & Assigned Tasks */}
         <div className="lg:col-span-2 space-y-6">
           {/* Learning Topics & Progress State Picker */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-sky-500" />
-                    <span>Tiến độ 12 Chủ Đề Kiến Thức Bắt Buộc</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Cập nhật trạng thái tự học của {selectedMember.name} theo 3 mức độ
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
+          <Card trafficLights macTitle="Tiến Độ 12 Chủ Đề Kiến Thức Bắt Buộc">
+            <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Cập nhật trạng thái tự học của {selectedMember.name} theo 3 mức độ
+              </p>
+            </div>
+            <CardContent className="space-y-3 p-5">
               {memberTopics.map((topic) => {
                 const state = topic.memberProgress[selectedMember.id] || 'unread';
 
                 return (
                   <div
                     key={topic.id}
-                    className="p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#111827] flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+                    className="p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-sky-300 dark:hover:border-sky-800 transition-colors shadow-2xs"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -352,10 +322,10 @@ export const MembersPage: React.FC = () => {
                           {topic.category === 'process_signal' ? 'Process & Signal' : topic.category === 'tty_layer' ? 'TTY Layer' : 'Shell & Job Control'}
                         </Badge>
                       </div>
-                      <h4 className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
                         {topic.title}
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 leading-relaxed">
                         {topic.shortSummary}
                       </p>
                     </div>
@@ -364,7 +334,7 @@ export const MembersPage: React.FC = () => {
                       <select
                         value={state}
                         onChange={(e) => updateKnowledgeProgress(topic.id, selectedMember.id, e.target.value as LearningState)}
-                        className={`text-xs font-semibold px-2.5 py-1.5 rounded-lg border focus:outline-none focus:ring-2 focus:ring-sky-500 ${learningStateLabels[state].color}`}
+                        className={`text-xs font-bold px-3 py-1.5 rounded-full border focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-2xs ${learningStateLabels[state].color}`}
                       >
                         <option value="unread">Chưa đọc</option>
                         <option value="read">1. Đã đọc</option>
@@ -379,32 +349,26 @@ export const MembersPage: React.FC = () => {
           </Card>
 
           {/* Assigned Tasks for this member */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-                <CheckSquare className="w-4 h-4 text-sky-500" />
-                <span>Nhiệm vụ được giao ({memberTasks.length})</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2.5">
+          <Card trafficLights macTitle={`Nhiệm Vụ Được Giao (${memberTasks.length})`}>
+            <CardContent className="space-y-2.5 p-5">
               {memberTasks.map((task) => (
                 <div
                   key={task.id}
-                  className="p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between gap-3 text-xs"
+                  className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/40 flex items-center justify-between gap-3 text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-900 transition-colors"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant={task.status === 'done' ? 'success' : task.status === 'in_progress' ? 'primary' : 'default'}>
                         {task.status === 'done' ? 'Xong' : task.status === 'in_progress' ? 'Đang làm' : 'Cần làm'}
                       </Badge>
-                      <span className="font-mono text-slate-400">Tuần {task.weekNumber}</span>
+                      <span className="font-mono text-slate-400 font-bold">Tuần {task.weekNumber}</span>
                     </div>
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">
+                    <div className="font-bold text-slate-900 dark:text-slate-100 truncate">
                       {task.title}
                     </div>
                   </div>
 
-                  <span className="text-[11px] text-slate-400 shrink-0 font-mono">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 shrink-0 font-mono font-medium">
                     {task.deadline}
                   </span>
                 </div>
@@ -424,52 +388,52 @@ export const MembersPage: React.FC = () => {
         >
           <div className="space-y-4 text-xs">
             <div>
-              <label className="block font-semibold mb-1">Họ và tên:</label>
+              <label className="block font-bold mb-1">Họ và tên:</label>
               <input
                 type="text"
                 value={editFormData.name}
                 onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
               />
             </div>
             <div>
-              <label className="block font-semibold mb-1">Mã số sinh viên (MSSV):</label>
+              <label className="block font-bold mb-1">Mã số sinh viên (MSSV):</label>
               <input
                 type="text"
                 value={editFormData.studentId}
                 onChange={(e) => setEditFormData({ ...editFormData, studentId: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
               />
             </div>
             <div>
-              <label className="block font-semibold mb-1">Vai trò & Chuyên môn:</label>
+              <label className="block font-bold mb-1">Vai trò &amp; Chuyên môn:</label>
               <input
                 type="text"
                 value={editFormData.role}
                 onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
               />
             </div>
             <div>
-              <label className="block font-semibold mb-1">Email liên hệ:</label>
+              <label className="block font-bold mb-1">Email liên hệ:</label>
               <input
                 type="email"
                 value={editFormData.email}
                 onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
               />
             </div>
             <div>
-              <label className="block font-semibold mb-1">Giới thiệu trách nhiệm:</label>
+              <label className="block font-bold mb-1">Giới thiệu trách nhiệm:</label>
               <textarea
                 rows={3}
                 value={editFormData.bio}
                 onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium leading-relaxed"
               />
             </div>
             <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
-              <Button variant="outline" onClick={() => setEditingModal(false)}>
+              <Button variant="secondary" onClick={() => setEditingModal(false)}>
                 Hủy
               </Button>
               <Button variant="primary" onClick={handleSaveEdit}>

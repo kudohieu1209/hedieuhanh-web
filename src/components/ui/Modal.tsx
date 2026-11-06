@@ -45,35 +45,45 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal Dialog */}
+      {/* Modal Dialog Styled as Apple macOS Window */}
       <div
-        className={`relative w-full ${widthClasses[maxWidth]} bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden z-10 transition-all max-h-[94dvh] sm:max-h-[90vh] flex flex-col my-auto`}
+        className={`relative w-full ${widthClasses[maxWidth]} bg-white dark:bg-[#111827] border border-slate-200/90 dark:border-slate-800/90 rounded-[22px] shadow-apple dark:shadow-apple-dark overflow-hidden z-10 transition-all max-h-[94dvh] sm:max-h-[90vh] flex flex-col my-auto`}
       >
-        {/* Header */}
-        <div className="flex items-start justify-between p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-800/80">
-          <div className="pr-2">
-            <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-            {subtitle && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1">{subtitle}</p>
-            )}
+        {/* macOS Window Header Bar */}
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/60 backdrop-blur-sm">
+          <div className="flex items-center gap-3">
+            <div className="ds-mac-dots" aria-hidden="true">
+              <span className="ds-mac-dot ds-mac-dot-red" onClick={onClose} role="button" title="Đóng" />
+              <span className="ds-mac-dot ds-mac-dot-yellow" />
+              <span className="ds-mac-dot ds-mac-dot-green" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 font-sans tracking-tight">
+                {title}
+              </h3>
+              {subtitle && (
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>
+              )}
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+            className="p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors shrink-0"
+            aria-label="Đóng"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-3.5 sm:p-5 overflow-y-auto flex-1 overscroll-contain">{children}</div>
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 overscroll-contain">{children}</div>
       </div>
     </div>
   );
