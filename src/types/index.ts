@@ -99,6 +99,7 @@ export interface WeekRoadmap {
   postReportRequests: string[];
   pdfUrl?: string;
   slideUrl?: string;
+  reportFileUrl?: string; // file .docx chính thức của báo cáo tuần
   report?: WeeklyReport;
   updatedAt: string;
 }
@@ -151,6 +152,7 @@ export interface CodeSnippet {
 export interface KnowledgeTopic {
   id: string;
   category: KnowledgeCategory;
+  weeks?: number[]; // các tuần trong lộ trình cần nắm chủ đề này
   title: string;
   shortSummary: string;
   explanation: string;

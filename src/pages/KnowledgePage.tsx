@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { 
   BookOpen, 
@@ -24,7 +25,11 @@ export const KnowledgePage: React.FC = () => {
 
   const [activeCategory, setActiveCategory] = useState<KnowledgeCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTopicId, setSelectedTopicId] = useState<string>(data.knowledgeTopics[0]?.id || '');
+  // /knowledge?topic=kn-3 mở thẳng chủ đề đó (link từ trang Lộ trình)
+  const [searchParams] = useSearchParams();
+  const [selectedTopicId, setSelectedTopicId] = useState<string>(
+    searchParams.get('topic') || data.knowledgeTopics[0]?.id || ''
+  );
 
   const categories: { id: KnowledgeCategory | 'all'; label: string; icon: any }[] = [
     { id: 'all', label: 'Tất cả bài học', icon: Layers },
@@ -179,6 +184,11 @@ export const KnowledgePage: React.FC = () => {
                     <Badge variant={selectedTopic.category === 'process_signal' ? 'primary' : selectedTopic.category === 'tty_layer' ? 'warning' : 'purple'}>
                       {selectedTopic.category === 'process_signal' ? 'Process & Signal' : selectedTopic.category === 'tty_layer' ? 'TTY Layer' : 'Shell & Job Control'}
                     </Badge>
+                    {selectedTopic.weeks && selectedTopic.weeks.length > 0 && (
+                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        Dùng ở tuần {selectedTopic.weeks.join(', ')}
+                      </span>
+                    )}
                   </div>
 
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -268,8 +278,6 @@ export const KnowledgePage: React.FC = () => {
                   {selectedTopic.explanation}
                 </div>
 
-                {/* ASCII Diagram if available - in macOS Terminal Box */}
-                {selectedTopic.asciiDiagram && (
                 {/* Diagram if available - in macOS Terminal Box */}
                 {selectedTopic.diagram && (
                   <div className="space-y-1.5">
@@ -289,7 +297,6 @@ export const KnowledgePage: React.FC = () => {
                         <span className="text-[10px] font-mono text-slate-400">xv6-diagram.txt</span>
                       </div>
                       <pre className="p-4 text-xs font-mono overflow-x-auto text-emerald-400 leading-tight">
-                        {selectedTopic.asciiDiagram}
                         {selectedTopic.diagram}
                       </pre>
                     </div>
@@ -302,7 +309,6 @@ export const KnowledgePage: React.FC = () => {
                     <div className="flex items-center justify-between text-xs font-bold text-slate-500">
                       <span className="flex items-center gap-1.5">
                         <Code2 className="w-3.5 h-3.5 text-sky-500" />
-                        Đoạn mã kernel xv6 cốt lõi ({selectedTopic.sourceFile}):
                         Đoạn mã kernel xv6 cốt lõi ({selectedTopic.codeSnippet.filename}):
                       </span>
                     </div>
@@ -313,11 +319,9 @@ export const KnowledgePage: React.FC = () => {
                           <span className="ds-mac-dot ds-mac-dot-yellow" />
                           <span className="ds-mac-dot ds-mac-dot-green" />
                         </div>
-                        <span className="text-[10px] font-mono text-slate-400">{selectedTopic.sourceFile}</span>
                         <span className="text-[10px] font-mono text-slate-400">{selectedTopic.codeSnippet.filename}</span>
                       </div>
                       <pre className="p-4 text-xs font-mono overflow-x-auto text-sky-300 leading-normal">
-                        {selectedTopic.codeSnippet}
                         {selectedTopic.codeSnippet.code}
                       </pre>
                     </div>

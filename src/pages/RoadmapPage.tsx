@@ -15,8 +15,11 @@ import {
   Check, 
   ExternalLink,
   Edit2,
-  AlertCircle
+  AlertCircle,
+  BookOpen,
+  Download
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../components/ui/Card';
 import { Badge, BadgeVariant } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -336,6 +339,33 @@ export const RoadmapPage: React.FC = () => {
                         </div>
                       </div>
 
+                      {/* Knowledge topics to master this week */}
+                      {(() => {
+                        const topics = data.knowledgeTopics.filter(t => t.weeks?.includes(week.weekNumber));
+                        if (topics.length === 0) return null;
+                        return (
+                          <div className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#111827] shadow-2xs">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 flex items-center gap-1.5">
+                              <BookOpen className="w-3.5 h-3.5" />
+                              Kiến thức cần nắm tuần này
+                            </h4>
+                            <ul className="space-y-2 text-xs">
+                              {topics.map(t => (
+                                <li key={t.id}>
+                                  <Link
+                                    to={`/knowledge?topic=${t.id}`}
+                                    className="font-bold text-sky-700 dark:text-sky-300 hover:underline"
+                                  >
+                                    {t.title}
+                                  </Link>
+                                  <span className="block text-slate-600 dark:text-slate-400 leading-relaxed">{t.shortSummary}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        );
+                      })()}
+
                       {/* 3 Members Specific Assignments */}
                       <div className="space-y-2.5">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -453,6 +483,16 @@ export const RoadmapPage: React.FC = () => {
 
                       {/* Documents & Slides Links */}
                       <div className="flex flex-wrap items-center gap-3 pt-2">
+                        {week.reportFileUrl && (
+                          <a
+                            href={week.reportFileUrl}
+                            download
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-all shadow-2xs hover:-translate-y-0.5"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            <span>Tải báo cáo tuần {week.weekNumber} (.docx)</span>
+                          </a>
+                        )}
                         {week.pdfUrl && (
                           <a
                             href={week.pdfUrl}

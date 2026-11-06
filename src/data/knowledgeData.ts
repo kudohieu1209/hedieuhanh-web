@@ -5,6 +5,7 @@ export const KNOWLEDGE_TOPICS: KnowledgeTopic[] = [
   {
     id: 'kn-1',
     category: 'process_signal',
+    weeks: [2, 3],
     title: 'Trạng thái STOPPED & Mở rộng struct proc',
     shortSummary: 'Cách xv6 bổ sung trạng thái tạm dừng STOPPED vào bảng tiến trình và các cờ trạng thái tín hiệu.',
     explanation: `Trong Unix/Linux, một tiến trình không chỉ có sống (RUNNING/RUNNABLE/SLEEPING) hoặc chết (ZOMBIE/UNUSED), mà còn có thể bị tạm dừng (STOPPED) khi nhận tín hiệu SIGTSTP (Ctrl-Z) hoặc SIGSTOP. 
@@ -29,23 +30,36 @@ Khi một tiến trình ở trạng thái STOPPED:
       filename: 'kernel/proc.h',
       code: `enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE, STOPPED };
 
+// Per-process state
 struct proc {
   struct spinlock lock;
-  enum procstate state;        // Trạng thái tiến trình
-  void *chan;                  // Kênh ngủ
-  int killed;                  // 0 hoặc SỐ HIỆU tín hiệu đã giết tiến trình
-  int xstate;                  // Mã thoát trả cho cha
-  int pid;                     // Process ID
 
-  // === CÁC TRƯỜNG BỔ SUNG CHO TTY & JOB CONTROL ===
-  int pgid;                    // Nhóm tiến trình (Process Group ID)
-  int pendstop;                // Tín hiệu dừng đang chờ (0 = không)
-  int stopsig;                 // Đã dừng vì tín hiệu này, cha CHƯA được báo
-  uint sigignore;              // Bitmask các tín hiệu bị bỏ qua
-  // ...
+  // p->lock must be held when using these:
+  enum procstate state; // Process state
+  void *chan;           // If non-zero, sleeping on chan
+  int killed;           // If non-zero, killed by this signal number
+  int xstate;           // Exit status to be returned to parent's wait
+  int pid;              // Process ID
+  int pgid;             // Process group ID (job control)
+  int pendstop;         // Stop signal received but not yet acted on (0 = none)
+  int stopsig;          // Stopped by this signal; parent not yet told (0 = none)
+  uint sigignore;       // Bitmask of signals this process ignores
+
+  // wait_lock must be held when using this:
+  struct proc *parent; // Parent process
+
+  // these are private to the process, so p->lock need not be held.
+  uint64 kstack;               // Virtual address of kernel stack
+  uint64 sz;                   // Size of process memory (bytes)
+  pagetable_t pagetable;       // User page table
+  struct trapframe *trapframe; // data page for trampoline.S
+  struct context context;      // swtch() here to run process
+  struct file *ofile[NOFILE];  // Open files
+  struct inode *cwd;           // Current directory
+  char name[16];               // Process name (debugging)
 };`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/proc.h#L37-L45',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.h#L79-L108',
     diagram: `
         fork               scheduler
 UNUSED ──────► RUNNABLE ◄──────────────► RUNNING ──── exit ───► ZOMBIE ── wait ──► UNUSED
@@ -69,6 +83,7 @@ UNUSED ──────► RUNNABLE ◄─────────────
   {
     id: 'kn-2',
     category: 'process_signal',
+    weeks: [3],
     title: 'Cơ chế Tín hiệu thu nhỏ: Đánh dấu & Điểm dừng an toàn',
     shortSummary: 'Nguyên tắc bất di bất dịch: Tín hiệu chỉ đánh dấu cờ; tiến trình tự dừng hoặc tự kết thúc tại điểm an toàn không giữ khóa.',
     explanation: `Trong hệ điều hành, tín hiệu (Signal) thường đến bất ngờ từ ngắt ngoài (ví dụ gõ Ctrl-C/Z trên bàn phím). 
@@ -92,29 +107,56 @@ Các điểm an toàn trong xv6:
     codeSnippet: {
       language: 'c',
       filename: 'kernel/proc.c',
-      code: `void sigdeliver(struct proc *p, int sig) {
-  acquire(&p->lock);
-  if (p->state == ZOMBIE || p->state == UNUSED) {
-    release(&p->lock);
+      code: `// Deliver signal sig to process p.  Caller must hold p->lock.
+// Only default actions exist: terminate, stop, or continue.
+// Safe to call from interrupt context (Ctrl-C / Ctrl-Z).
+void
+sigdeliver(struct proc *p, int sig)
+{
+  if (sig <= 0 || sig >= NSIG || p->state == UNUSED || p->state == ZOMBIE)
     return;
-  }
+
   if (sig == SIGKILL) {
+    // cannot be ignored; even a stopped process must wake up to die.
     p->killed = SIGKILL;
+    p->pendstop = 0;
     if (p->state == SLEEPING || p->state == STOPPED)
       p->state = RUNNABLE;
-  } else if (sig == SIGCONT) {
-    p->pendstop = 0;
-    if (p->state == STOPPED)
-      p->state = RUNNABLE;
-  } else if (sig == SIGTSTP || sig == SIGTTIN || sig == SIGSTOP) {
-    p->pendstop = sig;
-    if (p->state == SLEEPING)
-      p->state = RUNNABLE;
+    return;
   }
-  release(&p->lock);
+
+  if (sig == SIGCONT) {
+    // continue even if ignored; cancel any stop not yet acted on.
+    p->pendstop = 0;
+    if (p->state == STOPPED) {
+      p->stopsig = 0;
+      p->state = RUNNABLE;
+    }
+    return;
+  }
+
+  if (sig != SIGSTOP && (p->sigignore & (1 << sig)))
+    return; // ignored
+
+  if (sig == SIGSTOP || sig == SIGTSTP || sig == SIGTTIN || sig == SIGTTOU) {
+    // remember it; the process stops itself in stopcheck(),
+    // at a point where it holds no locks.
+    if (p->state != STOPPED)
+      p->pendstop = sig;
+  } else {
+    // default action of every other signal: terminate.
+    // the process exits next time it heads back to user space.
+    if (p->killed == 0)
+      p->killed = sig;
+  }
+
+  // wake it from sleep() so it notices soon. A stopped process
+  // stays stopped: it will see p->killed after SIGCONT.
+  if (p->state == SLEEPING)
+    p->state = RUNNABLE;
 }`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/proc.c#L63-L75',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.c#L669-L716',
     diagram: `
 Bàn phím ──UART──► consoleintr() [Ngữ cảnh ngắt]
                      │ (chỉ đánh dấu, KHÔNG ngủ)
@@ -148,6 +190,7 @@ Bàn phím ──UART──► consoleintr() [Ngữ cảnh ngắt]
   {
     id: 'kn-3',
     category: 'process_signal',
+    weeks: [3, 6],
     title: 'Hàm stopcheck(): Tránh Deadlock giữa wait_lock và p->lock',
     shortSummary: 'Quy tắc thứ tự lấy khóa chuẩn xác để tránh deadlock khi báo cho cha qua waitpid.',
     explanation: `Khi một tiến trình quyết định dừng trong \`stopcheck()\`, nó cần:
@@ -176,26 +219,42 @@ Nếu lập trình bất cẩn, rất dễ gây ra **Deadlock (khóa chết)**:
     codeSnippet: {
       language: 'c',
       filename: 'kernel/proc.c',
-      code: `void stopcheck(void) {
+      code: `// If the current process has a pending stop signal, stop it here
+// until SIGCONT (or SIGKILL) arrives.  Called only at safe points
+// where the caller holds no locks: on the way back to user space,
+// and inside a few interruptible waits (console, pipe, pause, wait).
+void
+stopcheck(void)
+{
   struct proc *p = myproc();
-  if (p->pendstop == 0) return;
+
+  if (!stoppending(p))
+    return;
 
   acquire(&wait_lock);
-  wakeup(p->parent);       // Báo cha (đang chờ trong waitpid) TRƯỚC
+
+  // parent might be sleeping in waitpid(WUNTRACED).
+  // (same order as kexit(): wake the parent first, then mark
+  // ourselves; the parent can't look until we drop wait_lock.)
+  wakeup(p->parent);
+
   acquire(&p->lock);
-  if (p->pendstop) {       // Kiểm tra lại: có thể SIGCONT đã hủy lệnh dừng
+  if (p->pendstop && !p->killed) {
     p->stopsig = p->pendstop;
     p->pendstop = 0;
     p->state = STOPPED;
     release(&wait_lock);
-    sched();               // Nhường CPU, "đóng băng" cho tới khi có SIGCONT/SIGKILL
+    // give up the CPU; the scheduler ignores STOPPED processes,
+    // so we sleep here until sigdeliver() makes us RUNNABLE.
+    sched();
   } else {
-    release(&wait_lock);
+    release(&wait_lock); // SIGCONT/SIGKILL got here first
   }
   release(&p->lock);
-}`
+}
+`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/proc.c#L93-L105',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.c#L796-L829',
     diagram: `
 +-------------------------------------------------------+
 |  Tiến trình con trong stopcheck():                     |
@@ -225,6 +284,7 @@ Nếu lập trình bất cẩn, rất dễ gây ra **Deadlock (khóa chết)**:
   {
     id: 'kn-4',
     category: 'process_signal',
+    weeks: [4],
     title: 'Syscall waitpid() & Các Cờ WUNTRACED, WNOHANG',
     shortSummary: 'Mở rộng cơ chế thu thập trạng thái con: Báo cả khi con dừng và kiểm tra không chặn.',
     explanation: `Trong xv6 gốc, hàm \`wait(int *status)\` chỉ có một chức năng duy nhất: ngủ đợi một tiến trình con bất kỳ kết thúc (\`ZOMBIE\`), thu dọn bộ nhớ và trả về mã exit thô.
@@ -247,22 +307,24 @@ Mã trạng thái \`status\` được mã hóa tương thích chuẩn POSIX:
     codeSnippet: {
       language: 'c',
       filename: 'kernel/wait.h',
-      code: `#ifndef _WAIT_H_
-#define _WAIT_H_
+      code: `// waitpid() options and status decoding, shared by kernel and user.
+// The status word uses the same layout as Linux:
+//   exited normally:   (exit code << 8)
+//   killed by signal:  signal number (1..126)
+//   stopped:           (stop signal << 8) | 0x7f
 
-#define WNOHANG    1
-#define WUNTRACED  2
+#define WNOHANG   1 // don't block if no child has changed state
+#define WUNTRACED 2 // also report children that have stopped
 
-#define WIFEXITED(s)    (((s) & 0x7f) == 0)
-#define WEXITSTATUS(s)  (((s) >> 8) & 0xff)
-#define WIFSIGNALED(s)  (((s) & 0x7f) != 0 && ((s) & 0x7f) != 0x7f)
-#define WTERMSIG(s)     ((s) & 0x7f)
-#define WIFSTOPPED(s)   (((s) & 0xff) == 0x7f)
-#define WSTOPSIG(s)     (((s) >> 8) & 0xff)
-
-#endif`
+#define WIFEXITED(s)   (((s) & 0x7f) == 0)
+#define WEXITSTATUS(s) (((s) >> 8) & 0xff)
+#define WIFSIGNALED(s) (((s) & 0x7f) != 0 && ((s) & 0x7f) != 0x7f)
+#define WTERMSIG(s)    ((s) & 0x7f)
+#define WIFSTOPPED(s)  (((s) & 0xff) == 0x7f)
+#define WSTOPSIG(s)    (((s) >> 8) & 0xff)
+`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/wait.h',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/wait.h#L1-L16',
     diagram: `
 waitpid(pid, &status, options)
       │
@@ -277,7 +339,7 @@ waitpid(pid, &status, options)
       │       return 0; // Trả về ngay, không ngủ!
       │
       └── Mặc định (blocking):
-            sleep(&wait_lock); // Ngủ chờ con báo thức
+            sleep_prepare(p); release(&wait_lock); sleep(); // con báo bằng wakeup(p->parent)
 `,
     prerequisites: ['Syscall wait gốc trong xv6', 'Trạng thái STOPPED và trường stopsig'],
     selfCheckQuestions: [
@@ -295,12 +357,13 @@ waitpid(pid, &status, options)
   {
     id: 'kn-5',
     category: 'tty_layer',
+    weeks: [1, 2],
     title: 'Kiến trúc TTY: Quầy Lễ Tân và Chiếc Điện Thoại',
     shortSummary: 'Mô hình trực quan: Terminal là chiếc điện thoại công cộng, chỉ nhóm tiền cảnh mới được phép nghe/nói.',
     explanation: `Để hiểu TTY Layer một cách sâu sắc và dễ nhớ, hãy dùng hình ảnh ẩn dụ:
 **"Quầy lễ tân khách sạn có 1 chiếc điện thoại (Terminal)"**.
 - Nhiều nhóm khách (Process Groups) cùng ngồi chờ trong phòng sảnh.
-- Nhưng tại mỗi thời điểm, chỉ **MỘT NHÓM duy nhất đứng trước quầy (Foreground Group)** được cầm ống nghe để nói (đọc phím gõ vào) và nghe (in ra màn hình).
+- Nhưng tại mỗi thời điểm, chỉ **MỘT NHÓM duy nhất đứng trước quầy (Foreground Group)** được nghe máy: đọc phím gõ vào và nhận Ctrl-C / Ctrl-Z. (In ra màn hình thì nhóm nào cũng in được, vì xv6 chưa dùng SIGTTOU.)
 - Lễ tân (Shell) là người quyết định nhóm khách nào được lên quầy bằng lệnh \`fg\` hoặc cho phép nhóm khách làm việc riêng ở phía sau bằng \`bg\`.
 - Khi người dùng nhấn phím ngắt như **Ctrl-C** hoặc **Ctrl-Z**, tổng đài viễn thông (Kernel / UART ngắt) sẽ phát tín hiệu tới **CẢ NHÓM đang cầm máy trước quầy (\`t->fgpgid\`)**, tuyệt đối không báo cho lễ tân (Shell) hay các nhóm khách đang ngồi chờ trong góc!
 
@@ -318,16 +381,33 @@ Trong Kernel (\`kernel/console.c\`), \`struct tty\` là cấu trúc lưu trữ t
       language: 'c',
       filename: 'kernel/console.c',
       code: `struct tty {
-  char buf[128]; uint r, w, e;   // r: đã đọc tới, w: đọc được tới, e: đang sửa tới
-  int lflag;                     // Cờ chế độ: ECHO | ICANON | ISIG
-  int fgpgid;                    // Nhóm tiền cảnh sở hữu terminal, 0 = chưa đặt
-  char obuf[2048]; uint or, ow;  // Output buffer khi terminal đang bị ẩn
-  char line[128]; int linelen;   // Dòng hiện tại trên màn hình
+  // input circular buffer
+  char buf[INPUT_BUF_SIZE];
+  uint r; // Read index
+  uint w; // Write index: bytes before w may be read()
+  uint e; // Edit index: bytes between w and e are still being edited
+
+  int lflag;  // ECHO | ICANON | ISIG, see termios.h
+  int fgpgid; // foreground process group, 0 = not set yet
+
+  // output written while this terminal was not on screen
+  char obuf[OUTPUT_BUF_SIZE];
+  uint or; // first byte not shown yet
+  uint ow; // where the next byte goes
+
+  // the current (unfinished) screen line, e.g. the shell's prompt,
+  // so it can be drawn again when the user switches back here.
+  char line[INPUT_BUF_SIZE];
+  int linelen;
 };
 
-struct tty tty[NTTY];            // Hỗ trợ terminal ảo: tty[0] và tty[1]`
+struct {
+  struct spinlock lock;
+  struct tty tty[NTTY];
+  int active; // terminal currently shown on the UART
+} cons;`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/console.c#L45-L55',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/console.c#L64-L89',
     diagram: `
 +---------------------------------------------------------------+
 |  BÀN PHÍM ──► UART ngắt ──► consoleintr()                     |
@@ -359,6 +439,7 @@ struct tty tty[NTTY];            // Hỗ trợ terminal ảo: tty[0] và tty[1]`
   {
     id: 'kn-6',
     category: 'tty_layer',
+    weeks: [2],
     title: 'Ba Chế Độ Terminal qua ioctl: Cooked, Raw và No-Echo',
     shortSummary: 'Phân biệt chi tiết ICANON, ECHO, ISIG và cách chuyển đổi qua TCSETS/TCGETS.',
     explanation: `Thiết bị đầu cuối có 3 chế độ hoạt động chính, được cấu hình bằng syscall \`ioctl(fd, TCSETS, &termios)\`:
@@ -388,25 +469,56 @@ struct tty tty[NTTY];            // Hỗ trợ terminal ảo: tty[0] và tty[1]`
     codeSnippet: {
       language: 'c',
       filename: 'kernel/console.c',
-      code: `int consoleioctl(int minor, int req, uint64 arg) {
-  struct tty *t = &tty[minor];
-  struct termios tos;
-  if (req == TCGETS) {
-    tos.c_lflag = t->lflag;
-    return copyout(myproc()->pagetable, arg, (char*)&tos, sizeof(tos));
-  } else if (req == TCSETS) {
-    if (copyin(myproc()->pagetable, (char*)&tos, arg, sizeof(tos)) < 0)
+      code: `consoleioctl(int minor, int req, uint64 arg)
+{
+  struct tty *t;
+  struct termios tio;
+  int pgid;
+
+  if (minor < 0 || minor >= NTTY)
+    return -1;
+  t = &cons.tty[minor];
+
+  switch (req) {
+  case TCGETS:
+    acquire(&cons.lock);
+    tio.lflag = t->lflag;
+    release(&cons.lock);
+    return either_copyout(1, arg, &tio, sizeof(tio));
+
+  case TCSETS:
+    if (either_copyin(&tio, 1, arg, sizeof(tio)) < 0)
       return -1;
     acquire(&cons.lock);
-    t->lflag = tos.c_lflag;
+    t->lflag = tio.lflag & (ECHO | ICANON | ISIG);
+    if (!(t->lflag & ICANON)) {
+      // leaving cooked mode: a half-typed line becomes readable.
+      t->w = t->e;
+      wakeup(&t->r);
+    }
+    release(&cons.lock);
+    return 0;
+
+  case TIOCGPGRP:
+    acquire(&cons.lock);
+    pgid = t->fgpgid;
+    release(&cons.lock);
+    return either_copyout(1, arg, &pgid, sizeof(pgid));
+
+  case TIOCSPGRP:
+    if (either_copyin(&pgid, 1, arg, sizeof(pgid)) < 0 || pgid <= 0)
+      return -1;
+    acquire(&cons.lock);
+    t->fgpgid = pgid;
+    // readers that were in the background may now be in front.
+    wakeup(&t->r);
     release(&cons.lock);
     return 0;
   }
-  // TIOCGPGRP & TIOCSPGRP...
   return -1;
 }`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/console.c#L180-L210',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/console.c#L240-L287',
     diagram: `
 +-----------------------------------------------------------------------+
 | Chế độ     | lflag            | read() trả về khi  | Echo? | Ctrl-C/Z |
@@ -430,6 +542,7 @@ struct tty tty[NTTY];            // Hỗ trợ terminal ảo: tty[0] và tty[1]`
   {
     id: 'kn-7',
     category: 'tty_layer',
+    weeks: [4],
     title: 'SIGTTIN: Bảo vệ Đọc Terminal cho Tiến trình Nền',
     shortSummary: 'Ngăn chặn hỗn loạn dữ liệu khi hai tiến trình cùng tranh nhau đọc từ bàn phím.',
     explanation: `Hãy tưởng tượng: Bạn đang chạy Shell (tiền cảnh) và vừa khởi chạy \`cat &\` ở chế độ chạy nền.
@@ -449,31 +562,28 @@ Nếu không có cơ chế bảo vệ, cả Shell và \`cat\` sẽ cùng gọi \
     codeSnippet: {
       language: 'c',
       filename: 'kernel/console.c',
-      code: `int consoleread(int minor, int user_dst, uint64 dst, int n) {
-  struct tty *t = &tty[minor];
-  struct proc *p = myproc();
-  acquire(&cons.lock);
-
+      code: `  acquire(&cons.lock);
   while (n > 0) {
-    // KIỂM TRA BẢO VỆ TIẾN TRÌNH NỀN
-    if (t->fgpgid > 0 && p->pgid != t->fgpgid) {
-      if (p->sigignore & (1 << SIGTTIN)) {
-        release(&cons.lock);
-        return -1; // Bỏ qua SIGTTIN thì báo lỗi
-      }
-      ksignal(-p->pgid, SIGTTIN);
+    // job control: only the foreground process group may read
+    // the terminal. A background reader sends SIGTTIN to its own
+    // group, which stops the whole job (the shell then reports
+    // "Stopped (tty input)"); it tries again after \`fg\`.
+    if (t->fgpgid != 0 && p->pgid != t->fgpgid) {
       release(&cons.lock);
-      stopcheck(); // Tự dừng lại ngay tại đây
+      if (n < target)
+        return target - n;
+      if (p->sigignore & (1 << SIGTTIN))
+        return -1; // can't stop it, so fail the read instead
+      ksignal(-p->pgid, SIGTTIN);
+      stopcheck();
+      if (killed(p))
+        return -1;
       acquire(&cons.lock);
       continue;
     }
-    // Đọc ký tự từ t->buf...
-  }
-  release(&cons.lock);
-  return target - n;
-}`
+`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/console.c#L125-L145',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/console.c#L161-L180',
     diagram: `
 Tiến trình nền (Background) ──► consoleread()
                                     │
@@ -503,6 +613,7 @@ Tiến trình nền (Background) ──► consoleread()
   {
     id: 'kn-8',
     category: 'tty_layer',
+    weeks: [6],
     title: 'Terminal Ảo Thứ Hai qua 1 UART (Ctrl-T)',
     shortSummary: 'Cách xv6 tận dụng 1 UART vật lý duy nhất của QEMU để cung cấp 2 không gian làm việc độc lập.',
     explanation: `Máy ảo \`virt\` của QEMU RISC-V chỉ có duy nhất **1 cổng UART vật lý**. Làm thế nào để nhóm sinh viên đạt điểm tối đa cho Stretch Goal "Terminal thứ hai"?
@@ -522,20 +633,42 @@ Nhóm đã hiện thực hóa giải pháp: **Virtual Terminal (Terminal ảo)**
     codeSnippet: {
       language: 'c',
       filename: 'kernel/console.c',
-      code: `// Chuyển terminal ảo bằng Ctrl-T trong consoleintr()
-if (c == C('T')) {
-  cons.active = (cons.active + 1) % NTTY;
-  printf("\\n[tty%d]\\n", cons.active);
-  struct tty *t = &tty[cons.active];
-  // In lại nội dung đã lưu trong obuf của terminal vừa kích hoạt
-  while (t->or != t->ow) {
-    uartputc_sync(t->obuf[t->or % sizeof(t->obuf)]);
-    t->or++;
-  }
-  return;
-}`
+      code: `switchtty(int n)
+{
+  struct tty *t = &cons.tty[n];
+  char *s;
+
+  cons.active = n;
+  for (s = "\\n[tty"; *s; s++)
+    consputc(*s);
+  consputc('0' + n);
+  consputc(']');
+  consputc('\\n');
+
+  // what this terminal printed while it was hidden; if nothing,
+  // at least the line it was showing (e.g. the prompt).
+  if (t->or == t->ow)
+    for (int i = 0; i < t->linelen; i++)
+      consputc(t->line[i]);
+  while (t->or != t->ow)
+    consputc(t->obuf[t->or++ % OUTPUT_BUF_SIZE]);
+
+  // the line the user had started typing here (cooked mode).
+  if ((t->lflag & (ICANON | ECHO)) == (ICANON | ECHO))
+    for (uint i = t->w; i != t->e; i++)
+      consputc(t->buf[i % INPUT_BUF_SIZE]);
+}
+
+// ...
+
+  if (c == C('T')) {
+    // switch to the next virtual terminal.
+    switchtty((cons.active + 1) % NTTY);
+    release(&cons.lock);
+    return;
+  }`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/console.c#L80-L95',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/console.c#L299-L323',
     diagram: `
                       BÀN PHÍM / UART VẬT LÝ
                                 │
@@ -566,6 +699,7 @@ if (c == C('T')) {
   {
     id: 'kn-9',
     category: 'shell_jobctl',
+    weeks: [2, 4],
     title: 'Kiến trúc Job Control trong Shell & Khắc phục Race Condition',
     shortSummary: 'Quy trình khởi động của Shell, bảng Job, và vì sao cả cha lẫn con cùng phải gọi setpgid().',
     explanation: `Trong Unix/Linux, Shell chịu trách nhiệm quản lý Job Control theo chuẩn GNU/POSIX:
@@ -574,7 +708,7 @@ if (c == C('T')) {
    - Nếu \`isatty(0)\` (đang chạy trên terminal thực tế):
    - Shell tự đưa mình vào một nhóm tiến trình riêng bằng \`setpgid(0, 0)\`.
    - Chiếm quyền điều khiển terminal: \`tcsetpgrp(0, getpid())\`.
-   - Bỏ qua các tín hiệu ngắt: \`signal(SIGINT, SIG_IGN)\`, \`signal(SIGTSTP, SIG_IGN)\`, \`signal(SIGTTIN, SIG_IGN)\` để Shell không bao giờ bị chết khi người dùng bấm Ctrl-C/Z!
+   - Bỏ qua các tín hiệu ngắt: \`signal(SIGINT, SIG_IGN)\`, \`signal(SIGTSTP, SIG_IGN)\`, \`signal(SIGTTIN, SIG_IGN)\` để Shell không bao giờ bị kết thúc hay dừng bởi các tín hiệu này. (Ở dấu nhắc, shell đọc lệnh ở chế độ Raw nên Ctrl-C/Z thậm chí không thành tín hiệu; bỏ qua SIGTTIN thì nếu shell lỡ đọc terminal khi không ở tiền cảnh, read() trả -1 thay vì làm shell dừng.)
    - Đặt terminal về chế độ Cooked.
 
 2. **Khởi chạy mỗi câu lệnh (1 Job)**:
@@ -595,30 +729,63 @@ if (c == C('T')) {
     codeSnippet: {
       language: 'c',
       filename: 'user/sh.c',
-      code: `// Cả cha lẫn con cùng gọi để loại bỏ Race Condition
-pid = fork();
-if (pid == 0) { // Tiến trình con
-  setpgid(0, 0);
-  if (foreground) {
-    tcsetpgrp(0, getpid());
-  }
-  // Khôi phục tín hiệu về mặc định cho chương trình con
-  signal(SIGINT, SIG_DFL);
-  signal(SIGTSTP, SIG_DFL);
-  signal(SIGTTIN, SIG_DFL);
-  runcmd(cmd);
-}
+      code: `runjob(char *line)
+{
+  char text[100];
+  int bg = 0, pid;
+  char *e;
+  struct job *j;
 
-// Tiến trình cha (Shell)
-setpgid(pid, pid); // Đồng thời gán nhóm cho con
-if (foreground) {
-  tcsetpgrp(0, pid);
-  fgjob(j, 0);       // Chờ con bằng waitpid(pid, &st, WUNTRACED)
-} else {
-  printf("[%d] %d\\n", j->id, pid); // Chạy nền (&)
+  // a trailing '&' means: run in the background.
+  e = line + strlen(line);
+  while (e > line && strchr(" \\t\\r\\n", e[-1]))
+    e--;
+  if (e > line && e[-1] == '&') {
+    bg = 1;
+    e[-1] = ' ';
+    while (e > line && strchr(" \\t\\r\\n&", e[-1]))
+      e--;
+  }
+  memmove(text, line, e - line);
+  text[e - line] = 0;
+
+  pid = fork1();
+  if (pid == 0) {
+    if (interactive) {
+      // own process group; take the terminal if in the foreground.
+      // (the parent does the same; whoever runs first wins the race.)
+      setpgid(0, 0);
+      if (!bg)
+        tcsetpgrp(0, getpid());
+      // the shell ignores these, but the job must not.
+      signal(SIGINT, SIG_DFL);
+      signal(SIGTSTP, SIG_DFL);
+      signal(SIGTTIN, SIG_DFL);
+      signal(SIGTTOU, SIG_DFL);
+    }
+    runcmd(parsecmd(line));
+  }
+
+  if (!interactive) {
+    if (!bg)
+      waitpid(pid, 0, 0);
+    return;
+  }
+
+  setpgid(pid, pid);
+  if ((j = addjob(pid, text)) == 0) {
+    fprintf(2, "sh: too many jobs\\n");
+    sigsend(-pid, SIGKILL);
+    waitpid(pid, 0, 0);
+    return;
+  }
+  if (bg)
+    printf("[%d] %d\\n", j->id, pid);
+  else
+    fgjob(j, 0);
 }`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/user/sh.c#L240-L280',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/user/sh.c#L306-L360',
     diagram: `
                Shell (Cha) ──fork()──► Tiến trình con
                    │                       │
@@ -646,6 +813,7 @@ if (foreground) {
   {
     id: 'kn-10',
     category: 'shell_jobctl',
+    weeks: [5],
     title: 'Đồng bộ Dừng Cả Pipeline (counter | cat)',
     shortSummary: 'Cách Shell gom toàn bộ các nhánh của pipeline vào chung 1 nhóm và cơ chế lan truyền tín hiệu.',
     explanation: `Một câu lệnh pipeline như: \`counter | cat\` bao gồm 2 tiến trình độc lập được nối với nhau qua một đường ống (pipe).
@@ -656,7 +824,7 @@ Nếu xử lý sơ sài:
 - Shell không biết job đang ở trạng thái nào.
 
 Cách giải quyết chuẩn xác trong xv6:
-1. Shell gán **cùng một PGID** cho tất cả các tiến trình trong pipeline. PGID này lấy theo PID của tiến trình nhánh đầu tiên.
+1. Shell chỉ fork **một** tiến trình đầu job (một sh con) và đặt nó vào nhóm mới có PGID = PID của nó. sh con chạy runcmd() cho lệnh PIPE: fork tiếp counter và cat. Hai tiến trình này **kế thừa PGID qua fork()**, nên shell không cần biết PID của từng vế.
 2. Khi người dùng bấm Ctrl-Z: UART phát tín hiệu \`SIGTSTP\` tới \`-fgpgid\`. Cả \`counter\` và \`cat\` đều nhận được cờ \`pendstop\`.
 3. Điểm dừng trong Kernel: Tiến trình đầu nhóm của một pipeline có thể đang ngủ trong \`wait()\` để chờ nhánh con của nó. Do đó, hàm \`kwaitpid()\` trong kernel bắt buộc phải là một điểm dừng an toàn: trước khi ngủ, nó phải kiểm tra \`stoppending\`.
 4. Khi cả nhóm dừng, Shell hiển thị: \`[1]+ Stopped  counter | cat\`.
@@ -668,34 +836,39 @@ Cách giải quyết chuẩn xác trong xv6:
     codeSnippet: {
       language: 'c',
       filename: 'user/sh.c',
-      code: `// Trong hàm runcmd() khi gặp lệnh PIPE (|)
-case PIPE:
-  pcmd = (struct pipecmd*)cmd;
-  pipe(p);
-  if (fork1() == 0) {
-    close(1);
-    dup(p[1]);
+      code: `  case PIPE:
+    pcmd = (struct pipecmd *)cmd;
+    if (pipe(p) < 0)
+      panic("pipe");
+    if (fork1() == 0) {
+      close(1);
+      dup(p[1]);
+      close(p[0]);
+      close(p[1]);
+      runcmd(pcmd->left);
+    }
+    if (fork1() == 0) {
+      close(0);
+      dup(p[0]);
+      close(p[0]);
+      close(p[1]);
+      runcmd(pcmd->right);
+    }
     close(p[0]);
     close(p[1]);
-    runcmd(pcmd->left);
-  }
-  if (fork1() == 0) {
-    close(0);
-    dup(p[0]);
-    close(p[0]);
-    close(p[1]);
-    runcmd(pcmd->right);
-  }
-  // Tiến trình cha của pipeline chờ cả 2 con...`
+    wait(0);
+    wait(0);
+    break;
+`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/user/sh.c#L150-L175',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/user/sh.c#L104-L127',
     diagram: `
 +-----------------------------------------------------------+
-| Shell tạo Job: counter | cat                              |
+| Shell fork sh con [PID 4, PGID 4] chạy: counter | cat   |
 |                          │                                |
 |        +─────────────────┴─────────────────+              |
 |        ▼ (PGID = 4)                        ▼ (PGID = 4)   |
-|   counter [PID 4]                     cat [PID 5]         |
+|   counter [PID 5]                     cat [PID 6]         |
 |   (đang in số mỗi giây)               (đang đọc từ pipe)  |
 |        │                                   │              |
 |        +─────────────────┬─────────────────+              |
@@ -719,6 +892,7 @@ case PIPE:
   {
     id: 'kn-11',
     category: 'shell_jobctl',
+    weeks: [6],
     title: 'Line Editor và Lịch sử Lệnh (Command History)',
     shortSummary: 'Hiện thực hóa trình sửa dòng phím mũi tên và bộ nhớ lịch sử lệnh trong Shell ở Raw Mode.',
     explanation: `Trong xv6 gốc, người dùng chỉ có thể dùng phím Backspace để xóa lùi ký tự cuối cùng. Không thể di chuyển con trỏ sang trái để sửa lỗi chính tả ở giữa câu lệnh, và không thể bấm mũi tên lên để gọi lại lệnh vừa gõ!
@@ -734,9 +908,9 @@ case PIPE:
    - Khi hiển thị prompt, Shell chuyển terminal sang **Raw Mode** qua \`ioctl(TCSETS)\`.
    - Bắt từng byte: Nếu gặp mã \`0x1b\` (ESC), tiếp tục đọc ký tự tiếp theo để phát hiện phím mũi tên.
    - Quản lý mảng ký tự dòng lệnh \`buf[]\` và vị trí con trỏ \`pos\`:
-     - Mũi tên trái/phải: Di chuyển \`pos\` và gửi mã điều khiển con trỏ màn hình \`\\x1b[D\` / \`\\x1b[C\`.
-     - Chèn ký tự: Dịch các ký tự phía sau sang phải 1 ô, in lại phần đuôi dòng lệnh và kéo con trỏ về đúng vị trí.
-     - Mũi tên lên/xuống: Xóa dòng lệnh hiện tại, nạp dòng lệnh từ mảng \`history[]\` và in ra.`,
+     - Mũi tên trái/phải: chỉ đổi \`pos\`. Chèn ký tự: dịch phần sau \`pos\` sang phải 1 ô. Mũi tên lên/xuống: nạp lệnh từ mảng \`history[]\` (16 lệnh gần nhất).
+     - Sau MỖI phím, \`redraw()\` vẽ lại cả dòng: \`\\r$ \` + dòng lệnh + \`\\x1b[K\` (xoá phần thừa cuối dòng), rồi lùi con trỏ bằng \`\\x1b[nD\` về đúng \`pos\`.
+     - Ctrl-C ở đây chỉ là byte 3 (ISIG đã tắt): readline() in ^C và bỏ dòng; Ctrl-D ở dòng trống là hết đầu vào.`,
     terminology: [
       { term: 'Line Editor', definition: 'Trình biên tập dòng lệnh cho phép di chuyển con trỏ, chèn, xóa và duyệt lịch sử.' },
       { term: 'ANSI Escape Sequence', definition: 'Chuỗi byte bắt đầu bằng mã ESC (0x1b) dùng điều khiển con trỏ và màu sắc terminal.' },
@@ -745,23 +919,85 @@ case PIPE:
     codeSnippet: {
       language: 'c',
       filename: 'user/sh.c',
-      code: `// Xử lý phím điều hướng trong readline()
-char c;
-read(0, &c, 1);
-if (c == 0x1b) { // ESC sequence
-  char seq[2];
-  if (read(0, &seq[0], 1) == 1 && read(0, &seq[1], 1) == 1) {
-    if (seq[0] == '[') {
-      if (seq[1] == 'A') { // Mũi tên LÊN: Duyệt lịch sử cũ
-        history_prev(line, &pos);
-      } else if (seq[1] == 'D') { // Mũi tên TRÁI: Dịch con trỏ sang trái
-        if (pos > 0) { pos--; printf("\\x1b[D"); }
-      }
+      code: `readline(char *buf, int nbuf)
+{
+  struct termios raw;
+  int len = 0, pos = 0, h = nhist;
+  char c, seq[2];
+
+  raw.lflag = TTY_RAW;
+  tcsetattr(0, &raw);
+  write(2, "$ ", 2);
+
+  for (;;) {
+    if (read(0, &c, 1) != 1) {
+      len = -1;
+      break;
     }
+    if (c == '\\r' || c == '\\n') {
+      write(2, "\\n", 1);
+      break;
+    } else if (c == C('D') && len == 0) {
+      len = -1; // EOF
+      break;
+    } else if (c == C('C')) {
+      write(2, "^C\\n", 3); // forget this line
+      len = 0;
+      break;
+    } else if (c == 0x7f || c == C('H')) {
+      if (pos > 0) {
+        memmove(buf + pos - 1, buf + pos, len - pos);
+        pos--;
+        len--;
+      }
+    } else if (c == C('U')) {
+      len = pos = 0;
+    } else if (c == C('A')) {
+      pos = 0;
+    } else if (c == C('E')) {
+      pos = len;
+    } else if (c == 0x1b) {
+      // escape sequence sent by arrow keys: ESC [ A..D, H, F
+      if (read(0, &seq[0], 1) != 1 || read(0, &seq[1], 1) != 1)
+        continue;
+      if (seq[0] != '[')
+        continue;
+      if (seq[1] == 'A' && h > 0 && h > nhist - NHIST) {
+        h--; // older command
+        len = pos = strlen(history[h % NHIST]);
+        memmove(buf, history[h % NHIST], len);
+      } else if (seq[1] == 'B' && h < nhist) {
+        h++; // newer command, or an empty line after the newest
+        len = pos = h < nhist ? strlen(history[h % NHIST]) : 0;
+        memmove(buf, history[h % NHIST], len);
+      } else if (seq[1] == 'C' && pos < len) {
+        pos++;
+      } else if (seq[1] == 'D' && pos > 0) {
+        pos--;
+      } else if (seq[1] == 'H') {
+        pos = 0;
+      } else if (seq[1] == 'F') {
+        pos = len;
+      }
+    } else if (c >= ' ' && c < 0x7f && len < nbuf - 2) {
+      memmove(buf + pos + 1, buf + pos, len - pos);
+      buf[pos++] = c;
+      len++;
+    } else {
+      continue;
+    }
+    redraw(buf, len, pos);
   }
+
+  tcsetattr(0, &shell_tmodes);
+  if (len >= 0) {
+    buf[len] = '\\n';
+    buf[len + 1] = 0;
+  }
+  return len;
 }`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/user/sh.c#L350-L410',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/user/sh.c#L424-L500',
     diagram: `
 Phím gõ ──► Raw Mode (lflag = 0) ──► read(0, &c, 1)
                                          │
@@ -788,6 +1024,7 @@ Phím gõ ──► Raw Mode (lflag = 0) ──► read(0, &c, 1)
   {
     id: 'kn-12',
     category: 'process_signal',
+    weeks: [5],
     title: 'Xử lý Tiến trình Mồ côi Bị dừng (Orphaned Stopped Process)',
     shortSummary: 'Vì sao khi Shell thoát, tiến trình con đang dừng phải nhận cả SIGHUP lẫn SIGCONT.',
     explanation: `Một tình huống góc cạnh (Edge Case) rất dễ bị trừ điểm nặng khi bảo vệ đồ án:
@@ -813,23 +1050,28 @@ Phím gõ ──► Raw Mode (lflag = 0) ──► read(0, &c, 1)
     codeSnippet: {
       language: 'c',
       filename: 'kernel/proc.c',
-      code: `// Trong hàm reparent() khi cha kết thúc
-void reparent(struct proc *p) {
+      code: `// Pass p's abandoned children to init.
+// Caller must hold wait_lock.
+void
+reparent(struct proc *p)
+{
   struct proc *pp;
+
   for (pp = proc; pp < &proc[NPROC]; pp++) {
     if (pp->parent == p) {
       pp->parent = initproc;
-      wakeup(initproc);
-      // NẾU TIẾN TRÌNH CON ĐANG BỊ DỪNG:
+      // nobody is left to continue a stopped orphan (init never
+      // does job control), so do what Unix does: SIGHUP to make it
+      // exit, then SIGCONT so that it runs and notices the SIGHUP.
+      acquire(&pp->lock);
       if (pp->state == STOPPED) {
-        sigdeliver(pp, SIGHUP);  // Đánh dấu kết thúc
-        sigdeliver(pp, SIGCONT); // ĐÁNH THỨC ĐỂ NÓ CHẠY VÀ TỰ CHẾT!
+        sigdeliver(pp, SIGHUP);
+        sigdeliver(pp, SIGCONT);
       }
-    }
-  }
-}`
+      release(&pp->lock);
+      wakeup(initproc);`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/kernel/proc.c#L210-L230',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.c#L319-L338',
     diagram: `
 Shell (Cha) gọi exit() ──► reparent() bàn giao con cho init
                                 │

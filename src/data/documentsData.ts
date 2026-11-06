@@ -1,108 +1,26 @@
 import { DocumentItem } from '../types';
 
-export const INITIAL_DOCUMENTS: DocumentItem[] = [
-  {
-    id: 'doc-1',
-    title: 'Báo cáo Tiến độ Tuần 4: Job Control Hoàn chỉnh & Quản lý Nhóm',
-    type: 'report_pdf',
-    weekNumber: 4,
-    fileUrl: 'https://raw.githubusercontent.com/kudohieu1209/hedieuhanh-hust/main/doc/BaoCao_Tuan4_JobControl.pdf',
-    isExternalUrl: true,
-    fileSize: '1.4 MB',
-    version: 'v1.2',
-    uploaderName: 'Mai Duy Hiếu',
-    uploadedAt: '2026-10-13T20:30:00Z',
-    notes: 'Bản báo cáo đã được thầy Tiến nghiệm thu và khen ngợi phần sơ đồ giải quyết race condition fork.'
-  },
-  {
-    id: 'doc-2',
-    title: 'Tài liệu Thiết kế Kỹ thuật Toàn diện (DESIGN.md)',
-    type: 'research',
-    weekNumber: 2,
-    fileUrl: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/DESIGN.md',
-    isExternalUrl: true,
-    fileSize: '34 KB',
-    version: 'v2.1',
-    uploaderName: 'Mai Duy Hiếu',
-    uploadedAt: '2026-10-13T09:39:00Z',
-    notes: 'Toàn bộ đặc tả struct proc, struct tty, cơ chế tín hiệu thu nhỏ và mã POSIX status.'
-  },
-  {
-    id: 'doc-3',
-    title: 'Kịch bản Vấn đáp & Ngân hàng Câu hỏi Ôn tập Bảo vệ (ON_TAP.md)',
-    type: 'reference',
-    weekNumber: 6,
-    fileUrl: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/ON_TAP.md',
-    isExternalUrl: true,
-    fileSize: '28 KB',
-    version: 'v1.5',
-    uploaderName: 'Nguyễn Huy Hoàng',
-    uploadedAt: '2026-10-13T09:40:00Z',
-    notes: '25 câu hỏi tự ôn và 5 bài tập tự sửa trực tiếp thường gặp trong buổi vấn đáp đồ án.'
-  },
-  {
-    id: 'doc-4',
-    title: 'Kịch bản Demo Trực tiếp 5 Phút (DEMO.md)',
-    type: 'demo_guide',
-    weekNumber: 4,
-    fileUrl: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/DEMO.md',
-    isExternalUrl: true,
-    fileSize: '12 KB',
-    version: 'v1.0',
-    uploaderName: 'Nguyễn Huy Hoàng',
-    uploadedAt: '2026-10-13T09:42:00Z',
-    notes: '7 bước chạy lệnh mẫu trong QEMU từ counter, pipeline, spin đến terminal ảo.'
-  },
-  {
-    id: 'doc-5',
-    title: 'Đặc tả Kỹ thuật Đề tài #27: TTY Layer & Job Control',
-    type: 'reference',
-    weekNumber: 1,
-    fileUrl: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/DESIGN.md',
-    isExternalUrl: true,
-    fileSize: '45 KB',
-    version: 'v1.0',
-    uploaderName: 'Mai Duy Hiếu',
-    uploadedAt: '2026-09-22T08:00:00Z',
-    notes: 'Tài liệu phân tích kiến trúc 3 tầng và đặc tả kỹ thuật chi tiết của Đề tài #27.'
-  },
-  {
-    id: 'doc-6',
-    title: 'Slide Thuyết trình Tiến độ Tuần 3: Signals & Bắt phím Ctrl-C/Z',
-    type: 'slide',
-    weekNumber: 3,
-    fileUrl: 'https://docs.google.com/presentation/d/xv6-tuan3-signals-ctrlz',
-    isExternalUrl: true,
-    fileSize: '3.2 MB',
-    version: 'v1.1',
-    uploaderName: 'Nguyễn Tuấn Anh',
-    uploadedAt: '2026-10-06T18:00:00Z',
-    notes: 'Slide trình bày cơ chế không được ngủ trong consoleintr và điểm dừng an toàn stopcheck.'
-  },
-  {
-    id: 'doc-7',
-    title: 'Báo cáo Tiến độ Tuần 5: Pipeline & Xử lý Tình huống Biên',
-    type: 'report_pdf',
-    weekNumber: 5,
-    fileUrl: 'https://raw.githubusercontent.com/kudohieu1209/hedieuhanh-hust/main/doc/BaoCao_Tuan5_Pipeline_EdgeCases.pdf',
-    isExternalUrl: true,
-    fileSize: '1.8 MB',
-    version: 'v1.0',
-    uploaderName: 'Mai Duy Hiếu',
-    uploadedAt: '2026-10-20T19:00:00Z',
-    notes: 'Bản thảo nộp thầy Tiến chuẩn bị cho buổi báo cáo tiến độ tuần 5.'
-  },
-  {
-    id: 'doc-8',
-    title: 'Sơ đồ Kiến trúc Tổng thể: TTY & Job Control 3 Tầng',
-    type: 'diagram',
-    weekNumber: 1,
-    fileUrl: 'https://raw.githubusercontent.com/kudohieu1209/hedieuhanh-hust/main/doc/Architecture_Diagram_3Layers.png',
-    isExternalUrl: true,
-    fileSize: '450 KB',
-    version: 'v2.0',
-    uploaderName: 'Mai Duy Hiếu',
-    uploadedAt: '2026-09-25T14:00:00Z',
-    notes: 'Sơ đồ dòng chảy dữ liệu từ UART đến consoleintr, struct tty và Shell.'
-  }
-];
+const REPO = 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/';
+const sizes = ['1.2 MB', '1.1 MB', '21 KB', '20 KB', '19 KB', '20 KB', '18 KB'];
+
+// Báo cáo tuần: file .docx chính thức (public/reports). Tuần 3–7 là bản nháp, còn chỗ tô vàng chờ ảnh minh chứng.
+const reports: DocumentItem[] = sizes.map((size, i) => ({
+  id: `doc-report-${i + 1}`,
+  title: `Báo cáo tiến độ tuần ${i + 1} (.docx)`,
+  type: 'report_pdf',
+  weekNumber: i + 1,
+  fileUrl: `${import.meta.env.BASE_URL}reports/progress-report-tuan-${i + 1}.docx`,
+  isExternalUrl: false,
+  fileSize: size,
+  version: i < 2 ? 'đã nộp' : 'bản nháp',
+  uploaderName: 'Mai Duy Hiếu',
+  uploadedAt: i < 2 ? ['2026-10-25T12:00:00Z', '2026-11-01T12:00:00Z'][i] : '2026-11-07T00:00:00Z'
+}));
+
+const repoDocs: DocumentItem[] = [
+  { id: 'doc-design', title: 'Thiết kế kỹ thuật (DESIGN.md)', type: 'research', fileUrl: REPO + 'DESIGN.md' },
+  { id: 'doc-demo', title: 'Kịch bản demo 5 phút (DEMO.md)', type: 'demo_guide', fileUrl: REPO + 'DEMO.md' },
+  { id: 'doc-readme', title: 'README: cách build và chạy', type: 'reference', fileUrl: REPO + 'README.md' }
+].map(d => ({ ...d, type: d.type as DocumentItem['type'], isExternalUrl: true, version: 'main', uploaderName: 'Mai Duy Hiếu', uploadedAt: '2026-10-20T00:00:00Z' }));
+
+export const INITIAL_DOCUMENTS: DocumentItem[] = [...reports, ...repoDocs];

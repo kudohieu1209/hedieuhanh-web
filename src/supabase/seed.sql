@@ -18,27 +18,31 @@ VALUES
 (
   'member-2', 
   'Nguyễn Huy Hoàng', 
-  '20223912', 
-  'hoang.nh223912@sis.hust.edu.vn', 
+  '20227610', 
+  '', 
   'Kernel & Signal (Process Management)', 
   'Chịu trách nhiệm kiến trúc lõi Kernel: Vòng đời tiến trình, bảng trạng thái STOPPED, cơ chế tín hiệu thu nhỏ, đồng bộ khóa tránh deadlock và điều phối waitpid.',
   ARRAY['Cấu trúc struct proc & bảng tiến trình', 'Cơ chế tín hiệu thu nhỏ', 'Điểm dừng an toàn stopcheck()', 'Syscall waitpid() với WUNTRACED', 'Đồng bộ tránh Deadlock', 'Xử lý tiến trình mồ côi bị dừng'],
   ARRAY['kernel/proc.c', 'kernel/proc.h', 'kernel/trap.c', 'kernel/sysproc.c', 'kernel/signal.h', 'kernel/wait.h'],
-  'hoangnguyen-hust'
+  NULL
 ),
 (
   'member-3', 
-  'Nguyễn Tuấn Anh', 
-  '20223988', 
-  'anh.nt223988@sis.hust.edu.vn', 
+  'Vũ Tuấn Anh', 
+  '20223864', 
+  '', 
   'Shell, Job Control & Testing (User Space & Integration)', 
   'Chịu trách nhiệm xây dựng Shell có Job Control hoàn chỉnh theo chuẩn POSIX/GNU, Line Editor với phím mũi tên & lịch sử lệnh, và toàn bộ hệ thống kiểm thử tự động.',
   ARRAY['Cấu trúc Job Control trong Shell (user/sh.c)', 'Các lệnh nội tuyến jobs, fg, bg, kill', 'Khắc phục race condition sau fork', 'Quản lý Pipeline thành 1 job', 'Line Editor và Command History', 'Bộ test tự động Python pexpect', 'Kiểm thử hồi quy usertests'],
   ARRAY['user/sh.c', 'user/ulib.c', 'user/printf.c', 'user/kill.c', 'user/counter.c', 'user/spin.c', 'user/ttydemo.c', 'test-jobctl.py', 'test-xv6.py'],
-  'tuananh-hust'
+  NULL
 )
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  student_id = EXCLUDED.student_id,
+  email = EXCLUDED.email,
+  github_username = EXCLUDED.github_username;
 
 INSERT INTO settings (id, mode, current_member_id, theme, current_week, next_report_date, github_repo_url)
-VALUES (1, 'team', 'member-1', 'dark', 6, '2026-10-27', 'https://github.com/kudohieu1209/hedieuhanh-hust')
+VALUES (1, 'team', 'member-1', 'dark', 3, '2026-11-08', 'https://github.com/kudohieu1209/hedieuhanh-hust')
 ON CONFLICT (id) DO NOTHING;

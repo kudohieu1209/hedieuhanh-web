@@ -1,5 +1,13 @@
 import { Member } from '../types';
 
+// Ảnh đại diện là chữ cái đầu tên (không dùng ảnh người lạ).
+const avatar = (initials: string, bg: string) =>
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><rect width="150" height="150" fill="${bg}"/>` +
+      `<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#fff">${initials}</text></svg>`
+  );
+
 export const INITIAL_MEMBERS: Member[] = [
   {
     id: 'member-1',
@@ -7,7 +15,7 @@ export const INITIAL_MEMBERS: Member[] = [
     studentId: '20223967',
     email: 'hieu.md223967@sis.hust.edu.vn',
     role: 'TTY Layer & Device Driver (Trưởng nhóm)',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatarUrl: avatar('H', '#0284c7'),
     bio: 'Chịu trách nhiệm toàn bộ lớp thiết bị đầu cuối TTY: Driver bàn phím/UART, 3 chế độ terminal qua ioctl, quản lý Foreground Process Group, bảo vệ đọc nền SIGTTIN và Terminal ảo thứ hai qua Ctrl-T.',
     focusAreas: [
       'Kiến trúc Terminal, UART và TTY abstraction layer',
@@ -32,10 +40,10 @@ export const INITIAL_MEMBERS: Member[] = [
   {
     id: 'member-2',
     name: 'Nguyễn Huy Hoàng',
-    studentId: '20223912',
-    email: 'hoang.nh223912@sis.hust.edu.vn',
+    studentId: '20227610',
+    email: '',
     role: 'Kernel & Signal (Process Management)',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    avatarUrl: avatar('HH', '#7c3aed'),
     bio: 'Chịu trách nhiệm kiến trúc lõi Kernel: Vòng đời tiến trình, bảng trạng thái STOPPED, cơ chế tín hiệu thu nhỏ, đồng bộ khóa tránh deadlock, điều phối waitpid và xử lý tiến trình mồ côi.',
     focusAreas: [
       'Cấu trúc struct proc & bảng tiến trình',
@@ -54,15 +62,14 @@ export const INITIAL_MEMBERS: Member[] = [
       'kernel/signal.h',
       'kernel/wait.h'
     ],
-    githubUsername: 'hoangnguyen-hust'
   },
   {
     id: 'member-3',
-    name: 'Nguyễn Tuấn Anh',
-    studentId: '20223988',
-    email: 'anh.nt223988@sis.hust.edu.vn',
+    name: 'Vũ Tuấn Anh',
+    studentId: '20223864',
+    email: '',
     role: 'Shell, Job Control & Automated Testing',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    avatarUrl: avatar('TA', '#059669'),
     bio: 'Chịu trách nhiệm xây dựng Shell có Job Control hoàn chỉnh theo chuẩn POSIX/GNU, Line Editor với phím mũi tên & lịch sử lệnh, và toàn bộ hệ thống kiểm thử tự động Python pexpect.',
     focusAreas: [
       'Vòng lặp và cấu trúc Job Control trong Shell (user/sh.c)',
@@ -85,6 +92,5 @@ export const INITIAL_MEMBERS: Member[] = [
       'test-jobctl.py',
       'test-xv6.py'
     ],
-    githubUsername: 'tuananh-hust'
   }
 ];

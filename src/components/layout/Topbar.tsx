@@ -53,7 +53,11 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
             HUST · ĐỒ ÁN #27
           </span>
           <span className="text-slate-700 dark:text-slate-300 font-medium truncate text-xs">
-            Báo cáo Tuần 2: <strong>25/10 – 01/11</strong> · Hạn gửi ảnh: <strong>12h trưa Chủ nhật 01/11</strong>
+            Báo cáo Tuần {data.settings.currentWeek}
+            {currentWeekObj?.report && (
+              <>: <strong>{currentWeekObj.report.reportPeriodFrom} – {currentWeekObj.report.reportPeriodTo}</strong></>
+            )}
+            {' '}· Hạn báo cáo: <strong>{data.settings.nextReportDate}</strong>
           </span>
         </div>
         <div className="hidden md:flex items-center gap-2 shrink-0">

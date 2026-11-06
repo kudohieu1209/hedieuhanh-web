@@ -22,8 +22,6 @@ export const Progress: React.FC<ProgressProps> = ({
   const sizes = {
     sm: 'h-1.5',
     md: 'h-2.5',
-    sm: 'h-2',
-    md: 'h-3',
     lg: 'h-4',
   };
 
@@ -33,16 +31,11 @@ export const Progress: React.FC<ProgressProps> = ({
         <div className="flex justify-between items-center mb-1 text-xs font-medium text-slate-500 dark:text-slate-400">
           <span>Tiến độ</span>
           <span>{percentage}%</span>
-        <div className="flex justify-between items-center mb-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">
-          <span>Tiến độ hoàn thành</span>
-          <span className="text-sky-600 dark:text-sky-400">{percentage}%</span>
         </div>
       )}
       <div className={`w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden ${sizes[size]}`}>
-      <div className={`w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-700/50 ${sizes[size]} shadow-inner`}>
         <div
           className={`${barColor} ${sizes[size]} rounded-full transition-all duration-500 ease-out`}
-          className={`${barColor} h-full rounded-full transition-all duration-500 ease-out shadow-xs`}
           style={{ width: `${percentage}%` }}
         />
       </div>
