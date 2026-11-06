@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download } from 'lucide-react';
+import { Download, ExternalLink } from 'lucide-react';
 import { WeekRoadmap } from '../../types';
 import { useApp } from '../../context/AppContext';
 import { Badge } from '../ui/Badge';
@@ -16,8 +16,8 @@ export const ReportView: React.FC<{ week: WeekRoadmap }> = ({ week }) => {
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : { download: true })}
       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-xs transition-colors"
     >
-      <Download className="w-3.5 h-3.5" />
-      {external ? 'Mở link tải báo cáo' : 'Tải file .docx'}
+      {external ? <ExternalLink className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
+      {external ? 'Xem báo cáo trên OneDrive' : 'Tải file .docx'}
     </a>
   );
 

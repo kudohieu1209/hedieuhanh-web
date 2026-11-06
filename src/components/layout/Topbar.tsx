@@ -3,10 +3,8 @@ import {
   Menu, 
   Sun, 
   Moon, 
-  Clock, 
-  ArrowRight
+  Clock
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 
 const GithubIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3.5" }) => (
@@ -53,15 +51,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
             )}
             {' '}· Hạn báo cáo: <strong>{data.settings.nextReportDate}</strong>
           </span>
-        </div>
-        <div className="hidden md:flex items-center gap-2 shrink-0">
-          <Link
-            to="/roadmap"
-            className="inline-flex items-center gap-1 text-[11.5px] font-bold text-sky-600 dark:text-sky-400 hover:underline"
-          >
-            <span>Chi tiết tiến độ &amp; nộp báo cáo</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
         </div>
       </div>
 

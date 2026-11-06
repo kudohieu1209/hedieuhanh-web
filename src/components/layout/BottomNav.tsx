@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
-  LayoutDashboard, 
+  BookOpen, 
   Milestone, 
   CheckSquare, 
   GraduationCap, 
@@ -19,9 +19,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenMenu }) => {
   const uncompletedTasksCount = data.tasks.filter(t => t.status !== 'done').length;
 
   const navItems = [
-    { to: '/', label: 'Tổng quan', icon: LayoutDashboard },
-    { to: '/roadmap', label: 'Lộ trình', icon: Milestone, badge: `T${data.settings.currentWeek}` },
+    { to: '/', label: 'Lộ trình', icon: Milestone, badge: `T${data.settings.currentWeek}` },
     { to: '/tasks', label: 'Nhiệm vụ', icon: CheckSquare, badge: uncompletedTasksCount > 0 ? uncompletedTasksCount.toString() : undefined },
+    { to: '/knowledge', label: 'Kiến thức', icon: BookOpen },
     { to: '/questions', label: 'Ôn tập', icon: GraduationCap },
   ];
 
@@ -37,6 +37,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenMenu }) => {
             <NavLink
               key={item.to}
               to={item.to}
+              end={item.to === '/'}
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center py-1 px-1 rounded-full transition-all relative ${
                   isActive

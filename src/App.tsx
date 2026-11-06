@@ -4,7 +4,6 @@ import { ToastProvider } from './context/ToastContext';
 import { AppProvider } from './context/AppContext';
 import { AppLayout } from './components/layout/AppLayout';
 
-import { DashboardPage } from './pages/DashboardPage';
 import { RoadmapPage } from './pages/RoadmapPage';
 import { MembersPage } from './pages/MembersPage';
 import { TasksPage } from './pages/TasksPage';
@@ -19,8 +18,8 @@ export function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
-              <Route index element={<DashboardPage />} />
-              <Route path="roadmap" element={<RoadmapPage />} />
+              <Route index element={<RoadmapPage />} />
+              <Route path="roadmap" element={<Navigate to="/" replace />} />
               <Route path="members" element={<MembersPage />} />
               <Route path="tasks" element={<TasksPage />} />
               <Route path="knowledge" element={<KnowledgePage />} />

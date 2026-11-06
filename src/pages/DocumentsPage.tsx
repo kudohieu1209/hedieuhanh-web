@@ -202,7 +202,7 @@ export const DocumentsPage: React.FC = () => {
                         className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-xs transition-colors"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
-                        Mở link tải (OneDrive)
+                        Xem trên OneDrive
                       </a>
                     ) : doc.fileUrl.endsWith('.docx') ? (
                       <>

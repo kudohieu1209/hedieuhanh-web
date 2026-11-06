@@ -21,8 +21,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
   const { data, overallProgress } = useApp();
 
   const navItems: { to: string; label: string; icon: typeof LayoutDashboard; badge?: string; badgeColor?: string }[] = [
-    { to: '/', label: 'Tổng quan', icon: LayoutDashboard },
-    { to: '/roadmap', label: 'Lộ trình 7 tuần', icon: Milestone, badge: `T${data.settings.currentWeek}` },
+    { to: '/', label: 'Lộ trình 7 tuần', icon: Milestone, badge: `T${data.settings.currentWeek}` },
     { to: '/members', label: 'Thành viên', icon: Users, badge: '3' },
     { to: '/tasks', label: 'Quản lý nhiệm vụ', icon: CheckSquare, badge: data.tasks.filter(t => t.status !== 'done').length.toString() },
     { to: '/knowledge', label: 'Kiến thức cần nắm', icon: BookOpen, badge: data.knowledgeTopics.length.toString() },
@@ -96,6 +95,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
             <NavLink
               key={item.to}
               to={item.to}
+              end={item.to === '/'}
               onClick={onCloseMobile}
               className={({ isActive }) =>
                 `flex items-center justify-between px-3.5 py-2 rounded-full text-xs font-semibold transition-all group ${

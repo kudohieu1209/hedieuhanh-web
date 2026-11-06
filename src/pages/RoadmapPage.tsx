@@ -69,10 +69,10 @@ export const RoadmapPage: React.FC = () => {
             <span>KẾ HOẠCH BẢO VỆ ĐỒ ÁN HUST</span>
           </div>
           <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
-            Lộ Trình Nghiên Cứu &amp; <em>Báo Cáo 7 Tuần</em>
+            Lộ Trình <em>7 Tuần</em>
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
-            Kế hoạch chi tiết từ khảo sát xv6, cấu trúc dữ liệu, cơ chế tín hiệu, Job Control đến báo cáo nghiệm thu trước TS. Phạm Văn Tiến.
+            TTY Layer &amp; Job Control trên xv6-riscv: mục tiêu, phân công và báo cáo của từng tuần.
           </p>
         </div>
 
@@ -243,7 +243,7 @@ export const RoadmapPage: React.FC = () => {
                       >
                         <FileText className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate sm:hidden">Báo cáo</span>
-                        <span className="truncate hidden sm:inline">Báo cáo (Mẫu Word HUST)</span>
+                        <span className="truncate hidden sm:inline">Nội dung báo cáo</span>
                         <Badge
                           variant={
                             week.report?.status === 'submitted' ? 'success' :
@@ -463,8 +463,17 @@ export const RoadmapPage: React.FC = () => {
                             {...(/^https?:/.test(week.reportFileUrl) ? { target: '_blank', rel: 'noopener noreferrer' } : { download: true })}
                             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-all shadow-2xs hover:-translate-y-0.5"
                           >
-                            <Download className="w-3.5 h-3.5" />
-                            <span>Tải báo cáo tuần {week.weekNumber} (.docx)</span>
+                            {/^https?:/.test(week.reportFileUrl) ? (
+                              <>
+                                <ExternalLink className="w-3.5 h-3.5" />
+                                <span>Xem báo cáo tuần {week.weekNumber} (OneDrive)</span>
+                              </>
+                            ) : (
+                              <>
+                                <Download className="w-3.5 h-3.5" />
+                                <span>Tải báo cáo tuần {week.weekNumber} (.docx)</span>
+                              </>
+                            )}
                           </a>
                         )}
                         {week.pdfUrl && (
