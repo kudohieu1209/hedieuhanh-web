@@ -42,8 +42,8 @@ struct proc {
   int pid;              // Process ID
   int pgid;             // Process group ID (job control)
   int pendstop;         // Stop signal received but not yet acted on (0 = none)
-  int stopsig;          // Stopped by this signal; parent not yet told (0 = none)
-  uint sigignore;       // Bitmask of signals this process ignores
+  int stopsig;    // Stopped by this signal; parent not yet told (0 = none)
+  uint sigignore; // Bitmask of signals this process ignores
 
   // wait_lock must be held when using this:
   struct proc *parent; // Parent process
@@ -156,7 +156,7 @@ sigdeliver(struct proc *p, int sig)
     p->state = RUNNABLE;
 }`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.c#L669-L716',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.c#L667-L714',
     diagram: `
 Bàn phím ──UART──► consoleintr() [Ngữ cảnh ngắt]
                      │ (chỉ đánh dấu, KHÔNG ngủ)
@@ -251,10 +251,9 @@ stopcheck(void)
     release(&wait_lock); // SIGCONT/SIGKILL got here first
   }
   release(&p->lock);
-}
-`
+}`
     },
-    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.c#L796-L829',
+    githubLink: 'https://github.com/kudohieu1209/hedieuhanh-hust/blob/main/kernel/proc.c#L794-L826',
     diagram: `
 +-------------------------------------------------------+
 |  Tiến trình con trong stopcheck():                     |
