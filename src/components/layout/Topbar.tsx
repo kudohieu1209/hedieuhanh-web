@@ -20,7 +20,7 @@ export const Topbar: React.FC = () => {
       {/* Điện thoại: 2 pill nổi trái / phải, cùng kiểu thanh điều hướng dưới (nội dung cuộn bên dưới) */}
       <div className="md:hidden fixed top-[calc(0.75rem+env(safe-area-inset-top,0px))] left-3.5 right-3.5 z-40 flex items-center justify-between pointer-events-none">
         <div className={`${pill} pointer-events-auto`}>
-          <Terminal className="w-3.5 h-3.5 text-sky-500" />
+          <Terminal className="w-3.5 h-3.5 text-red-600" />
           <span className="font-bold font-mono text-slate-900 dark:text-slate-100">xv6-riscv</span>
         </div>
         <div className={`${pill} pointer-events-auto`}>
@@ -43,7 +43,7 @@ export const Topbar: React.FC = () => {
           href={data.settings.githubRepoUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-sky-500 dark:hover:bg-sky-600 text-white text-xs font-bold shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-red-600 dark:hover:bg-red-700 text-white text-xs font-bold shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
         >
           <GithubIcon className="w-3.5 h-3.5" />
           <span>GitHub</span>

@@ -157,7 +157,7 @@ export const RoadmapPage: React.FC = () => {
                   {/* Hàng trên: Hạn báo cáo + Nút báo cáo */}
                   <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
                     <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
-                      <Calendar className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                      <Calendar className="w-3.5 h-3.5 text-red-600 shrink-0" />
                       <span>Hạn báo cáo: <strong className="font-mono text-slate-900 dark:text-white">{week.customReportDate}</strong></span>
                     </div>
                     {week.reportFileUrl && (
@@ -237,26 +237,39 @@ export const RoadmapPage: React.FC = () => {
 
                       {/* 3 Members Specific Assignments */}
                       <div className="space-y-2.5">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                          Phân công nhiệm vụ cụ thể 3 thành viên
-                        </h4>
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                            Phân công nhiệm vụ cụ thể 3 thành viên
+                          </h4>
+                          <Link to="/members" className="text-[11px] text-red-600 dark:text-red-400 font-bold hover:underline sm:hidden">
+                            Xem hồ sơ ›
+                          </Link>
+                        </div>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                           {data.members.map((m) => {
                             const tasks = week.memberAssignments[m.id] || [];
                             return (
                               <div key={m.id} className="p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs">
-                                <div className="flex items-center gap-2 mb-2.5 pb-2 border-b border-slate-100 dark:border-slate-800/80">
-                                  <img
-                                    src={m.avatarUrl}
-                                    alt={m.name}
-                                    className="w-6 h-6 rounded-full object-cover ring-1 ring-red-500/40"
-                                  />
-                                  <div className="min-w-0">
-                                    <span className="text-xs font-bold text-slate-900 dark:text-white truncate block">
-                                      {m.name}
-                                    </span>
+                                <Link
+                                  to="/members"
+                                  className="flex items-center justify-between gap-2 mb-2.5 pb-2 border-b border-slate-100 dark:border-slate-800/80 group hover:opacity-80 transition-opacity"
+                                >
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <img
+                                      src={m.avatarUrl}
+                                      alt={m.name}
+                                      className="w-6 h-6 rounded-full object-cover ring-1 ring-red-500/40"
+                                    />
+                                    <div className="min-w-0">
+                                      <span className="text-xs font-bold text-slate-900 dark:text-white truncate block group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                        {m.name}
+                                      </span>
+                                    </div>
                                   </div>
-                                </div>
+                                  <span className="text-[10px] font-mono font-bold text-red-600 dark:text-red-400 opacity-80 group-hover:opacity-100">
+                                    Chi tiết ›
+                                  </span>
+                                </Link>
                                 <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
                                   {tasks.map((taskStr, idx) => (
                                     <li key={idx} className="flex items-start gap-1.5">

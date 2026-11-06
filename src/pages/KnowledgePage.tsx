@@ -163,6 +163,14 @@ export const KnowledgePage: React.FC = () => {
         {/* Right Column: Detailed Reader View (8 Cols) as Apple macOS Window */}
         {selectedTopic && (
           <div id="topic-detail" className="lg:col-span-8 scroll-mt-24">
+            <div className="lg:hidden mb-2.5 flex justify-end">
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-red-600 dark:text-red-400 bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs active:scale-95 transition-all"
+              >
+                ↑ Về danh sách chủ đề
+              </button>
+            </div>
             <Card 
               trafficLights 
               macTitle={selectedTopic.title}

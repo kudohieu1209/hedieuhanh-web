@@ -147,7 +147,7 @@ export const MembersPage: React.FC = () => {
             </span>
             <span className="text-xs text-emerald-500 font-bold">{taskPct}% xong</span>
           </div>
-          <Progress value={taskPct} size="sm" barColor="bg-gradient-to-r from-sky-500 to-cyan-400" />
+          <Progress value={taskPct} size="sm" barColor="bg-gradient-to-r from-red-600 to-amber-500" />
         </CardContent>
       </Card>
 
@@ -169,13 +169,13 @@ export const MembersPage: React.FC = () => {
                   href={`https://github.com/kudohieu1209/hedieuhanh-hust/blob/tty-jobctl/${file}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 hover:bg-sky-50 dark:hover:bg-sky-950/40 hover:border-sky-400 dark:hover:border-sky-800 transition-all text-xs font-mono group shadow-2xs hover:-translate-y-0.5"
+                  className="flex items-center justify-between p-3 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 hover:bg-red-50 dark:hover:bg-red-950/40 hover:border-red-400 dark:hover:border-red-800 transition-all text-xs font-mono group shadow-2xs hover:-translate-y-0.5"
                 >
-                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-sky-600 dark:group-hover:text-sky-400 truncate font-semibold">
-                    <Terminal className="w-3.5 h-3.5 shrink-0 text-sky-500" />
+                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-red-600 dark:group-hover:text-red-400 truncate font-semibold">
+                    <Terminal className="w-3.5 h-3.5 shrink-0 text-red-600" />
                     <span className="truncate">{file}</span>
                   </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-500 shrink-0" />
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-600 shrink-0" />
                 </a>
               ))}
             </CardContent>
@@ -187,7 +187,7 @@ export const MembersPage: React.FC = () => {
               <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                 {selectedMember.focusAreas.map((area, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-1.5 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mt-1.5 shrink-0" />
                     <span className="leading-relaxed font-medium">{area}</span>
                   </li>
                 ))}
@@ -206,7 +206,7 @@ export const MembersPage: React.FC = () => {
                 <Link
                   key={topic.id}
                   to={`/knowledge?topic=${topic.id}`}
-                  className="block p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-sky-300 dark:hover:border-sky-800 transition-colors shadow-2xs"
+                  className="block p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-red-300 dark:hover:border-red-800 transition-colors shadow-2xs"
                 >
                   <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100">
                     {topic.title}

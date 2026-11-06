@@ -40,7 +40,7 @@ export const BottomNav: React.FC = () => {
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center py-1 px-1 rounded-full transition-all relative active:scale-95 ${
                   isActive
-                    ? 'text-sky-600 dark:text-sky-400 font-bold'
+                    ? 'text-red-600 dark:text-red-400 font-bold'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`
               }
@@ -48,9 +48,9 @@ export const BottomNav: React.FC = () => {
               {({ isActive }) => (
                 <>
                   <div className="relative">
-                    <Icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110 text-sky-500' : ''}`} />
+                    <Icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110 text-red-600' : ''}`} />
                     {item.badge && (
-                      <span className="absolute -top-1.5 -right-2.5 px-1 min-w-[14px] h-[14px] flex items-center justify-center text-[9px] font-bold font-mono rounded-full bg-sky-500 text-white shadow-2xs">
+                      <span className="absolute -top-1.5 -right-2.5 px-1 min-w-[14px] h-[14px] flex items-center justify-center text-[9px] font-bold font-mono rounded-full bg-gradient-to-r from-red-600 to-amber-500 text-white shadow-2xs">
                         {item.badge}
                       </span>
                     )}
@@ -59,7 +59,7 @@ export const BottomNav: React.FC = () => {
                     {item.label}
                   </span>
                   {isActive && (
-                    <span className="absolute -bottom-0.5 w-4 h-0.5 bg-sky-500 rounded-full" />
+                    <span className="absolute -bottom-0.5 w-4 h-0.5 bg-red-600 rounded-full" />
                   )}
                 </>
               )}
