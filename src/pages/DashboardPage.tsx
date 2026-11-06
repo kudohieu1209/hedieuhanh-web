@@ -30,9 +30,7 @@ import { Progress } from '../components/ui/Progress';
 import { Modal } from '../components/ui/Modal';
 
 export const DashboardPage: React.FC = () => {
-  const { data, overallProgress, taskStats, updateSettings } = useApp();
-  const [editingDateModal, setEditingDateModal] = useState(false);
-  const [newDateInput, setNewDateInput] = useState(data.settings.nextReportDate);
+  const { data, overallProgress, taskStats } = useApp();
 
   // Nhiệm vụ tuần hiện tại của cả nhóm (web không có đăng nhập nên không có "của tôi")
   const weekTasks = data.tasks.filter(
@@ -40,19 +38,9 @@ export const DashboardPage: React.FC = () => {
   );
   const memberOf = (id: string) => data.members.find(m => m.id === id);
 
-  // Câu hỏi có ít nhất một thành viên tự đánh giá là chưa hiểu
-  const weakQuestions = data.defenseQuestions.filter(
-    q => Object.values(q.memberRatings).includes('not_understood')
-  );
-
-
   // Next week milestone
   const currentWeek = data.weeks.find(w => w.weekNumber === data.settings.currentWeek);
 
-  const handleSaveNextReportDate = () => {
-    updateSettings({ nextReportDate: newDateInput });
-    setEditingDateModal(false);
-  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -202,15 +190,7 @@ export const DashboardPage: React.FC = () => {
         <Card 
           hover 
           trafficLights 
-          macTitle="Lịch Gặp GVHD"
-          macAction={
-            <button
-              onClick={() => setEditingDateModal(true)}
-              className="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline"
-            >
-              Đổi ngày
-            </button>
-          }
+          macTitle="Lịch Báo Cáo"
         >
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-baseline justify-between mb-2">
@@ -225,30 +205,28 @@ export const DashboardPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Metric 4: Defense Readiness */}
-        <Card 
-          hover 
-          trafficLights 
-          macTitle="Vấn Đáp Bảo Vệ"
-          macAction={
-            <Badge variant="purple">25+ câu</Badge>
-          }
-        >
-          <CardContent className="p-4 sm:p-5">
-            <div className="flex items-baseline justify-between mb-2">
-              <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
-                {data.defenseQuestions.filter(q => Object.values(q.memberRatings).every(r => r === 'confident')).length}
-              </span>
-              <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold text-right">câu cả nhóm vững</span>
-            </div>
-            <div className="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
-              <span>Cần ôn lại:</span>
-              <span className="font-bold text-rose-500 px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50">
-                {weakQuestions.length} câu
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Metric 4: tài liệu ôn tập có trong web */}
+        <Link to="/questions" className="block">
+          <Card
+            hover
+            trafficLights
+            macTitle="Ôn Tập Bảo Vệ"
+            className="h-full"
+          >
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-baseline justify-between mb-2">
+                <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 dark:text-white">
+                  {data.defenseQuestions.length}
+                </span>
+                <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold text-right">câu hỏi vấn đáp</span>
+              </div>
+              <div className="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
+                <span>Chủ đề kiến thức:</span>
+                <span className="font-bold text-sky-600 dark:text-sky-400">{data.knowledgeTopics.length}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       {/* Main Content Grid: 2 Columns */}
@@ -336,7 +314,7 @@ export const DashboardPage: React.FC = () => {
           >
             <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Theo dõi khối lượng nhiệm vụ, độ vững kiến thức và kỹ năng vấn đáp bảo vệ
+                Số việc được giao trong lộ trình 7 tuần và tiến độ của từng người
               </p>
             </div>
 
@@ -346,10 +324,7 @@ export const DashboardPage: React.FC = () => {
                 const memberTasks = data.tasks.filter(t => t.assigneeId === member.id);
                 const completedTasks = memberTasks.filter(t => t.status === 'done');
                 const taskPct = memberTasks.length > 0 ? Math.round((completedTasks.length / memberTasks.length) * 100) : 100;
-                
-                // Knowledge readiness
-                const readyTopics = data.knowledgeTopics.filter(k => k.memberProgress[member.id] === 'ready_to_defend').length;
-                const readyQuestions = data.defenseQuestions.filter(q => q.memberRatings[member.id] === 'confident').length;
+                const doingTasks = memberTasks.filter(t => t.status === 'in_progress' || t.status === 'review');
 
                 return (
                   <div key={member.id} className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 shadow-2xs hover:shadow-xs transition-all">
@@ -385,22 +360,16 @@ export const DashboardPage: React.FC = () => {
 
                     <div className="grid grid-cols-3 gap-2 mt-3 text-center text-xs border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
                       <div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono">
-                          {completedTasks.length}/{memberTasks.length}
-                        </div>
-                        <div className="text-[10px] text-slate-400">Nhiệm vụ</div>
+                        <div className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">{completedTasks.length}</div>
+                        <div className="text-[10px] text-slate-400">Đã xong</div>
                       </div>
                       <div>
-                        <div className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                          {readyTopics}/{data.knowledgeTopics.length}
-                        </div>
-                        <div className="text-[10px] text-slate-400">Kiến thức vững</div>
+                        <div className="font-bold text-sky-600 dark:text-sky-400 font-mono">{doingTasks.length}</div>
+                        <div className="text-[10px] text-slate-400">Đang làm</div>
                       </div>
                       <div>
-                        <div className="font-bold text-purple-600 dark:text-purple-400 font-mono">
-                          {readyQuestions}/{data.defenseQuestions.length}
-                        </div>
-                        <div className="text-[10px] text-slate-400">Vấn đáp tốt</div>
+                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono">{memberTasks.length}</div>
+                        <div className="text-[10px] text-slate-400">Tổng việc</div>
                       </div>
                     </div>
                   </div>
@@ -412,35 +381,6 @@ export const DashboardPage: React.FC = () => {
 
       </div>
 
-      {/* Modal: Đổi ngày báo cáo tiếp theo */}
-      <Modal
-        isOpen={editingDateModal}
-        onClose={() => setEditingDateModal(false)}
-        title="Cập nhật Ngày Báo cáo Tiếp theo"
-        subtitle="Thông tin sẽ được đồng bộ hiển thị lên bảng điều khiển nhóm"
-      >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-              Chọn ngày hẹn gặp giảng viên (YYYY-MM-DD):
-            </label>
-            <input
-              type="date"
-              value={newDateInput}
-              onChange={(e) => setNewDateInput(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono"
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="secondary" onClick={() => setEditingDateModal(false)}>
-              Hủy
-            </Button>
-            <Button variant="primary" onClick={handleSaveNextReportDate}>
-              Lưu Ngày Báo Cáo
-            </Button>
-          </div>
-        </div>
-      </Modal>
 
     </div>
   );

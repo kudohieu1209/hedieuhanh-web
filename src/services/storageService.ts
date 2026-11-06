@@ -249,34 +249,12 @@ export const loadLocalData = (): AppData => {
       return initial;
     }
     const parsed = JSON.parse(raw);
-    // Ensure backwards compatibility and default fields
+    // Web chỉ để xem: mọi dữ liệu luôn lấy từ mã nguồn (cập nhật bằng commit + push).
+    // Trình duyệt chỉ nhớ lựa chọn giao diện sáng / tối.
     const initial = getInitialData();
-    const loadedWeeks = (parsed.weeks || INITIAL_WEEKS).map((w: WeekRoadmap) => {
-      // Link báo cáo (OneDrive / .docx) và nội dung báo cáo luôn lấy từ mã nguồn,
-      // để link mới dán vào initialWeeks.ts hiện ra cả với người đã mở web trước đó.
-      const fresh = INITIAL_WEEKS.find(x => x.weekNumber === w.weekNumber);
-      if (fresh) {
-        w.reportFileUrl = fresh.reportFileUrl;
-        if (fresh.report) w.report = fresh.report;
-      }
-      if (!w.report) {
-        w.report = generateDraftReport(w.weekNumber, initial);
-      }
-      return w;
-    });
-
     return {
-      members: parsed.members || INITIAL_MEMBERS,
-      weeks: loadedWeeks,
-      tasks: parsed.tasks || INITIAL_TASKS,
-      knowledgeTopics: parsed.knowledgeTopics || KNOWLEDGE_TOPICS,
-      defenseQuestions: parsed.defenseQuestions || DEFENSE_QUESTIONS,
-      // báo cáo tuần luôn theo mã nguồn; tài liệu người dùng tự thêm vẫn giữ
-      documents: [...INITIAL_DOCUMENTS, ...(parsed.documents || []).filter((d: { id: string }) => !d.id.startsWith('doc-report-'))],
-      testCases: parsed.testCases || INITIAL_TESTS,
-      bugs: parsed.bugs || INITIAL_BUGS,
-      meetings: parsed.meetings || INITIAL_MEETINGS,
-      settings: { ...INITIAL_SETTINGS, ...(parsed.settings || {}) },
+      ...initial,
+      settings: { ...initial.settings, theme: parsed.settings?.theme === 'light' ? 'light' : initial.settings.theme },
     };
   } catch (e) {
     console.error('Error loading data from localStorage, resetting to initial data:', e);

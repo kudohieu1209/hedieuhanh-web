@@ -26,7 +26,7 @@ import { Modal } from '../components/ui/Modal';
 import { Task, TaskPriority, TaskStatus, MemberId, TaskChecklistItem } from '../types';
 
 export const TasksPage: React.FC = () => {
-  const { data, currentMember, updateTask, addTask, deleteTask } = useApp();
+  const { data } = useApp();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,18 +37,6 @@ export const TasksPage: React.FC = () => {
 
   // Modals & Active task
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [isCreatingModal, setIsCreatingModal] = useState(false);
-  const [newCommentText, setNewCommentText] = useState('');
-
-  // Form for creating new task
-  const [newTitle, setNewTitle] = useState('');
-  const [newDesc, setNewDesc] = useState('');
-  const [newAssignee, setNewAssignee] = useState<MemberId | 'all'>('member-1');
-  const [newWeek, setNewWeek] = useState<number>(data.settings.currentWeek);
-  const [newPriority, setNewPriority] = useState<TaskPriority>('medium');
-  const [newDeadline, setNewDeadline] = useState('2026-10-27');
-  const [newCodeFiles, setNewCodeFiles] = useState('kernel/proc.c');
-  const [newChecklistText, setNewChecklistText] = useState('Viết mã nguồn ban đầu\nKiểm thử với QEMU\nChạy usertests xác nhận');
 
   // Column definitions
   const columns: { id: TaskStatus; label: string; color: string; badgeVariant: BadgeVariant }[] = [
@@ -68,74 +56,6 @@ export const TasksPage: React.FC = () => {
     return matchesSearch && matchesMember && matchesWeek && matchesPriority;
   });
 
-  const handleStatusChange = (task: Task, newStatus: TaskStatus) => {
-    updateTask({ ...task, status: newStatus });
-    if (activeTask && activeTask.id === task.id) {
-      setActiveTask({ ...activeTask, status: newStatus });
-    }
-  };
-
-  const handleToggleSubtask = (task: Task, subtaskId: string) => {
-    const updatedChecklist = task.checklist.map(item =>
-      item.id === subtaskId ? { ...item, completed: !item.completed } : item
-    );
-    const updated = { ...task, checklist: updatedChecklist };
-    updateTask(updated);
-    if (activeTask && activeTask.id === task.id) {
-      setActiveTask(updated);
-    }
-  };
-
-  const handleAddComment = () => {
-    if (!activeTask || !newCommentText.trim()) return;
-    const newComment = {
-      id: `c-${Date.now()}`,
-      memberId: currentMember.id,
-      authorName: currentMember.name,
-      content: newCommentText.trim(),
-      createdAt: new Date().toISOString()
-    };
-    const updated = {
-      ...activeTask,
-      comments: [...activeTask.comments, newComment]
-    };
-    updateTask(updated);
-    setActiveTask(updated);
-    setNewCommentText('');
-  };
-
-  const handleCreateTask = () => {
-    if (!newTitle.trim()) return;
-
-    const checklistItems: TaskChecklistItem[] = newChecklistText
-      .split('\n')
-      .map(s => s.trim())
-      .filter(Boolean)
-      .map((text, idx) => ({ id: `chk-${Date.now()}-${idx}`, text, completed: false }));
-
-    const codeFilesList = newCodeFiles
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean);
-
-    addTask({
-      title: newTitle.trim(),
-      description: newDesc.trim(),
-      assigneeId: newAssignee,
-      weekNumber: Number(newWeek),
-      priority: newPriority,
-      status: 'todo',
-      deadline: newDeadline,
-      checklist: checklistItems,
-      codeFiles: codeFilesList,
-      comments: []
-    });
-
-    setIsCreatingModal(false);
-    // Reset form
-    setNewTitle('');
-    setNewDesc('');
-  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -150,17 +70,10 @@ export const TasksPage: React.FC = () => {
             Bảng Quản Lý Nhiệm Vụ <em>Kanban Workstation</em>
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
-            Theo dõi tiến độ thực hiện từng nhiệm vụ theo 4 cột trạng thái, phân công thành viên và bằng chứng nghiệm thu đồ án.
+            Việc của từng người theo lộ trình 7 tuần. Trạng thái tự cập nhật theo trạng thái của tuần.
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          icon={<Plus className="w-4 h-4" />}
-          onClick={() => setIsCreatingModal(true)}
-        >
-          Thêm nhiệm vụ mới
-        </Button>
       </div>
 
       {/* Filter Toolbar with Apple Pill Controls */}
@@ -396,16 +309,9 @@ export const TasksPage: React.FC = () => {
             <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-slate-600 dark:text-slate-400">Trạng thái:</span>
-                <select
-                  value={activeTask.status}
-                  onChange={(e) => handleStatusChange(activeTask, e.target.value as TaskStatus)}
-                  className="px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold"
-                >
-                  <option value="todo">Cần làm</option>
-                  <option value="in_progress">Đang thực hiện</option>
-                  <option value="review">Chờ kiểm tra</option>
-                  <option value="done">Hoàn thành</option>
-                </select>
+                <Badge variant={activeTask.status === 'done' ? 'success' : activeTask.status === 'in_progress' ? 'primary' : 'default'}>
+                  {activeTask.status === 'done' ? 'Hoàn thành' : activeTask.status === 'in_progress' ? 'Đang thực hiện' : activeTask.status === 'review' ? 'Chờ kiểm tra' : 'Cần làm'}
+                </Badge>
               </div>
 
               <div className="flex items-center gap-2">
@@ -443,7 +349,8 @@ export const TasksPage: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={item.completed}
-                      onChange={() => handleToggleSubtask(activeTask, item.id)}
+                      readOnly
+                      disabled
                       className="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 dark:border-slate-700 mt-0.5"
                     />
                     <span className={item.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200 font-semibold'}>
@@ -484,60 +391,9 @@ export const TasksPage: React.FC = () => {
               </div>
             )}
 
-            {/* Comments Section */}
-            <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-1.5">
-                <MessageSquare className="w-3.5 h-3.5 text-sky-500" />
-                <span>Trao đổi / Bình luận ({activeTask.comments.length})</span>
-              </h4>
-
-              <div className="space-y-2 mb-3 max-h-40 overflow-y-auto">
-                {activeTask.comments.length === 0 ? (
-                  <p className="text-slate-400 text-[11px] italic">Chưa có bình luận nào.</p>
-                ) : (
-                  activeTask.comments.map((c) => (
-                    <div key={c.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 text-xs">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-sky-600 dark:text-sky-400">{c.authorName}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          {new Date(c.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                      <p className="text-slate-700 dark:text-slate-300">{c.content}</p>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Add comment box */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder={`Bình luận với tư cách ${currentMember.name}...`}
-                  value={newCommentText}
-                  onChange={(e) => setNewCommentText(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(); }}
-                  className="flex-1 px-3.5 py-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-xs"
-                />
-                <Button variant="primary" size="sm" onClick={handleAddComment}>
-                  <Send className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
 
             {/* Footer Buttons */}
-            <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800">
-              <Button
-                variant="danger"
-                size="sm"
-                icon={<Trash2 className="w-3.5 h-3.5" />}
-                onClick={() => {
-                  deleteTask(activeTask.id);
-                  setActiveTask(null);
-                }}
-              >
-                Xóa nhiệm vụ
-              </Button>
+            <div className="flex items-center justify-end pt-3 border-t border-slate-200 dark:border-slate-800">
               <Button variant="secondary" size="sm" onClick={() => setActiveTask(null)}>
                 Đóng
               </Button>
@@ -546,125 +402,6 @@ export const TasksPage: React.FC = () => {
         </Modal>
       )}
 
-      {/* Modal: Thêm nhiệm vụ mới */}
-      {isCreatingModal && (
-        <Modal
-          isOpen={isCreatingModal}
-          onClose={() => setIsCreatingModal(false)}
-          title="Tạo Nhiệm Vụ Mới"
-          subtitle="Giao việc cho thành viên và đưa vào bảng Kanban"
-          maxWidth="lg"
-        >
-          <div className="space-y-4 text-xs">
-            <div>
-              <label className="block font-bold mb-1">Tiêu đề nhiệm vụ:</label>
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="VD: Kiểm thử tình huống EOF với Ctrl-D trong Cooked mode"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold mb-1">Mô tả chi tiết:</label>
-              <textarea
-                rows={2}
-                value={newDesc}
-                onChange={(e) => setNewDesc(e.target.value)}
-                placeholder="Mô tả cụ thể mục tiêu và kết quả kỳ vọng..."
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block font-bold mb-1">Người phụ trách:</label>
-                <select
-                  value={newAssignee}
-                  onChange={(e) => setNewAssignee(e.target.value as MemberId | 'all')}
-                  className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
-                >
-                  <option value="all">Cả 3 thành viên</option>
-                  {data.members.map(m => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-bold mb-1">Tuần đồ án:</label>
-                <select
-                  value={newWeek}
-                  onChange={(e) => setNewWeek(Number(e.target.value))}
-                  className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
-                >
-                  {data.weeks.map(w => (
-                    <option key={w.weekNumber} value={w.weekNumber}>Tuần {w.weekNumber}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block font-bold mb-1">Độ ưu tiên:</label>
-                <select
-                  value={newPriority}
-                  onChange={(e) => setNewPriority(e.target.value as TaskPriority)}
-                  className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
-                >
-                  <option value="low">Thấp</option>
-                  <option value="medium">Trung bình</option>
-                  <option value="high">Ưu tiên cao</option>
-                  <option value="urgent">Khẩn cấp</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-bold mb-1">Hạn chót (Deadline):</label>
-                <input
-                  type="date"
-                  value={newDeadline}
-                  onChange={(e) => setNewDeadline(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block font-bold mb-1">File code liên quan (cách nhau bởi dấu phẩy):</label>
-              <input
-                type="text"
-                value={newCodeFiles}
-                onChange={(e) => setNewCodeFiles(e.target.value)}
-                placeholder="kernel/console.c, user/sh.c"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold mb-1">Tiêu chí nghiệm thu (Mỗi dòng một checklist):</label>
-              <textarea
-                rows={3}
-                value={newChecklistText}
-                onChange={(e) => setNewChecklistText(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
-              <Button variant="secondary" onClick={() => setIsCreatingModal(false)}>
-                Hủy
-              </Button>
-              <Button variant="primary" onClick={handleCreateTask}>
-                Tạo Nhiệm Vụ
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 };

@@ -18,10 +18,10 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
-import { KnowledgeTopic, KnowledgeCategory, LearningState } from '../types';
+import { KnowledgeCategory } from '../types';
 
 export const KnowledgePage: React.FC = () => {
-  const { data, currentMember, updateKnowledgeProgress } = useApp();
+  const { data } = useApp();
 
   const [activeCategory, setActiveCategory] = useState<KnowledgeCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,13 +61,6 @@ export const KnowledgePage: React.FC = () => {
   });
 
   const selectedTopic = data.knowledgeTopics.find(t => t.id === selectedTopicId) || filteredTopics[0] || data.knowledgeTopics[0];
-
-  const learningStateLabels: Record<LearningState, { label: string; color: string }> = {
-    unread: { label: 'Chưa đọc', color: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' },
-    read: { label: '1. Đã đọc', color: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' },
-    understood: { label: '2. Đã hiểu', color: 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300' },
-    ready_to_defend: { label: '3. Sẵn sàng bảo vệ ★', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold' }
-  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -138,7 +131,6 @@ export const KnowledgePage: React.FC = () => {
           ) : (
             filteredTopics.map((topic) => {
               const isSelected = selectedTopic && selectedTopic.id === topic.id;
-              const myState = topic.memberProgress[currentMember.id] || 'unread';
 
               return (
                 <div
@@ -150,13 +142,10 @@ export const KnowledgePage: React.FC = () => {
                       : 'border-slate-200/90 dark:border-slate-800/90 bg-white/80 dark:bg-[#111827]/80 hover:bg-white dark:hover:bg-[#111827] shadow-apple-sm hover:shadow-apple hover:-translate-y-0.5'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-1.5 mb-2">
+                  <div className="flex items-center gap-1.5 mb-2">
                     <Badge variant={topic.category === 'process_signal' ? 'primary' : topic.category === 'tty_layer' ? 'warning' : 'purple'}>
                       {topic.category === 'process_signal' ? 'Process & Signal' : topic.category === 'tty_layer' ? 'TTY Layer' : 'Shell & Job Control'}
                     </Badge>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${learningStateLabels[myState].color}`}>
-                      {learningStateLabels[myState].label}
-                    </span>
                   </div>
 
                   <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
@@ -223,68 +212,6 @@ export const KnowledgePage: React.FC = () => {
                       ))}
                     </div>
                   )}
-                </div>
-
-                {/* Learning Progress Bar for all 3 members */}
-                <div className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
-                  <h4 className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                    <span className="ds-live-dot" />
-                    Trạng thái học tập của 3 thành viên:
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                    {data.members.map((member) => {
-                      const state = selectedTopic.memberProgress[member.id] || 'unread';
-                      const isMe = member.id === currentMember.id;
-
-                      return (
-                        <div
-                          key={member.id}
-                          className={`p-2.5 rounded-xl border flex items-center justify-between text-xs ${
-                            isMe
-                              ? 'border-sky-300 dark:border-sky-800 bg-sky-50/50 dark:bg-sky-950/30'
-                              : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            <img
-                              src={member.avatarUrl}
-                              alt={member.name}
-                              className="w-6 h-6 rounded-full object-cover shrink-0"
-                            />
-                            <span className="font-bold truncate text-slate-800 dark:text-slate-200">
-                              {member.name.split(' ').slice(-1)[0]}
-                              {isMe && ' (Tôi)'}
-                            </span>
-                          </div>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${learningStateLabels[state].color}`}>
-                            {learningStateLabels[state].label}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* My Status Update Buttons */}
-                  <div className="mt-3.5 pt-3 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
-                      Cập nhật trạng thái của bạn ({currentMember.name}):
-                    </span>
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      {(['read', 'understood', 'ready_to_defend'] as LearningState[]).map((st) => (
-                        <button
-                          key={st}
-                          onClick={() => updateKnowledgeProgress(selectedTopic.id, currentMember.id, st)}
-                          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
-                            selectedTopic.memberProgress[currentMember.id] === st
-                              ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
-                              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
-                          }`}
-                        >
-                          {learningStateLabels[st].label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
 
                 {/* Explanation Content */}

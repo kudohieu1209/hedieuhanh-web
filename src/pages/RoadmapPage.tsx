@@ -26,10 +26,10 @@ import { Button } from '../components/ui/Button';
 import { Progress } from '../components/ui/Progress';
 import { Modal } from '../components/ui/Modal';
 import { WeekRoadmap, WeekStatus } from '../types';
-import { WeeklyProgressReportTab } from '../components/report/WeeklyProgressReportTab';
+import { ReportView } from '../components/report/ReportView';
 
 export const RoadmapPage: React.FC = () => {
-  const { data, updateWeek } = useApp();
+  const { data } = useApp();
   const [expandedWeek, setExpandedWeek] = useState<number>(data.settings.currentWeek);
 
   // mở một tuần từ dải T1–T7 và cuộn tới thẻ của tuần đó (hữu ích trên điện thoại)
@@ -37,7 +37,6 @@ export const RoadmapPage: React.FC = () => {
     setExpandedWeek(n);
     setTimeout(() => document.getElementById(`week-card-${n}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
   };
-  const [editingWeek, setEditingWeek] = useState<WeekRoadmap | null>(null);
   const [copiedDemo, setCopiedDemo] = useState<number | null>(null);
   const [weekSubTabs, setWeekSubTabs] = useState<Record<number, 'plan' | 'report'>>({});
 
@@ -54,27 +53,10 @@ export const RoadmapPage: React.FC = () => {
     accepted: { label: 'Đã nghiệm thu', variant: 'success' },
   };
 
-  const handleToggleChecklist = (week: WeekRoadmap, checklistId: string) => {
-    const updatedChecklist = week.checklist.map(item => 
-      item.id === checklistId ? { ...item, completed: !item.completed } : item
-    );
-    updateWeek({
-      ...week,
-      checklist: updatedChecklist
-    });
-  };
-
   const handleCopyDemo = (weekNum: number, script: string[]) => {
     navigator.clipboard.writeText(script.join('\n'));
     setCopiedDemo(weekNum);
     setTimeout(() => setCopiedDemo(null), 2000);
-  };
-
-  const handleSaveWeekEdit = () => {
-    if (editingWeek) {
-      updateWeek(editingWeek);
-      setEditingWeek(null);
-    }
   };
 
   return (
@@ -280,12 +262,12 @@ export const RoadmapPage: React.FC = () => {
                     <div className="hidden sm:block text-[11px] text-slate-500 font-medium">
                       {getActiveTab(week.weekNumber) === 'plan' 
                         ? 'Tiêu chí nghiệm thu & phân công 3 thành viên' 
-                        : 'Mẫu chuẩn 5 phần theo Progress-Report-template.docx (TS. Phạm Văn Tiến)'}
+                        : 'Nội dung lấy từ file báo cáo .docx'}
                     </div>
                   </div>
 
                   {getActiveTab(week.weekNumber) === 'report' ? (
-                    <WeeklyProgressReportTab week={week} />
+                    <ReportView week={week} />
                   ) : (
                     <>
                       {/* Action Bar */}
@@ -301,16 +283,6 @@ export const RoadmapPage: React.FC = () => {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            icon={<Edit2 className="w-3.5 h-3.5" />}
-                            onClick={() => setEditingWeek(week)}
-                          >
-                            Chỉnh sửa tuần này
-                          </Button>
-                        </div>
                       </div>
 
                       {/* 2 Columns: Goals & Deliverables */}
@@ -411,7 +383,7 @@ export const RoadmapPage: React.FC = () => {
                               Tiêu chí nghiệm thu (Checklist)
                             </h4>
                             <p className="text-[11px] text-slate-400">
-                              Tích chọn để cập nhật tiến độ thực tế tuần
+                              Đã xong / chưa xong, cập nhật trong mã nguồn (initialWeeks.ts)
                             </p>
                           </div>
                           <span className="text-xs font-mono font-bold text-sky-600 dark:text-sky-400 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/60">
@@ -428,7 +400,8 @@ export const RoadmapPage: React.FC = () => {
                               <input
                                 type="checkbox"
                                 checked={item.completed}
-                                onChange={() => handleToggleChecklist(week, item.id)}
+                                readOnly
+                                disabled
                                 className="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-slate-300 dark:border-slate-700 mt-0.5"
                               />
                               <span
@@ -553,83 +526,6 @@ export const RoadmapPage: React.FC = () => {
         })}
       </div>
 
-      {/* Modal: Chỉnh sửa thông tin tuần */}
-      {editingWeek && (
-        <Modal
-          isOpen={!!editingWeek}
-          onClose={() => setEditingWeek(null)}
-          title={`Chỉnh sửa Tuần ${editingWeek.weekNumber}: ${editingWeek.title}`}
-          maxWidth="2xl"
-        >
-          <div className="space-y-4 text-xs">
-            <div>
-              <label className="block font-bold mb-1.5">Trạng thái tuần:</label>
-              <select
-                value={editingWeek.status}
-                onChange={(e) => setEditingWeek({ ...editingWeek, status: e.target.value as WeekStatus })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-semibold"
-              >
-                <option value="not_started">Chưa bắt đầu</option>
-                <option value="in_progress">Đang thực hiện</option>
-                <option value="ready_to_report">Chờ báo cáo</option>
-                <option value="reported">Đã báo cáo</option>
-                <option value="accepted">Đã nghiệm thu</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block font-bold mb-1.5">Ngày báo cáo (YYYY-MM-DD):</label>
-              <input
-                type="date"
-                value={editingWeek.customReportDate}
-                onChange={(e) => setEditingWeek({ ...editingWeek, customReportDate: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold mb-1.5">Link PDF Báo cáo:</label>
-              <input
-                type="text"
-                value={editingWeek.pdfUrl || ''}
-                onChange={(e) => setEditingWeek({ ...editingWeek, pdfUrl: e.target.value })}
-                placeholder="https://raw.githubusercontent.com/.../BaoCao.pdf"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold mb-1.5">Link Slide:</label>
-              <input
-                type="text"
-                value={editingWeek.slideUrl || ''}
-                onChange={(e) => setEditingWeek({ ...editingWeek, slideUrl: e.target.value })}
-                placeholder="https://docs.google.com/presentation/d/..."
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold mb-1.5">Nhận xét của thầy:</label>
-              <textarea
-                rows={3}
-                value={editingWeek.lecturerFeedback}
-                onChange={(e) => setEditingWeek({ ...editingWeek, lecturerFeedback: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
-              <Button variant="secondary" onClick={() => setEditingWeek(null)}>
-                Hủy
-              </Button>
-              <Button variant="primary" onClick={handleSaveWeekEdit}>
-                Lưu Thay Đổi
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 };

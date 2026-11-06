@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { Link } from 'react-router-dom';
 import { 
   Users, 
   Code2, 
@@ -27,13 +28,11 @@ import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Progress } from '../components/ui/Progress';
 import { Modal } from '../components/ui/Modal';
-import { Member, MemberId, LearningState } from '../types';
+import { MemberId } from '../types';
 
 export const MembersPage: React.FC = () => {
-  const { data, currentMember, updateMember, updateKnowledgeProgress } = useApp();
-  const [selectedMemberId, setSelectedMemberId] = useState<MemberId>(currentMember.id);
-  const [editingModal, setEditingModal] = useState(false);
-  const [editFormData, setEditFormData] = useState<Member>(currentMember);
+  const { data } = useApp();
+  const [selectedMemberId, setSelectedMemberId] = useState<MemberId>('member-1');
 
   const selectedMember = data.members.find(m => m.id === selectedMemberId) || data.members[0];
 
@@ -42,36 +41,13 @@ export const MembersPage: React.FC = () => {
   const completedTasks = memberTasks.filter(t => t.status === 'done');
   const taskPct = memberTasks.length > 0 ? Math.round((completedTasks.length / memberTasks.length) * 100) : 100;
 
-  // Knowledge topics status
-  const memberTopics = data.knowledgeTopics;
-  const readyTopicsCount = memberTopics.filter(t => t.memberProgress[selectedMember.id] === 'ready_to_defend').length;
-  const understoodTopicsCount = memberTopics.filter(t => t.memberProgress[selectedMember.id] === 'understood').length;
-  const readTopicsCount = memberTopics.filter(t => t.memberProgress[selectedMember.id] === 'read').length;
-
-  // Questions answered poorly
-  const poorlyAnsweredQuestions = data.defenseQuestions.filter(
-    q => q.memberRatings[selectedMember.id] === 'not_understood'
-  );
-  const confidentQuestions = data.defenseQuestions.filter(
-    q => q.memberRatings[selectedMember.id] === 'confident'
-  );
-
-  const handleOpenEdit = () => {
-    setEditFormData({ ...selectedMember });
-    setEditingModal(true);
+  // Chủ đề kiến thức theo phần phụ trách: Hiếu = TTY, Hoàng = Process & Signal, Tuấn Anh = Shell
+  const CATEGORY_OF: Record<MemberId, string> = {
+    'member-1': 'tty_layer',
+    'member-2': 'process_signal',
+    'member-3': 'shell_jobctl'
   };
-
-  const handleSaveEdit = () => {
-    updateMember(editFormData);
-    setEditingModal(false);
-  };
-
-  const learningStateLabels: Record<LearningState, { label: string; color: string }> = {
-    unread: { label: 'Chưa đọc', color: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' },
-    read: { label: '1. Đã đọc', color: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' },
-    understood: { label: '2. Đã hiểu', color: 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300' },
-    ready_to_defend: { label: '3. Sẵn sàng bảo vệ ★', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold' }
-  };
+  const memberTopics = data.knowledgeTopics.filter(t => t.category === CATEGORY_OF[selectedMember.id]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -131,11 +107,6 @@ export const MembersPage: React.FC = () => {
                   <Badge variant="primary">
                     MSSV: {selectedMember.studentId}
                   </Badge>
-                  {selectedMember.id === currentMember.id && (
-                    <Badge variant="success">
-                      Đang đăng nhập
-                    </Badge>
-                  )}
                 </div>
                 <p className="text-sm font-bold text-sky-400 mt-1">
                   {selectedMember.role}
@@ -163,64 +134,22 @@ export const MembersPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap sm:flex-col items-end gap-2.5 shrink-0">
-              <Button
-                variant="secondary"
-                size="sm"
-                icon={<Edit3 className="w-3.5 h-3.5" />}
-                onClick={handleOpenEdit}
-              >
-                Sửa hồ sơ
-              </Button>
-            </div>
           </div>
         </div>
       </Card>
 
-      {/* Grid: 3 Metric Cards for this Member */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card hover trafficLights macTitle="Tiến Độ Việc Giao">
-          <CardContent className="p-5">
-            <div className="flex items-baseline justify-between mb-2">
-              <span className="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">
-                {completedTasks.length}/{memberTasks.length}
-              </span>
-              <span className="text-xs text-emerald-500 font-bold">{taskPct}% xong</span>
-            </div>
-            <Progress value={taskPct} size="sm" barColor="bg-gradient-to-r from-sky-500 to-cyan-400" />
-          </CardContent>
-        </Card>
-
-        <Card hover trafficLights macTitle="Kiến Thức Sẵn Sàng">
-          <CardContent className="p-5">
-            <div className="flex items-baseline justify-between mb-2">
-              <span className="text-2xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
-                {readyTopicsCount}/{memberTopics.length}
-              </span>
-              <span className="text-xs text-slate-400 font-medium">chủ đề vững</span>
-            </div>
-            <div className="flex gap-2 text-xs text-slate-500 font-medium">
-              <span>{understoodTopicsCount} đã hiểu</span>
-              <span>·</span>
-              <span>{readTopicsCount} đã đọc</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card hover trafficLights macTitle="Độ Tự Tin Vấn Đáp">
-          <CardContent className="p-5">
-            <div className="flex items-baseline justify-between mb-2">
-              <span className="text-2xl font-extrabold font-mono text-purple-600 dark:text-purple-400">
-                {confidentQuestions.length}/{data.defenseQuestions.length}
-              </span>
-              <span className="text-xs text-slate-400 font-medium">câu tự tin</span>
-            </div>
-            <div className="text-xs text-rose-500 font-bold">
-              {poorlyAnsweredQuestions.length} câu cần ôn lại kỹ
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Tiến độ việc được giao (tính từ phân công trong lộ trình) */}
+      <Card trafficLights macTitle="Tiến Độ Việc Giao">
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">
+              {completedTasks.length}/{memberTasks.length}
+            </span>
+            <span className="text-xs text-emerald-500 font-bold">{taskPct}% xong</span>
+          </div>
+          <Progress value={taskPct} size="sm" barColor="bg-gradient-to-r from-sky-500 to-cyan-400" />
+        </CardContent>
+      </Card>
 
       {/* Main Grid: Code Files & Focus Areas vs Knowledge & Tasks */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -266,76 +195,27 @@ export const MembersPage: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Questions answered poorly */}
-          <Card trafficLights macTitle={`Câu Vấn Đáp Cần Ôn Lại (${poorlyAnsweredQuestions.length})`}>
-            <CardContent className="space-y-2.5 p-5">
-              {poorlyAnsweredQuestions.length === 0 ? (
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold italic">
-                  ✓ Thành viên này trả lời tốt mọi câu hỏi đã ôn!
-                </p>
-              ) : (
-                poorlyAnsweredQuestions.map((q) => (
-                  <div key={q.id} className="p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 dark:bg-rose-950/20 text-xs">
-                    <p className="font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
-                      {q.question}
-                    </p>
-                    <span className="text-[10px] text-slate-400 mt-1.5 block font-mono">
-                      Ref: {q.codeReference}
-                    </span>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
         </div>
 
         {/* Right Column (2 Cols): Learning Topics Progress & Assigned Tasks */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Learning Topics & Progress State Picker */}
-          <Card trafficLights macTitle="Tiến Độ 12 Chủ Đề Kiến Thức Bắt Buộc">
-            <div className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/40 dark:bg-slate-900/20">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Cập nhật trạng thái tự học của {selectedMember.name} theo 3 mức độ
-              </p>
-            </div>
-            <CardContent className="space-y-3 p-5">
-              {memberTopics.map((topic) => {
-                const state = topic.memberProgress[selectedMember.id] || 'unread';
-
-                return (
-                  <div
-                    key={topic.id}
-                    className="p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-sky-300 dark:hover:border-sky-800 transition-colors shadow-2xs"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Badge variant={topic.category === 'process_signal' ? 'primary' : topic.category === 'tty_layer' ? 'warning' : 'purple'}>
-                          {topic.category === 'process_signal' ? 'Process & Signal' : topic.category === 'tty_layer' ? 'TTY Layer' : 'Shell & Job Control'}
-                        </Badge>
-                      </div>
-                      <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
-                        {topic.title}
-                      </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 leading-relaxed">
-                        {topic.shortSummary}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      <select
-                        value={state}
-                        onChange={(e) => updateKnowledgeProgress(topic.id, selectedMember.id, e.target.value as LearningState)}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-full border focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-2xs ${learningStateLabels[state].color}`}
-                      >
-                        <option value="unread">Chưa đọc</option>
-                        <option value="read">1. Đã đọc</option>
-                        <option value="understood">2. Đã hiểu</option>
-                        <option value="ready_to_defend">3. Sẵn sàng bảo vệ ★</option>
-                      </select>
-                    </div>
-                  </div>
-                );
-              })}
+          {/* Chủ đề kiến thức thuộc phần của thành viên này */}
+          <Card trafficLights macTitle={`Chủ Đề Kiến Thức Phụ Trách (${memberTopics.length})`}>
+            <CardContent className="space-y-2.5 p-4 sm:p-5">
+              {memberTopics.map((topic) => (
+                <Link
+                  key={topic.id}
+                  to={`/knowledge?topic=${topic.id}`}
+                  className="block p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-sky-300 dark:hover:border-sky-800 transition-colors shadow-2xs"
+                >
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100">
+                    {topic.title}
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5 leading-relaxed">
+                    {topic.shortSummary}
+                  </p>
+                </Link>
+              ))}
             </CardContent>
           </Card>
 
@@ -369,71 +249,6 @@ export const MembersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal Sửa Hồ Sơ */}
-      {editingModal && (
-        <Modal
-          isOpen={editingModal}
-          onClose={() => setEditingModal(false)}
-          title={`Sửa Hồ Sơ: ${selectedMember.name}`}
-          maxWidth="lg"
-        >
-          <div className="space-y-4 text-xs">
-            <div>
-              <label className="block font-bold mb-1">Họ và tên:</label>
-              <input
-                type="text"
-                value={editFormData.name}
-                onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
-              />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">Mã số sinh viên (MSSV):</label>
-              <input
-                type="text"
-                value={editFormData.studentId}
-                onChange={(e) => setEditFormData({ ...editFormData, studentId: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono"
-              />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">Vai trò &amp; Chuyên môn:</label>
-              <input
-                type="text"
-                value={editFormData.role}
-                onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
-              />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">Email liên hệ:</label>
-              <input
-                type="email"
-                value={editFormData.email}
-                onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium"
-              />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">Giới thiệu trách nhiệm:</label>
-              <textarea
-                rows={3}
-                value={editFormData.bio}
-                onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-medium leading-relaxed"
-              />
-            </div>
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
-              <Button variant="secondary" onClick={() => setEditingModal(false)}>
-                Hủy
-              </Button>
-              <Button variant="primary" onClick={handleSaveEdit}>
-                Lưu Hồ Sơ
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 };
