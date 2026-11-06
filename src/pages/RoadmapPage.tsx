@@ -26,7 +26,6 @@ import { Button } from '../components/ui/Button';
 import { Progress } from '../components/ui/Progress';
 import { Modal } from '../components/ui/Modal';
 import { WeekRoadmap, WeekStatus } from '../types';
-import { ReportView } from '../components/report/ReportView';
 
 export const RoadmapPage: React.FC = () => {
   const { data } = useApp();
@@ -38,10 +37,10 @@ export const RoadmapPage: React.FC = () => {
     setTimeout(() => document.getElementById(`week-card-${n}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
   };
   const [copiedDemo, setCopiedDemo] = useState<number | null>(null);
-  const [weekSubTabs, setWeekSubTabs] = useState<Record<number, 'plan' | 'report'>>({});
+  const [weekSubTabs, setWeekSubTabs] = useState<Record<number, 'plan' | 'demo'>>({});
 
-  const getActiveTab = (weekNumber: number): 'plan' | 'report' => weekSubTabs[weekNumber] || 'plan';
-  const setWeekTab = (weekNumber: number, tab: 'plan' | 'report') => {
+  const getActiveTab = (weekNumber: number): 'plan' | 'demo' => weekSubTabs[weekNumber] || 'plan';
+  const setWeekTab = (weekNumber: number, tab: 'plan' | 'demo') => {
     setWeekSubTabs(prev => ({ ...prev, [weekNumber]: tab }));
   };
 
@@ -234,40 +233,69 @@ export const RoadmapPage: React.FC = () => {
 
                       <button
                         type="button"
-                        onClick={() => setWeekTab(week.weekNumber, 'report')}
+                        onClick={() => setWeekTab(week.weekNumber, 'demo')}
                         className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                          getActiveTab(week.weekNumber) === 'report'
+                          getActiveTab(week.weekNumber) === 'demo'
                             ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                         }`}
                       >
-                        <FileText className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate sm:hidden">Báo cáo</span>
-                        <span className="truncate hidden sm:inline">Nội dung báo cáo</span>
-                        <Badge
-                          variant={
-                            week.report?.status === 'submitted' ? 'success' :
-                            week.report?.status === 'approved' ? 'primary' :
-                            week.report?.status === 'review' ? 'warning' : 'default'
-                          }
-                          className="text-[10px] py-0 px-2 font-bold hidden xs:inline-flex"
-                        >
-                          {week.report?.status === 'submitted' ? 'Đã nộp' :
-                           week.report?.status === 'approved' ? 'Đã duyệt' :
-                           week.report?.status === 'review' ? 'Chờ KT' : 'Nháp'}
-                        </Badge>
+                        <Terminal className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate sm:hidden">Demo</span>
+                        <span className="truncate hidden sm:inline">Kịch bản demo (QEMU)</span>
                       </button>
                     </div>
 
                     <div className="hidden sm:block text-[11px] text-slate-500 font-medium">
                       {getActiveTab(week.weekNumber) === 'plan' 
                         ? 'Tiêu chí nghiệm thu & phân công 3 thành viên' 
-                        : 'Nội dung lấy từ file báo cáo .docx'}
+                        : 'Lệnh chạy trên xv6 bằng make qemu, kèm kết quả mong đợi'}
                     </div>
                   </div>
 
-                  {getActiveTab(week.weekNumber) === 'report' ? (
-                    <ReportView week={week} />
+                  {getActiveTab(week.weekNumber) === 'demo' ? (
+                    <>
+                      {/* Demo Script & Terminal Commands in macOS Window Box */}
+                      {week.demoScript && week.demoScript.length > 0 ? (
+                        <div className="ds-mac-window bg-slate-950 text-slate-100 font-mono text-xs border-slate-800">
+                          <div className="px-4 py-2.5 border-b border-slate-800/80 bg-slate-900/80 flex items-center justify-between">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="hidden sm:inline-flex" aria-hidden="true">
+                                <span className="ds-mac-dots">
+                                  <span className="ds-mac-dot ds-mac-dot-red" />
+                                  <span className="ds-mac-dot ds-mac-dot-yellow" />
+                                  <span className="ds-mac-dot ds-mac-dot-green" />
+                                </span>
+                              </span>
+                              <span className="text-[11px] font-bold text-slate-300 font-mono truncate">
+                                qemu-demo-script.sh
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => handleCopyDemo(week.weekNumber, week.demoScript)}
+                              className="shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all shadow-xs"
+                            >
+                              {copiedDemo === week.weekNumber ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span>Đã sao chép</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5" />
+                                  <span>Sao chép</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <pre className="overflow-x-auto p-4 text-emerald-400 text-xs leading-relaxed">
+                            {week.demoScript.join('\n')}
+                          </pre>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-slate-500">Tuần này chưa có kịch bản demo.</p>
+                      )}
+                    </>
                   ) : (
                     <>
                       {/* Action Bar */}
@@ -417,43 +445,6 @@ export const RoadmapPage: React.FC = () => {
                           ))}
                         </div>
                       </div>
-
-                      {/* Demo Script & Terminal Commands in macOS Window Box */}
-                      {week.demoScript && week.demoScript.length > 0 && (
-                        <div className="ds-mac-window bg-slate-950 text-slate-100 font-mono text-xs border-slate-800">
-                          <div className="px-4 py-2.5 border-b border-slate-800/80 bg-slate-900/80 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="ds-mac-dots">
-                                <span className="ds-mac-dot ds-mac-dot-red" />
-                                <span className="ds-mac-dot ds-mac-dot-yellow" />
-                                <span className="ds-mac-dot ds-mac-dot-green" />
-                              </div>
-                              <span className="text-[11px] font-bold text-slate-300 font-mono">
-                                qemu-demo-script.sh
-                              </span>
-                            </div>
-                            <button
-                              onClick={() => handleCopyDemo(week.weekNumber, week.demoScript)}
-                              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all shadow-xs"
-                            >
-                              {copiedDemo === week.weekNumber ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                  <span>Đã sao chép</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3.5 h-3.5" />
-                                  <span>Sao chép lệnh</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                          <pre className="overflow-x-auto p-4 text-emerald-400 text-xs leading-relaxed">
-                            {week.demoScript.join('\n')}
-                          </pre>
-                        </div>
-                      )}
 
                       {/* Documents & Slides Links */}
                       <div className="flex flex-wrap items-center gap-3 pt-2">
