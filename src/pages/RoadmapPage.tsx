@@ -31,18 +31,7 @@ export const RoadmapPage: React.FC = () => {
   const { data } = useApp();
   const [expandedWeek, setExpandedWeek] = useState<number>(data.settings.currentWeek);
 
-  // mở một tuần từ dải T1–T7 và cuộn tới thẻ của tuần đó (hữu ích trên điện thoại)
-  const openWeek = (n: number) => {
-    setExpandedWeek(n);
-    setTimeout(() => document.getElementById(`week-card-${n}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-  };
   const [copiedDemo, setCopiedDemo] = useState<number | null>(null);
-  const [weekSubTabs, setWeekSubTabs] = useState<Record<number, 'plan' | 'demo'>>({});
-
-  const getActiveTab = (weekNumber: number): 'plan' | 'demo' => weekSubTabs[weekNumber] || 'plan';
-  const setWeekTab = (weekNumber: number, tab: 'plan' | 'demo') => {
-    setWeekSubTabs(prev => ({ ...prev, [weekNumber]: tab }));
-  };
 
   const statusLabels: Record<WeekStatus, { label: string; variant: BadgeVariant }> = {
     not_started: { label: 'Chưa bắt đầu', variant: 'default' },
@@ -83,45 +72,6 @@ export const RoadmapPage: React.FC = () => {
             Tuần {data.settings.currentWeek}
           </span>
         </div>
-      </div>
-
-      {/* 7-Week Timeline Overview Bar */}
-      <div className="flex overflow-x-auto no-scrollbar snap-x gap-2 -mx-3.5 px-3.5 pt-1.5 pb-2 sm:mx-0 sm:px-0 sm:pt-0 sm:pb-0 sm:grid sm:grid-cols-4 lg:grid-cols-7 sm:overflow-visible">
-        {data.weeks.map((w) => {
-          const isCurrent = w.weekNumber === data.settings.currentWeek;
-          const isExpanded = w.weekNumber === expandedWeek;
-          const completedItems = w.checklist.filter(i => i.completed).length;
-          const pct = w.checklist.length > 0 ? Math.round((completedItems / w.checklist.length) * 100) : 0;
-
-          return (
-            <button
-              key={w.weekNumber}
-              onClick={() => openWeek(w.weekNumber)}
-              className={`p-3 rounded-[18px] border text-left transition-all shrink-0 w-[118px] sm:w-auto snap-start ${
-                isExpanded
-                  ? 'border-sky-500 ring-2 ring-sky-500/20 bg-white dark:bg-slate-900 shadow-md -translate-y-0.5'
-                  : 'border-slate-200/90 dark:border-slate-800/90 hover:border-slate-300 dark:hover:border-slate-700 bg-white/80 dark:bg-[#111827]/80 shadow-2xs hover:shadow-xs'
-              }`}
-            >
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-extrabold font-mono text-slate-900 dark:text-white">
-                  T{w.weekNumber}
-                </span>
-                {isCurrent && (
-                  <span className="ds-live-dot" />
-                )}
-              </div>
-              <div className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">
-                {w.title.split(':')[0]}
-              </div>
-              <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400">
-                <span className="font-bold">{pct}%</span>
-                <span className="font-mono hidden xs:inline">{w.customReportDate.slice(5)}</span>
-              </div>
-              <Progress value={pct} size="sm" className="mt-1.5" barColor={pct === 100 ? "bg-emerald-500" : "bg-sky-500"} />
-            </button>
-          );
-        })}
       </div>
 
       {/* Accordion / Detailed Week Cards */}
@@ -184,6 +134,18 @@ export const RoadmapPage: React.FC = () => {
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 sm:truncate font-medium">
                       {week.subtitle}
                     </p>
+                    {/* Tiến độ của tuần: thanh + số tiêu chí đã xong + phần trăm */}
+                    <div className="mt-2 flex items-center gap-2.5 max-w-sm">
+                      <div className="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${progressPct === 100 ? 'bg-emerald-500' : 'bg-sky-500'}`}
+                          style={{ width: `${progressPct}%` }}
+                        />
+                      </div>
+                      <span className="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                        {completedCount}/{week.checklist.length} · {progressPct}%
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -193,9 +155,6 @@ export const RoadmapPage: React.FC = () => {
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       {week.customReportDate}
                     </span>
-                    <span className="text-slate-500 font-medium">
-                      {completedCount}/{week.checklist.length} tiêu chí xong ({progressPct}%)
-                    </span>
                   </div>
                   <button className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                     {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -203,101 +162,36 @@ export const RoadmapPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Collapsed Progress Bar */}
-              <div className="w-full bg-slate-100 dark:bg-slate-800 h-1">
-                <div
-                  className="bg-gradient-to-r from-sky-500 to-cyan-400 h-1 transition-all duration-300"
-                  style={{ width: `${progressPct}%` }}
-                />
-              </div>
-
               {/* Expanded Detailed Content */}
               {isExpanded && (
                 <div className="p-3 sm:p-6 border-t border-slate-100 dark:border-slate-800/80 space-y-4 sm:space-y-6">
-                  {/* Sub-tab Navigation: Kế hoạch vs Báo cáo tiến độ (Mẫu HUST) */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
-                    <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
-                      <button
-                        type="button"
-                        onClick={() => setWeekTab(week.weekNumber, 'plan')}
-                        className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                          getActiveTab(week.weekNumber) === 'plan'
-                            ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-                        }`}
+                  {/* Hàng trên: Kế hoạch + nút xem báo cáo */}
+                  <div className="flex items-center gap-1.5 sm:gap-2 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
+                    <span className="shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-sky-500 text-white shadow-xs shadow-sky-500/30">
+                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">Kế hoạch</span>
+                    </span>
+                    {week.reportFileUrl && (
+                      <a
+                        href={week.reportFileUrl}
+                        {...(/^https?:/.test(week.reportFileUrl) ? { target: '_blank', rel: 'noopener noreferrer' } : { download: true })}
+                        className="flex-1 sm:flex-none min-w-0 flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate sm:hidden">Kế hoạch</span>
-                        <span className="truncate hidden sm:inline">Kế hoạch &amp; Nhiệm vụ</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setWeekTab(week.weekNumber, 'demo')}
-                        className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                          getActiveTab(week.weekNumber) === 'demo'
-                            ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        <Terminal className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate sm:hidden">Demo</span>
-                        <span className="truncate hidden sm:inline">Kịch bản demo (QEMU)</span>
-                      </button>
-                    </div>
-
-                    <div className="hidden sm:block text-[11px] text-slate-500 font-medium">
-                      {getActiveTab(week.weekNumber) === 'plan' 
-                        ? 'Tiêu chí nghiệm thu & phân công 3 thành viên' 
-                        : 'Lệnh chạy trên xv6 bằng make qemu, kèm kết quả mong đợi'}
-                    </div>
+                        {/^https?:/.test(week.reportFileUrl) ? (
+                          <>
+                            <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">Xem báo cáo (OneDrive)</span>
+                          </>
+                        ) : (
+                          <>
+                            <Download className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">Tải báo cáo (.docx)</span>
+                          </>
+                        )}
+                      </a>
+                    )}
                   </div>
 
-                  {getActiveTab(week.weekNumber) === 'demo' ? (
-                    <>
-                      {/* Demo Script & Terminal Commands in macOS Window Box */}
-                      {week.demoScript && week.demoScript.length > 0 ? (
-                        <div className="ds-mac-window bg-slate-950 text-slate-100 font-mono text-xs border-slate-800">
-                          <div className="px-4 py-2.5 border-b border-slate-800/80 bg-slate-900/80 flex items-center justify-between">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <span className="hidden sm:inline-flex" aria-hidden="true">
-                                <span className="ds-mac-dots">
-                                  <span className="ds-mac-dot ds-mac-dot-red" />
-                                  <span className="ds-mac-dot ds-mac-dot-yellow" />
-                                  <span className="ds-mac-dot ds-mac-dot-green" />
-                                </span>
-                              </span>
-                              <span className="text-[11px] font-bold text-slate-300 font-mono truncate">
-                                qemu-demo-script.sh
-                              </span>
-                            </div>
-                            <button
-                              onClick={() => handleCopyDemo(week.weekNumber, week.demoScript)}
-                              className="shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all shadow-xs"
-                            >
-                              {copiedDemo === week.weekNumber ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                  <span>Đã sao chép</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3.5 h-3.5" />
-                                  <span>Sao chép</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                          <pre className="overflow-x-auto p-4 text-emerald-400 text-xs leading-relaxed">
-                            {week.demoScript.join('\n')}
-                          </pre>
-                        </div>
-                      ) : (
-                        <p className="text-xs text-slate-500">Tuần này chưa có kịch bản demo.</p>
-                      )}
-                    </>
-                  ) : (
-                    <>
                       {/* Action Bar */}
                       <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs shadow-2xs">
                         <div className="flex flex-wrap items-center gap-3">
@@ -446,79 +340,46 @@ export const RoadmapPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Documents & Slides Links */}
-                      <div className="flex flex-wrap items-center gap-3 pt-2">
-                        {week.reportFileUrl && (
-                          <a
-                            href={week.reportFileUrl}
-                            {...(/^https?:/.test(week.reportFileUrl) ? { target: '_blank', rel: 'noopener noreferrer' } : { download: true })}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-all shadow-2xs hover:-translate-y-0.5"
-                          >
-                            {/^https?:/.test(week.reportFileUrl) ? (
-                              <>
-                                <ExternalLink className="w-3.5 h-3.5" />
-                                <span>Xem báo cáo tuần {week.weekNumber} (OneDrive)</span>
-                              </>
-                            ) : (
-                              <>
-                                <Download className="w-3.5 h-3.5" />
-                                <span>Tải báo cáo tuần {week.weekNumber} (.docx)</span>
-                              </>
-                            )}
-                          </a>
-                        )}
-                        {week.pdfUrl && (
-                          <a
-                            href={week.pdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300 text-xs font-bold border border-sky-200 dark:border-sky-800 hover:bg-sky-100 transition-all shadow-2xs hover:-translate-y-0.5"
-                          >
-                            <FileText className="w-3.5 h-3.5" />
-                            <span>Báo cáo PDF</span>
-                            <ExternalLink className="w-3 h-3 ml-0.5" />
-                          </a>
-                        )}
-                        {week.slideUrl && (
-                          <a
-                            href={week.slideUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 text-xs font-bold border border-amber-200 dark:border-amber-800 hover:bg-amber-100 transition-all shadow-2xs hover:-translate-y-0.5"
-                          >
-                            <Presentation className="w-3.5 h-3.5" />
-                            <span>Slide Thuyết Trình</span>
-                            <ExternalLink className="w-3 h-3 ml-0.5" />
-                          </a>
-                        )}
-                      </div>
-
-                      {/* Lecturer Feedback & Post-report requests */}
-                      {week.lecturerFeedback && (
-                        <div className="p-4 rounded-2xl border border-sky-500/20 bg-sky-500/5 dark:bg-sky-950/20 text-xs space-y-2">
-                          <div className="flex items-center gap-2 font-bold text-sky-800 dark:text-sky-300">
-                            <MessageSquare className="w-4 h-4 text-sky-500" />
-                            <span>Nhận xét của GVHD (TS. Phạm Văn Tiến):</span>
-                          </div>
-                          <p className="text-slate-700 dark:text-slate-300 leading-relaxed italic">
-                            "{week.lecturerFeedback}"
-                          </p>
-                          {week.postReportRequests && week.postReportRequests.length > 0 && (
-                            <div className="pt-2 border-t border-sky-500/20">
-                              <span className="font-bold text-slate-800 dark:text-slate-200 block mb-1">
-                                Yêu cầu chỉnh sửa sau báo cáo:
+                      {/* Demo Script & Terminal Commands in macOS Window Box */}
+                      {week.demoScript && week.demoScript.length > 0 ? (
+                        <div className="ds-mac-window bg-slate-950 text-slate-100 font-mono text-xs border-slate-800">
+                          <div className="px-4 py-2.5 border-b border-slate-800/80 bg-slate-900/80 flex items-center justify-between">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="hidden sm:inline-flex" aria-hidden="true">
+                                <span className="ds-mac-dots">
+                                  <span className="ds-mac-dot ds-mac-dot-red" />
+                                  <span className="ds-mac-dot ds-mac-dot-yellow" />
+                                  <span className="ds-mac-dot ds-mac-dot-green" />
+                                </span>
                               </span>
-                              <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
-                                {week.postReportRequests.map((req, idx) => (
-                                  <li key={idx}>{req}</li>
-                                ))}
-                              </ul>
+                              <span className="text-[11px] font-bold text-slate-300 font-mono truncate">
+                                qemu-demo-script.sh
+                              </span>
                             </div>
-                          )}
+                            <button
+                              onClick={() => handleCopyDemo(week.weekNumber, week.demoScript)}
+                              className="shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all shadow-xs"
+                            >
+                              {copiedDemo === week.weekNumber ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span>Đã sao chép</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5" />
+                                  <span>Sao chép</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <pre className="overflow-x-auto p-4 text-emerald-400 text-xs leading-relaxed">
+                            {week.demoScript.join('\n')}
+                          </pre>
                         </div>
+                      ) : (
+                        <p className="text-xs text-slate-500">Tuần này chưa có kịch bản demo.</p>
                       )}
-                    </>
-                  )}
                 </div>
               )}
             </Card>

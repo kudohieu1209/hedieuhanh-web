@@ -25,7 +25,7 @@ export const Topbar: React.FC = () => {
         </div>
         <div className={`${pill} pointer-events-auto`}>
           <span className="ds-live-dot" />
-          <span className="font-bold text-slate-900">Tuần {data.settings.currentWeek}/7</span>
+          <span className="font-bold font-mono text-slate-900">Tuần {data.settings.currentWeek}/7</span>
         </div>
       </div>
 
@@ -33,7 +33,7 @@ export const Topbar: React.FC = () => {
       <header className="hidden md:flex shrink-0 sticky top-0 z-30 h-14 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 px-4 items-center justify-between shadow-2xs">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/90 text-xs shadow-2xs">
           <span className="ds-live-dot" />
-          <span className="font-bold text-slate-900">Tuần {data.settings.currentWeek} / 7</span>
+          <span className="font-bold font-mono text-slate-900">Tuần {data.settings.currentWeek}/7</span>
           <span className="text-slate-400">·</span>
           <span className="text-slate-600 font-medium truncate max-w-[320px]">
             {currentWeekObj?.title || 'Đang thực hiện'}

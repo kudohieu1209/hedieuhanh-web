@@ -56,7 +56,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenMenu }) => {
                       </span>
                     )}
                   </div>
-                  <span className={`text-[10px] mt-0.5 tracking-tight truncate max-w-[60px] ${isActive ? 'font-bold' : 'font-medium'}`}>
+                  <span className="text-xs font-mono font-bold mt-0.5 tracking-tight truncate max-w-[72px]">
                     {item.label}
                   </span>
                   {isActive && (
@@ -75,7 +75,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onOpenMenu }) => {
           aria-label="Mở tất cả menu"
         >
           <Menu className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5 font-medium tracking-tight">
+          <span className="text-xs font-mono font-bold mt-0.5 tracking-tight">
             Thêm
           </span>
         </button>
