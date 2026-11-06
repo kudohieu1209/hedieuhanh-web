@@ -1,6 +1,5 @@
 import React from 'react';
 import { 
-  Menu, 
   Sun, 
   Moon, 
   Clock
@@ -13,11 +12,7 @@ const GithubIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3.5
   </svg>
 );
 
-interface TopbarProps {
-  onToggleMobileMenu: () => void;
-}
-
-export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
+export const Topbar: React.FC = () => {
   const { data, theme, toggleTheme } = useApp();
 
   // Compute days until next report
@@ -36,8 +31,39 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
   const daysLeft = calculateDaysLeft(data.settings.nextReportDate);
   const currentWeekObj = data.weeks.find(w => w.weekNumber === data.settings.currentWeek);
 
+  const [, m, d] = data.settings.nextReportDate.split('-');
+  const shortDate = d && m ? `${d}/${m}` : data.settings.nextReportDate;
+
+  const themeButton = (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800 transition-colors shadow-2xs shrink-0"
+      title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng' : 'Chuyển sang Giao diện Tối'}
+      aria-label="Đổi giao diện"
+    >
+      {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
+    </button>
+  );
+
   return (
-    <div className="flex flex-col shrink-0 sticky top-0 z-30">
+    <>
+      {/* Điện thoại: một thanh nổi bo tròn, cùng kiểu với thanh điều hướng dưới */}
+      <div className="md:hidden shrink-0 px-4 pt-3 pb-1">
+        <div className="flex items-center justify-between gap-2 bg-white/90 dark:bg-[#0d131f]/90 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-full pl-4 pr-1.5 py-1.5 shadow-apple dark:shadow-apple-dark">
+          <div className="flex items-center gap-2 min-w-0 text-xs">
+            <span className="ds-live-dot shrink-0" />
+            <span className="font-bold text-slate-900 dark:text-white whitespace-nowrap">Tuần {data.settings.currentWeek}/7</span>
+            <span className="text-slate-400">·</span>
+            <span className="text-slate-600 dark:text-slate-300 whitespace-nowrap">Hạn {shortDate}</span>
+            <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500 text-white font-bold whitespace-nowrap">
+              {daysLeft > 0 ? `Còn ${daysLeft} ngày` : daysLeft === 0 ? 'Hôm nay' : 'Đã qua'}
+            </span>
+          </div>
+          {themeButton}
+        </div>
+      </div>
+
+    <div className="hidden md:flex flex-col shrink-0 sticky top-0 z-30">
       {/* Incident.io Style Top Banner */}
       <div className="ds-top-bar px-3 sm:px-6 py-2 text-xs flex items-center justify-between border-b transition-colors">
         <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar max-w-full">
@@ -58,14 +84,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
       <header className="h-14 bg-white/85 dark:bg-[#0d131f]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 px-4 flex items-center justify-between transition-colors shadow-2xs">
         {/* Left: Mobile Toggle & Week Indicator */}
         <div className="flex items-center gap-3">
-          <button
-            onClick={onToggleMobileMenu}
-            className="md:hidden p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Mở menu"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
           {/* Current Week Pill with macOS Pulse Dot */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 text-xs shadow-2xs">
@@ -96,15 +114,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
         {/* Right: Theme Toggle & GitHub */}
         <div className="flex items-center gap-2 sm:gap-2.5">
 
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800 transition-colors shadow-2xs"
-            title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng (Apple Canvas)' : 'Chuyển sang Giao diện Tối'}
-            aria-label="Đổi giao diện"
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
-          </button>
+          {themeButton}
 
           {/* GitHub Pill Button */}
           <a
@@ -119,5 +129,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
         </div>
       </header>
     </div>
+    </>
   );
 };

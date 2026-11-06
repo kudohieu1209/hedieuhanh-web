@@ -75,7 +75,7 @@ export const RoadmapPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2">
           <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             Tuần trọng tâm:
           </span>
@@ -86,7 +86,7 @@ export const RoadmapPage: React.FC = () => {
       </div>
 
       {/* 7-Week Timeline Overview Bar */}
-      <div className="flex overflow-x-auto no-scrollbar snap-x gap-2 -mx-3.5 px-3.5 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-4 lg:grid-cols-7 sm:overflow-visible">
+      <div className="flex overflow-x-auto no-scrollbar snap-x gap-2 -mx-3.5 px-3.5 pt-1.5 pb-2 sm:mx-0 sm:px-0 sm:pt-0 sm:pb-0 sm:grid sm:grid-cols-4 lg:grid-cols-7 sm:overflow-visible">
         {data.weeks.map((w) => {
           const isCurrent = w.weekNumber === data.settings.currentWeek;
           const isExpanded = w.weekNumber === expandedWeek;
