@@ -96,45 +96,34 @@ export const RoadmapPage: React.FC = () => {
                 onClick={() => setExpandedWeek(isExpanded ? 0 : week.weekNumber)}
                 className="p-3.5 sm:p-5 flex items-center justify-between gap-2 sm:gap-4 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-900/30 transition-colors select-none"
               >
-                <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
-                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center font-mono font-bold text-sm shrink-0 shadow-xs ${
-                    week.status === 'accepted'
-                      ? 'bg-emerald-500 text-white'
-                      : week.weekNumber === data.settings.currentWeek
-                      ? 'bg-gradient-to-tr from-red-600 to-amber-600 text-white'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                  }`}>
-                    {week.weekNumber}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white line-clamp-2 sm:truncate">
-                        Tuần {week.weekNumber}: {week.title}
-                      </h3>
-                      <Badge variant={statusLabels[week.status].variant}>
-                        {statusLabels[week.status].label}
-                      </Badge>
-                      {week.weekNumber === data.settings.currentWeek && (
-                        <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 font-mono px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-300/50">
-                          [Đang diễn ra]
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 sm:truncate font-medium">
-                      {week.subtitle}
-                    </p>
-                    {/* Tiến độ của tuần: thanh + số tiêu chí đã xong + phần trăm */}
-                    <div className="mt-2 flex items-center gap-2.5 max-w-sm">
-                      <div className="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${progressPct === 100 ? 'bg-emerald-500' : 'bg-gradient-to-r from-red-600 to-amber-500'}`}
-                          style={{ width: `${progressPct}%` }}
-                        />
-                      </div>
-                      <span className="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                        {completedCount}/{week.checklist.length} · {progressPct}%
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white line-clamp-2 sm:truncate">
+                      Tuần {week.weekNumber}: {week.title}
+                    </h3>
+                    <Badge variant={statusLabels[week.status].variant}>
+                      {statusLabels[week.status].label}
+                    </Badge>
+                    {week.weekNumber === data.settings.currentWeek && (
+                      <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 font-mono px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-300/50">
+                        [Đang diễn ra]
                       </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 sm:truncate font-medium">
+                    {week.subtitle}
+                  </p>
+                  {/* Tiến độ của tuần: thanh + số tiêu chí đã xong + phần trăm */}
+                  <div className="mt-2 flex items-center gap-2.5 max-w-sm">
+                    <div className="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${progressPct === 100 ? 'bg-emerald-500' : 'bg-gradient-to-r from-red-600 to-amber-500'}`}
+                        style={{ width: `${progressPct}%` }}
+                      />
                     </div>
+                    <span className="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                      {completedCount}/{week.checklist.length} · {progressPct}%
+                    </span>
                   </div>
                 </div>
 
