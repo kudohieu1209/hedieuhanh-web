@@ -192,7 +192,7 @@ export const KnowledgePage: React.FC = () => {
                 {/* Header */}
                 <div className="border-b border-slate-100 dark:border-slate-800/80 pb-4">
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                    <Badge variant={selectedTopic.category === 'process_signal' ? 'primary' : selectedTopic.category === 'tty_layer' ? 'warning' : 'purple'}>
+                    <Badge variant={selectedTopic.category === 'process_signal' ? 'primary' : selectedTopic.category === 'tty_layer' ? 'warning' : 'default'}>
                       {selectedTopic.category === 'process_signal' ? 'Process & Signal' : selectedTopic.category === 'tty_layer' ? 'TTY Layer' : 'Shell & Job Control'}
                     </Badge>
                     {selectedTopic.weeks && selectedTopic.weeks.length > 0 && (

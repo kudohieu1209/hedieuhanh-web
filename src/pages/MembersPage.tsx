@@ -145,9 +145,9 @@ export const MembersPage: React.FC = () => {
             <span className="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">
               {completedTasks.length}/{memberTasks.length}
             </span>
-            <span className="text-xs text-emerald-500 font-bold">{taskPct}% xong</span>
+            <span className="text-xs text-red-600 dark:text-red-400 font-bold">{taskPct}% xong</span>
           </div>
-          <Progress value={taskPct} size="sm" barColor="bg-gradient-to-r from-red-600 to-amber-500" />
+          <Progress value={taskPct} size="sm" barColor="bg-red-600" />
         </CardContent>
       </Card>
 
