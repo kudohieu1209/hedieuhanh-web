@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { 
-  Milestone, 
   CheckCircle2, 
   Clock, 
   Calendar, 
@@ -42,18 +41,12 @@ export const RoadmapPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/90 dark:border-slate-800/80 pb-5">
-        <div>
-          <div className="ds-hero-badge mb-2">
-            <Milestone className="w-3.5 h-3.5 text-red-600" />
-            <span>KẾ HOẠCH BẢO VỆ ĐỒ ÁN HUST</span>
-          </div>
-          <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
-            Lộ Trình <em>7 Tuần</em>
-          </h1>
-        </div>
+      <div className="relative flex items-center justify-center border-b border-slate-200/90 dark:border-slate-800/80 pb-4 sm:pb-5">
+        <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white text-center">
+          Lộ Trình <em>7 Tuần</em>
+        </h1>
 
-        <div className="hidden sm:flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2 absolute right-0">
           <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             Tuần trọng tâm:
           </span>
