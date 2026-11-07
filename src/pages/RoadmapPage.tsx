@@ -51,9 +51,6 @@ export const RoadmapPage: React.FC = () => {
           <h1 className="ds-editorial-headline text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
             Lộ Trình <em>7 Tuần</em>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
-            TTY Layer &amp; Job Control trên xv6-riscv: mục tiêu, phân công và báo cáo của từng tuần.
-          </p>
         </div>
 
         <div className="hidden sm:flex items-center gap-2">
