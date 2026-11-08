@@ -116,7 +116,7 @@ export const INITIAL_WEEKS: WeekRoadmap[] = [
       { id: 'w3-1', text: 'python3 test-jobctl.py ctrl: 4/4 PASS (chạy 07/11)', completed: true, assignedMemberId: 'member-1' },
       { id: 'w3-2', text: 'Demo counter → Ctrl-Z → Ctrl-P → fg → Ctrl-C chạy đúng (07/11)', completed: true, assignedMemberId: 'member-1' },
       { id: 'w3-3', text: 'Ảnh mã nguồn sigdeliver() / stopcheck() (minh chứng b)', completed: false, assignedMemberId: 'member-2' },
-      { id: 'w3-4', text: 'Ảnh test + demo (minh chứng c, d)', completed: false, assignedMemberId: 'member-1' },
+      { id: 'w3-4', text: 'Ảnh test + demo (minh chứng c, d)', completed: true, assignedMemberId: 'member-1' },
       { id: 'w3-5', text: 'Trello + Figma tuần 3 (minh chứng a, e)', completed: false, assignedMemberId: 'member-3' },
       { id: 'w3-6', text: 'Nộp báo cáo tuần 3', completed: false, assignedMemberId: 'member-1' }
     ],
