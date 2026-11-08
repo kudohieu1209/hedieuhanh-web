@@ -186,7 +186,7 @@ export const WEEKLY_REPORTS: WeeklyReport[] = [
         "memberId": "member-2",
         "assignedRole": "Process & Signal",
         "technicalWork": "Đọc signal.h, proc.c (sigdeliver, ksignal, stoppending, stopcheck, ksigdisp), trap.c (usertrap), sysproc.c (sys_sigsend, sys_signal, sys_pause); vẽ máy trạng thái RUNNING → STOPPED → RUNNABLE; lập bảng xử lý từng tín hiệu; giải thích vì sao chỉ dừng ở điểm an toàn; chủ trì trình bày tuần 3.",
-        "outputsAchieved": "bảng xử lý tín hiệu và ảnh mã nguồn (minh chứng b), cùng Hiếu làm minh chứng d.",
+        "outputsAchieved": "bảng xử lý tín hiệu và ảnh mã nguồn (minh chứng b).",
         "completedTasksSummary": "",
         "evidenceLinks": ""
       },
